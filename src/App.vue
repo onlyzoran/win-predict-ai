@@ -1,11 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
+
+const teams = [
+  { id: '1', name: 'Flamengo', winProbability: 34.2 },
+  { id: '2', name: 'Palmeiras', winProbability: 21.7 },
+  { id: '3', name: 'Botafogo', winProbability: 12.4 },
+]
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="min-h-screen flex items-center justify-center bg-background">
+    <TeamProbabilityList :teams="teams" />
+  </div>
 </template>
-
-<style scoped></style>
