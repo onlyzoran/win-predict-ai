@@ -1,15 +1,23 @@
 <script setup lang="ts">
+import AppHeader from '@/components/AppHeader.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
+import eplData from '@/data/epl-26-27.json'
 
-const teams = [
-  { id: '1', name: 'Flamengo', winProbability: 34.2 },
-  { id: '2', name: 'Palmeiras', winProbability: 21.7 },
-  { id: '3', name: 'Botafogo', winProbability: 12.4 },
-]
+const teams = eplData.map((entry, index) => ({
+  id: String(index + 1),
+  name: entry.team,
+  winProbability: entry.win_predict,
+}))
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-background">
-    <TeamProbabilityList :teams="teams" />
+  <div class="min-h-screen flex flex-col bg-background">
+    <AppHeader />
+    <main class="flex-1 flex items-center justify-center pt-14">
+      <TeamProbabilityList
+        title="England Premier League 2026/2027"
+        :teams="teams"
+      />
+    </main>
   </div>
 </template>
