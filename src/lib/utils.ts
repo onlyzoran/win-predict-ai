@@ -5,3 +5,15 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+export function formatPercent(value: number) {
+  if (value <= 0) {
+    return "0%"
+  }
+
+  if (value < 1) {
+    return "<1%"
+  }
+
+  return `${Math.round(value)}%`
+}

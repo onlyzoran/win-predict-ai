@@ -5,6 +5,7 @@ import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { formatPercent } from '@/lib/utils'
 import eplData from '@/data/epl-26-27.json'
 import serieAData from '@/data/serie-a-26-27.json'
 import laLigaData from '@/data/la-liga-26-27.json'
@@ -71,7 +72,7 @@ function handleDetails(league: { title: string, teams: TeamProbability[] }) {
             <div class="flex items-center justify-between py-2">
               <span class="font-medium">{{ team.name }}</span>
               <Badge variant="secondary">
-                {{ Math.round(team.winProbability) }}%
+                {{ formatPercent(team.winProbability) }}
               </Badge>
             </div>
             <Separator v-if="selectedLeague && index < selectedLeague.teams.length - 1" />

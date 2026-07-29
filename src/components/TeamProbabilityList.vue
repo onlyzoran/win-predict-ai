@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
+import { formatPercent } from '@/lib/utils'
 
 interface TeamProbability {
   id: string
@@ -69,7 +70,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
         <div class="flex items-center justify-between px-4 py-2">
           <span class="font-medium">{{ team.name }}</span>
           <Badge variant="secondary">
-            {{ Math.round(team.winProbability) }}%
+            {{ formatPercent(team.winProbability) }}
           </Badge>
         </div>
         <Separator v-if="index < visibleTeams.length - 1" />
