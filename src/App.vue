@@ -106,11 +106,12 @@ const pinnedTournaments = ref(['serie-a-26-27'])
 const filteredLeagues = computed(() =>
   selectedSport.value === 'all'
     ? leagues
-    : leagues.filter((league) => league.sport === selectedSport.value)
+    : leagues.filter((league) => league.sport === selectedSport.value),
 )
 
 const sortedLeagues = computed(() => [
-  ...filteredLeagues.value.filter((league) => pinnedTournaments.value.includes(league.id)), ...filteredLeagues.value.filter((league) => !pinnedTournaments.value.includes(league.id))
+  ...filteredLeagues.value.filter((league) => pinnedTournaments.value.includes(league.id)),
+  ...filteredLeagues.value.filter((league) => !pinnedTournaments.value.includes(league.id)),
 ])
 
 interface SelectedLeague {

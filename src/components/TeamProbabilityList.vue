@@ -61,7 +61,7 @@ function handleDetailsClick() {
     startDate: props.startDate,
     endDate: props.endDate,
     icon: props.icon,
-    pinned: props.pinned
+    pinned: props.pinned,
   })
 }
 
