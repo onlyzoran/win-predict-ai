@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@lucide/vue": "^1.27.0",
+    "@tabler/icons-vue": "^3.46.0",
     "@tailwindcss/vite": "^4.3.3",
     "@vueuse/core": "^14.3.0",
     "class-variance-authority": "^0.7.1",

@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { computed } from 'vue'
+import { IconBallFootball } from '@tabler/icons-vue'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 
 interface TeamProbability {
@@ -9,30 +12,63 @@ interface TeamProbability {
   winProbability: number // 0–100
 }
 
-defineProps<{
+const TOP_TEAMS_COUNT = 5
+
+const props = defineProps<{
   title: string
   teams: TeamProbability[]
 }>()
+
+const visibleTeams = computed<TeamProbability[]>(() => {
+  const topTeams = props.teams.slice(0, TOP_TEAMS_COUNT)
+  const restTeams = props.teams.slice(TOP_TEAMS_COUNT)
+
+  if (restTeams.length === 0) {
+    return topTeams
+  }
+
+  const restProbability = restTeams.reduce(
+    (sum, restTeam) => sum + restTeam.winProbability,
+    0,
+  )
+
+  return [
+    ...topTeams,
+    {
+      id: 'rest',
+      name: `Others (${restTeams.length})`,
+      winProbability: restProbability,
+    },
+  ]
+})
 </script>
 
 <template>
-  <Card class="w-full max-w-2xs p-0">
+  <Card class="w-full max-w-2xs min-w-3xs p-0">
     <CardHeader class="px-4 pt-4">
-      <CardTitle>{{ title }}</CardTitle>
+      <CardTitle class="flex items-center gap-2">
+        <IconBallFootball class="size-4" />
+        {{ title }}
+      </CardTitle>
     </CardHeader>
     <CardContent class="p-0">
       <div
-        v-for="(team, index) in teams"
+        v-for="(team, index) in visibleTeams"
         :key="team.id"
       >
         <div class="flex items-center justify-between px-4 py-2">
           <span class="font-medium">{{ team.name }}</span>
           <Badge variant="secondary">
-            {{ team.winProbability.toFixed(1) }}%
+            {{ Math.round(team.winProbability) }}%
           </Badge>
         </div>
-        <Separator v-if="index < teams.length - 1" />
+        <Separator v-if="index < visibleTeams.length - 1" />
       </div>
     </CardContent>
+    <CardFooter class="px-4 pb-4">
+      <Button variant="outline" class="w-full">
+        Details
+      </Button>
+    </CardFooter>
   </Card>
 </template>

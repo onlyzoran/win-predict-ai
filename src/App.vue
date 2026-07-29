@@ -30,7 +30,7 @@ const leagues = [
 <template>
   <div class="min-h-screen flex flex-col bg-background">
     <AppHeader />
-    <main class="flex-1 flex items-start justify-center pt-14 gap-4">
+    <main class="flex-1 flex flex-wrap items-start justify-center pt-14 gap-4">
       <TeamProbabilityList
         v-for="league in leagues"
         :key="league.title"
