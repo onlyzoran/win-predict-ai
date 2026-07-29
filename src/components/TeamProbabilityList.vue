@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { Component } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { IconBallFootball } from '@tabler/icons-vue'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,10 +20,13 @@ interface TeamProbability {
 
 const TOP_TEAMS_COUNT = 5
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   title: string
   teams: TeamProbability[]
-}>()
+  icon?: Component
+}>(), {
+  icon: () => IconBallFootball,
+})
 
 const emit = defineEmits<{
   details: [league: { title: string, teams: TeamProbability[] }]
@@ -60,7 +64,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
   <Card class="w-full max-w-2xs min-w-3xs p-0">
     <CardHeader class="px-4 pt-4">
       <CardTitle class="flex items-center gap-2">
-        <IconBallFootball class="size-4" />
+        <component :is="icon" class="size-4" />
         {{ title }}
       </CardTitle>
       <Progress :model-value="50" class="mt-4 h-1" />

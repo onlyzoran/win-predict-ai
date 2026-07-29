@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { IconBallAmericanFootball, IconBallBasketball } from '@tabler/icons-vue'
 import AppHeader from '@/components/AppHeader.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import { Badge } from '@/components/ui/badge'
@@ -10,6 +11,9 @@ import eplData from '@/data/epl-26-27.json'
 import serieAData from '@/data/serie-a-26-27.json'
 import laLigaData from '@/data/la-liga-26-27.json'
 import bundesligaData from '@/data/bundesliga-26-27.json'
+import nflSuperBowlData from '@/data/nfl-super-bowl-26-27.json'
+import nbaData from '@/data/nba-26-27.json'
+import nhlStanleyCupData from '@/data/nhl-stanley-cup-26-27.json'
 
 interface LeagueEntry {
   team: string
@@ -35,7 +39,9 @@ const leagues = [
   { title: 'Serie A 26/27', teams: toTeams(serieAData) },
   { title: 'La Liga 26/27', teams: toTeams(laLigaData) },
   { title: 'Bundesliga 26/27', teams: toTeams(bundesligaData) },
-  { title: 'NFL Super Bowl 26/27', teams: toTeams(bundesligaData) },
+  { title: 'NFL Super Bowl 26/27', teams: toTeams(nflSuperBowlData), icon: IconBallAmericanFootball },
+  { title: 'NBA 26/27', teams: toTeams(nbaData), icon: IconBallBasketball },
+  { title: 'NHL Stanley Cup 26/27', teams: toTeams(nhlStanleyCupData), icon: IconBallBasketball },
 ]
 
 const isDetailsOpen = ref(false)
@@ -56,6 +62,7 @@ function handleDetails(league: { title: string, teams: TeamProbability[] }) {
         :key="league.title"
         :title="league.title"
         :teams="league.teams"
+        :icon="'icon' in league ? league.icon : undefined"
         @details="handleDetails"
       />
     </main>
