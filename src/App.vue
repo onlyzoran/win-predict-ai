@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import AppHeader from '@/components/AppHeader.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import eplData from '@/data/epl-26-27.json'
 import serieAData from '@/data/serie-a-26-27.json'
 import laLigaData from '@/data/la-liga-26-27.json'
@@ -9,6 +13,12 @@ import bundesligaData from '@/data/bundesliga-26-27.json'
 interface LeagueEntry {
   team: string
   win_predict: number
+}
+
+interface TeamProbability {
+  id: string
+  name: string
+  winProbability: number
 }
 
 function toTeams(entries: LeagueEntry[]) {
@@ -25,6 +35,14 @@ const leagues = [
   { title: 'La Liga 26/27', teams: toTeams(laLigaData) },
   { title: 'Bundesliga 26/27', teams: toTeams(bundesligaData) },
 ]
+
+const isDetailsOpen = ref(false)
+const selectedLeague = ref<{ title: string, teams: TeamProbability[] } | null>(null)
+
+function handleDetails(league: { title: string, teams: TeamProbability[] }) {
+  selectedLeague.value = league
+  isDetailsOpen.value = true
+}
 </script>
 
 <template>
@@ -36,7 +54,30 @@ const leagues = [
         :key="league.title"
         :title="league.title"
         :teams="league.teams"
+        @details="handleDetails"
       />
     </main>
+
+    <Sheet v-model:open="isDetailsOpen">
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>{{ selectedLeague?.title }}</SheetTitle>
+        </SheetHeader>
+        <div class="overflow-y-auto px-4">
+          <div
+            v-for="(team, index) in selectedLeague?.teams ?? []"
+            :key="team.id"
+          >
+            <div class="flex items-center justify-between py-2">
+              <span class="font-medium">{{ team.name }}</span>
+              <Badge variant="secondary">
+                {{ Math.round(team.winProbability) }}%
+              </Badge>
+            </div>
+            <Separator v-if="selectedLeague && index < selectedLeague.teams.length - 1" />
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   </div>
 </template>

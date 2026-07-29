@@ -4,6 +4,7 @@ import { IconBallFootball } from '@tabler/icons-vue'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 
 interface TeamProbability {
@@ -18,6 +19,14 @@ const props = defineProps<{
   title: string
   teams: TeamProbability[]
 }>()
+
+const emit = defineEmits<{
+  details: [league: { title: string, teams: TeamProbability[] }]
+}>()
+
+function handleDetailsClick() {
+  emit('details', { title: props.title, teams: props.teams })
+}
 
 const visibleTeams = computed<TeamProbability[]>(() => {
   const topTeams = props.teams.slice(0, TOP_TEAMS_COUNT)
@@ -50,6 +59,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
         <IconBallFootball class="size-4" />
         {{ title }}
       </CardTitle>
+      <Progress :model-value="50" class="mt-4 h-1" />
     </CardHeader>
     <CardContent class="p-0">
       <div
@@ -66,7 +76,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
       </div>
     </CardContent>
     <CardFooter class="px-4 pb-4">
-      <Button variant="outline" class="w-full">
+      <Button variant="outline" class="w-full cursor-pointer" @click="handleDetailsClick">
         Details
       </Button>
     </CardFooter>
