@@ -23,8 +23,10 @@ const TOP_TEAMS_COUNT = 5
 const props = withDefaults(defineProps<{
   title: string
   teams: TeamProbability[]
+  progress?: number
   icon?: Component
 }>(), {
+  progress: 0,
   icon: () => IconBallFootball,
 })
 
@@ -67,7 +69,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
         <component :is="icon" class="size-4" />
         {{ title }}
       </CardTitle>
-      <Progress :model-value="50" class="mt-4 h-1" />
+      <Progress :model-value="progress" class="mt-4 h-1" />
     </CardHeader>
     <CardContent class="p-0">
       <div

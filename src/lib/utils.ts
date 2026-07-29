@@ -6,6 +6,26 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function getTournamentProgress(startDate: string, endDate: string, endDateTo?: string) {
+  if (!startDate || !endDate) {
+    return 0
+  }
+
+  const start = new Date(startDate).getTime()
+  const end = new Date(endDateTo || endDate).getTime()
+  const now = Date.now()
+
+  if (now <= start) {
+    return 0
+  }
+
+  if (now >= end) {
+    return 100
+  }
+
+  return ((now - start) / (end - start)) * 100
+}
+
 export function formatPercent(value: number) {
   if (value <= 0) {
     return "0%"
