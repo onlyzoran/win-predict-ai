@@ -110,10 +110,23 @@ const filteredLeagues = computed(() =>
     : leagues.filter((league) => league.sport === selectedSport.value),
 )
 
-const sortedLeagues = computed(() => [
-  ...filteredLeagues.value.filter((league) => pinnedTournaments.value.includes(league.id)),
-  ...filteredLeagues.value.filter((league) => !pinnedTournaments.value.includes(league.id)),
-])
+const sortedLeagues = computed(() => {
+  const pinnedSet = new Set(pinnedTournaments.value)
+  const arr = filteredLeagues.value
+  const result = []
+  const tempResult = []
+
+  for (let i = 0; i < arr.length; i++) {
+    if (pinnedSet.has(arr[i].id)) {
+      result.push(arr[i])
+    } else {
+      tempResult.push(arr[i])
+    }
+  }
+
+  result.push(...tempResult)
+  return result
+})
 
 interface SelectedLeague {
   title: string
