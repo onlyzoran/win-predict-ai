@@ -35,6 +35,7 @@ const leagues = [
   { title: 'Serie A 26/27', teams: toTeams(serieAData) },
   { title: 'La Liga 26/27', teams: toTeams(laLigaData) },
   { title: 'Bundesliga 26/27', teams: toTeams(bundesligaData) },
+  { title: 'NFL Super Bowl 26/27', teams: toTeams(bundesligaData) },
 ]
 
 const isDetailsOpen = ref(false)
