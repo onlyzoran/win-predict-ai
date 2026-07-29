@@ -24,18 +24,29 @@ const props = withDefaults(defineProps<{
   title: string
   teams: TeamProbability[]
   progress?: number
+  startDate?: string
+  endDate?: string
   icon?: Component
 }>(), {
   progress: 0,
+  startDate: '',
+  endDate: '',
   icon: () => IconBallFootball,
 })
 
 const emit = defineEmits<{
-  details: [league: { title: string, teams: TeamProbability[] }]
+  details: [league: { title: string, teams: TeamProbability[], progress: number, startDate: string, endDate: string, icon: Component }]
 }>()
 
 function handleDetailsClick() {
-  emit('details', { title: props.title, teams: props.teams })
+  emit('details', {
+    title: props.title,
+    teams: props.teams,
+    progress: props.progress,
+    startDate: props.startDate,
+    endDate: props.endDate,
+    icon: props.icon,
+  })
 }
 
 const visibleTeams = computed<TeamProbability[]>(() => {

@@ -26,6 +26,14 @@ export function getTournamentProgress(startDate: string, endDate: string, endDat
   return ((now - start) / (end - start)) * 100
 }
 
+export function formatDate(date: string, locale: string) {
+  if (!date) {
+    return ""
+  }
+
+  return new Date(date).toLocaleDateString(locale, { day: "numeric", month: "short", year: "numeric" })
+}
+
 export function formatPercent(value: number) {
   if (value <= 0) {
     return "0%"
