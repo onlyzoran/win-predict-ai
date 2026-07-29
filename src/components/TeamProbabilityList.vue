@@ -22,6 +22,7 @@ const TOP_TEAMS_COUNT = 5
 
 const props = withDefaults(
   defineProps<{
+    id: string
     title: string
     teams: TeamProbability[]
     progress?: number
@@ -65,6 +66,10 @@ function handleDetailsClick() {
   })
 }
 
+function handlePinClick() {
+  emit('pin', props.id, props.pinned)
+}
+
 const visibleTeams = computed<TeamProbability[]>(() => {
   const topTeams = props.teams.slice(0, TOP_TEAMS_COUNT)
   const restTeams = props.teams.slice(TOP_TEAMS_COUNT)
@@ -95,7 +100,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
           {{ title }}
         </CardTitle>
         <button
-          @click=""
+          @click="handlePinClick"
           class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer transition-colors"
           :aria-label="t('language.switch')"
         >

@@ -130,6 +130,14 @@ function handleDetails(league: SelectedLeague) {
   selectedLeague.value = league
   isDetailsOpen.value = true
 }
+
+function handlePin(id: string, pinned: boolean) {
+  if (pinned) {
+    pinnedTournaments.value = pinnedTournaments.value.filter((tournamentId) => tournamentId !== id)
+  } else {
+    pinnedTournaments.value.push(id)
+  }
+}
 </script>
 
 <template>
@@ -139,7 +147,8 @@ function handleDetails(league: SelectedLeague) {
     <main class="flex-1 flex flex-wrap items-start justify-start px-4 py-4 gap-4">
       <TeamProbabilityList
         v-for="league in sortedLeagues"
-        :key="league.title"
+        :key="league.id"
+        :id="league.id"
         :title="league.title"
         :teams="league.teams"
         :progress="league.progress"
@@ -147,6 +156,7 @@ function handleDetails(league: SelectedLeague) {
         :end-date="league.endDate"
         :icon="'icon' in league ? league.icon : undefined"
         :pinned="pinnedTournaments.includes(league.id)"
+        @pin="handlePin"
         @details="handleDetails"
       />
     </main>
