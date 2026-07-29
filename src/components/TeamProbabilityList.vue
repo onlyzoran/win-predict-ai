@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { IconBallFootball } from '@tabler/icons-vue'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -7,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import { formatPercent } from '@/lib/utils'
+
+const { t } = useI18n()
 
 interface TeamProbability {
   id: string
@@ -46,7 +49,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
     ...topTeams,
     {
       id: 'rest',
-      name: `Others (${restTeams.length})`,
+      name: t('team.others', { count: restTeams.length }),
       winProbability: restProbability,
     },
   ]
@@ -78,7 +81,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
     </CardContent>
     <CardFooter class="px-4 pb-4">
       <Button variant="outline" class="w-full cursor-pointer" @click="handleDetailsClick">
-        Details
+        {{ t('team.details') }}
       </Button>
     </CardFooter>
   </Card>

@@ -1,0 +1,16 @@
+{
+  "app": {
+    "title": "Win Predict AI"
+  },
+  "team": {
+    "details": "Подробнее",
+    "others": "Остальные ({count})"
+  },
+  "theme": {
+    "switchToLight": "Переключить на светлую тему",
+    "switchToDark": "Переключить на тёмную тему"
+  },
+  "language": {
+    "switch": "Переключить язык"
+  }
+}

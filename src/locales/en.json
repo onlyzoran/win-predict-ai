@@ -1,0 +1,16 @@
+{
+  "app": {
+    "title": "Win Predict AI"
+  },
+  "team": {
+    "details": "Details",
+    "others": "Others ({count})"
+  },
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "language": {
+    "switch": "Switch language"
+  }
+}
