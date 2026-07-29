@@ -12,5 +12,12 @@
   },
   "language": {
     "switch": "Переключить язык"
+  },
+  "sports": {
+    "all": "Все",
+    "football": "Футбол",
+    "basketball": "Баскетбол",
+    "americanFootball": "Американский футбол",
+    "hockey": "Хоккей"
   }
 }

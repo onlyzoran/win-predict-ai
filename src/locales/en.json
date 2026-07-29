@@ -12,5 +12,12 @@
   },
   "language": {
     "switch": "Switch language"
+  },
+  "sports": {
+    "all": "All",
+    "football": "Football",
+    "basketball": "Basketball",
+    "americanFootball": "American Football",
+    "hockey": "Hockey"
   }
 }

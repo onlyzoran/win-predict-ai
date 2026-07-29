@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { Component } from 'vue'
 import { IconBallAmericanFootball, IconBallBasketball, IconBallFootball } from '@tabler/icons-vue'
 import IconHockey from '@/components/icons/IconHockey.vue'
 import AppHeader from '@/components/AppHeader.vue'
+import SportFilter from '@/components/SportFilter.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
+import type { Sport } from '@/types/sport'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
@@ -55,15 +57,23 @@ function toTeams(entries: LeagueEntry[]) {
 }
 
 const leagues = [
-  { id: 'epl-26-27', title: 'EPL 26/27', teams: toTeams(eplData) },
-  { id: 'serie-a-26-27', title: 'Serie A 26/27', teams: toTeams(serieAData) },
-  { id: 'la-liga-26-27', title: 'La Liga 26/27', teams: toTeams(laLigaData) },
-  { id: 'bundesliga-26-27', title: 'Bundesliga 26/27', teams: toTeams(bundesligaData) },
-  { id: 'rpl-26-27', title: 'RPL 26/27', teams: toTeams(rplData) },
-  { id: 'nfl-super-bowl-26-27', title: 'NFL Super Bowl 26/27', teams: toTeams(nflSuperBowlData), icon: IconBallAmericanFootball },
-  { id: 'nba-26-27', title: 'NBA 26/27', teams: toTeams(nbaData), icon: IconBallBasketball },
-  { id: 'nhl-stanley-cup-26-27', title: 'NHL Stanley Cup 26/27', teams: toTeams(nhlStanleyCupData), icon: IconHockey },
+  { id: 'epl-26-27', title: 'EPL 26/27', teams: toTeams(eplData), sport: 'football' as Sport },
+  { id: 'serie-a-26-27', title: 'Serie A 26/27', teams: toTeams(serieAData), sport: 'football' as Sport },
+  { id: 'la-liga-26-27', title: 'La Liga 26/27', teams: toTeams(laLigaData), sport: 'football' as Sport },
+  { id: 'bundesliga-26-27', title: 'Bundesliga 26/27', teams: toTeams(bundesligaData), sport: 'football' as Sport },
+  { id: 'rpl-26-27', title: 'RPL 26/27', teams: toTeams(rplData), sport: 'football' as Sport },
+  { id: 'nfl-super-bowl-26-27', title: 'NFL Super Bowl 26/27', teams: toTeams(nflSuperBowlData), icon: IconBallAmericanFootball, sport: 'americanFootball' as Sport },
+  { id: 'nba-26-27', title: 'NBA 26/27', teams: toTeams(nbaData), icon: IconBallBasketball, sport: 'basketball' as Sport },
+  { id: 'nhl-stanley-cup-26-27', title: 'NHL Stanley Cup 26/27', teams: toTeams(nhlStanleyCupData), icon: IconHockey, sport: 'hockey' as Sport },
 ].map((league) => ({ ...league, ...getDates(league.id) }))
+
+const selectedSport = ref<Sport | 'all'>('all')
+
+const filteredLeagues = computed(() =>
+  selectedSport.value === 'all'
+    ? leagues
+    : leagues.filter((league) => league.sport === selectedSport.value),
+)
 
 interface SelectedLeague {
   title: string
@@ -86,9 +96,10 @@ function handleDetails(league: SelectedLeague) {
 <template>
   <div class="min-h-screen flex flex-col bg-background">
     <AppHeader />
-    <main class="flex-1 flex flex-wrap items-start justify-start pt-16 px-4 gap-4">
+    <SportFilter v-model="selectedSport" />
+    <main class="flex-1 flex flex-wrap items-start justify-start px-4 py-4 gap-4">
       <TeamProbabilityList
-        v-for="league in leagues"
+        v-for="league in filteredLeagues"
         :key="league.title"
         :title="league.title"
         :teams="league.teams"
