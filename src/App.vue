@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { Component } from 'vue'
+import { useStorage } from '@vueuse/core'
 import { IconBallAmericanFootball, IconBallBasketball, IconBallFootball } from '@tabler/icons-vue'
 import IconHockey from '@/components/icons/IconHockey.vue'
 import AppHeader from '@/components/AppHeader.vue'
@@ -101,7 +102,7 @@ const leagues = [
 ].map((league) => ({ ...league, ...getDates(league.id) }))
 
 const selectedSport = ref<Sport | 'all'>('all')
-const pinnedTournaments = ref(['serie-a-26-27'])
+const pinnedTournaments = useStorage('pinnedTournaments', [])
 
 const filteredLeagues = computed(() =>
   selectedSport.value === 'all'
