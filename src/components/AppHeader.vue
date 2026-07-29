@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
+import { useColorMode } from '@vueuse/core'
 
-const isDark = ref(false)
-
-onMounted(() => {
-  isDark.value = document.documentElement.classList.contains('dark')
-})
+const mode = useColorMode()
+const isDark = computed(() => mode.value === 'dark')
 
 function toggleTheme() {
-  isDark.value = !isDark.value
-  document.documentElement.classList.toggle('dark', isDark.value)
+  mode.value = isDark.value ? 'light' : 'dark'
 }
 </script>
 
