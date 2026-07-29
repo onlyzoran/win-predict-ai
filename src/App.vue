@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import type { Component } from 'vue'
 import { IconBallAmericanFootball, IconBallBasketball, IconBallFootball } from '@tabler/icons-vue'
+import IconHockey from '@/components/icons/IconHockey.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import { Badge } from '@/components/ui/badge'
@@ -61,7 +62,7 @@ const leagues = [
   { id: 'rpl-26-27', title: 'RPL 26/27', teams: toTeams(rplData) },
   { id: 'nfl-super-bowl-26-27', title: 'NFL Super Bowl 26/27', teams: toTeams(nflSuperBowlData), icon: IconBallAmericanFootball },
   { id: 'nba-26-27', title: 'NBA 26/27', teams: toTeams(nbaData), icon: IconBallBasketball },
-  { id: 'nhl-stanley-cup-26-27', title: 'NHL Stanley Cup 26/27', teams: toTeams(nhlStanleyCupData), icon: IconBallBasketball },
+  { id: 'nhl-stanley-cup-26-27', title: 'NHL Stanley Cup 26/27', teams: toTeams(nhlStanleyCupData), icon: IconHockey },
 ].map((league) => ({ ...league, ...getDates(league.id) }))
 
 interface SelectedLeague {
