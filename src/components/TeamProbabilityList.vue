@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import type { Component } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IconBallFootball } from '@tabler/icons-vue'
+import { IconBallFootball, IconPin, IconPinnedOff } from '@tabler/icons-vue'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,22 +20,37 @@ interface TeamProbability {
 
 const TOP_TEAMS_COUNT = 5
 
-const props = withDefaults(defineProps<{
-  title: string
-  teams: TeamProbability[]
-  progress?: number
-  startDate?: string
-  endDate?: string
-  icon?: Component
-}>(), {
-  progress: 0,
-  startDate: '',
-  endDate: '',
-  icon: () => IconBallFootball,
-})
+const props = withDefaults(
+  defineProps<{
+    title: string
+    teams: TeamProbability[]
+    progress?: number
+    startDate?: string
+    endDate?: string
+    icon?: Component
+    pinned: boolean
+  }>(),
+  {
+    progress: 0,
+    startDate: '',
+    endDate: '',
+    icon: () => IconBallFootball,
+    pinned: false,
+  },
+)
 
 const emit = defineEmits<{
-  details: [league: { title: string, teams: TeamProbability[], progress: number, startDate: string, endDate: string, icon: Component }]
+  details: [
+    league: {
+      title: string
+      teams: TeamProbability[]
+      progress: number
+      startDate: string
+      endDate: string
+      icon: Component
+      pinned: boolean
+    },
+  ]
 }>()
 
 function handleDetailsClick() {
@@ -46,6 +61,7 @@ function handleDetailsClick() {
     startDate: props.startDate,
     endDate: props.endDate,
     icon: props.icon,
+    pinned: props.pinned
   })
 }
 
@@ -57,10 +73,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
     return topTeams
   }
 
-  const restProbability = restTeams.reduce(
-    (sum, restTeam) => sum + restTeam.winProbability,
-    0,
-  )
+  const restProbability = restTeams.reduce((sum, restTeam) => sum + restTeam.winProbability, 0)
 
   return [
     ...topTeams,
@@ -76,17 +89,24 @@ const visibleTeams = computed<TeamProbability[]>(() => {
 <template>
   <Card class="w-full max-w-xs min-w-3xs p-0">
     <CardHeader class="px-4 pt-4">
-      <CardTitle class="flex items-center gap-2">
-        <component :is="icon" class="size-4" />
-        {{ title }}
-      </CardTitle>
+      <div class="flex justify-between">
+        <CardTitle class="flex items-center gap-2">
+          <component :is="icon" class="size-4" />
+          {{ title }}
+        </CardTitle>
+        <button
+          @click=""
+          class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer transition-colors"
+          :aria-label="t('language.switch')"
+        >
+          <IconPin v-if="!pinned" />
+          <IconPinnedOff v-else />
+        </button>
+      </div>
       <Progress :model-value="progress" class="mt-4 h-1" />
     </CardHeader>
     <CardContent class="p-0">
-      <div
-        v-for="(team, index) in visibleTeams"
-        :key="team.id"
-      >
+      <div v-for="(team, index) in visibleTeams" :key="team.id">
         <div class="flex items-center justify-between px-4 py-2">
           <span class="font-medium">{{ team.name }}</span>
           <Badge variant="secondary">

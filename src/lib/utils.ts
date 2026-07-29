@@ -1,6 +1,6 @@
-import type { ClassValue } from "clsx"
-import { clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import type { ClassValue } from 'clsx'
+import { clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -28,19 +28,23 @@ export function getTournamentProgress(startDate: string, endDate: string, endDat
 
 export function formatDate(date: string, locale: string) {
   if (!date) {
-    return ""
+    return ''
   }
 
-  return new Date(date).toLocaleDateString(locale, { day: "numeric", month: "short", year: "numeric" })
+  return new Date(date).toLocaleDateString(locale, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
 }
 
 export function formatPercent(value: number) {
   if (value <= 0) {
-    return "0%"
+    return '0%'
   }
 
   if (value < 1) {
-    return "<1%"
+    return '<1%'
   }
 
   return `${Math.round(value)}%`

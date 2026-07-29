@@ -17,7 +17,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: Sport | 'all']
 }>()
 
-const sports = computed<Array<{ id: Sport | 'all', label: string, icon?: Component }>>(() => [
+const sports = computed<Array<{ id: Sport | 'all'; label: string; icon?: Component }>>(() => [
   { id: 'all', label: t('sports.all') },
   { id: 'football', label: t('sports.football'), icon: IconBallFootball },
   { id: 'basketball', label: t('sports.basketball'), icon: IconBallBasketball },
@@ -27,7 +27,9 @@ const sports = computed<Array<{ id: Sport | 'all', label: string, icon?: Compone
 </script>
 
 <template>
-  <div class="sticky top-14 z-40 mt-14 flex items-center justify-center gap-2 overflow-x-auto border-b bg-background/80 px-4 py-2 backdrop-blur-md">
+  <div
+    class="sticky top-14 z-40 mt-14 flex items-center justify-center gap-2 overflow-x-auto border-b bg-background/80 px-4 py-2 backdrop-blur-md"
+  >
     <Button
       v-for="sport in sports"
       :key="sport.id"

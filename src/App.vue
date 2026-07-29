@@ -58,22 +58,60 @@ function toTeams(entries: LeagueEntry[]) {
 
 const leagues = [
   { id: 'epl-26-27', title: 'EPL 26/27', teams: toTeams(eplData), sport: 'football' as Sport },
-  { id: 'serie-a-26-27', title: 'Serie A 26/27', teams: toTeams(serieAData), sport: 'football' as Sport },
-  { id: 'la-liga-26-27', title: 'La Liga 26/27', teams: toTeams(laLigaData), sport: 'football' as Sport },
-  { id: 'bundesliga-26-27', title: 'Bundesliga 26/27', teams: toTeams(bundesligaData), sport: 'football' as Sport },
+  {
+    id: 'serie-a-26-27',
+    title: 'Serie A 26/27',
+    teams: toTeams(serieAData),
+    sport: 'football' as Sport,
+  },
+  {
+    id: 'la-liga-26-27',
+    title: 'La Liga 26/27',
+    teams: toTeams(laLigaData),
+    sport: 'football' as Sport,
+  },
+  {
+    id: 'bundesliga-26-27',
+    title: 'Bundesliga 26/27',
+    teams: toTeams(bundesligaData),
+    sport: 'football' as Sport,
+  },
   { id: 'rpl-26-27', title: 'RPL 26/27', teams: toTeams(rplData), sport: 'football' as Sport },
-  { id: 'nfl-super-bowl-26-27', title: 'NFL Super Bowl 26/27', teams: toTeams(nflSuperBowlData), icon: IconBallAmericanFootball, sport: 'americanFootball' as Sport },
-  { id: 'nba-26-27', title: 'NBA 26/27', teams: toTeams(nbaData), icon: IconBallBasketball, sport: 'basketball' as Sport },
-  { id: 'nhl-stanley-cup-26-27', title: 'NHL Stanley Cup 26/27', teams: toTeams(nhlStanleyCupData), icon: IconHockey, sport: 'hockey' as Sport },
+  {
+    id: 'nfl-super-bowl-26-27',
+    title: 'NFL Super Bowl 26/27',
+    teams: toTeams(nflSuperBowlData),
+    icon: IconBallAmericanFootball,
+    sport: 'americanFootball' as Sport,
+  },
+  {
+    id: 'nba-26-27',
+    title: 'NBA 26/27',
+    teams: toTeams(nbaData),
+    icon: IconBallBasketball,
+    sport: 'basketball' as Sport,
+  },
+  {
+    id: 'nhl-stanley-cup-26-27',
+    title: 'NHL Stanley Cup 26/27',
+    teams: toTeams(nhlStanleyCupData),
+    icon: IconHockey,
+    sport: 'hockey' as Sport,
+  },
 ].map((league) => ({ ...league, ...getDates(league.id) }))
 
 const selectedSport = ref<Sport | 'all'>('all')
+const pinnedTournaments = ref(['serie-a-26-27'])
 
 const filteredLeagues = computed(() =>
   selectedSport.value === 'all'
     ? leagues
-    : leagues.filter((league) => league.sport === selectedSport.value),
+    : leagues.filter((league) => league.sport === selectedSport.value)
 )
+
+const sortedLeagues = computed(() => [
+  ...filteredLeagues.value.filter((league) => pinnedTournaments.value.includes(league.id)), ...filteredLeagues.value.filter((league) => !pinnedTournaments.value.includes(league.id))
+])
 
 interface SelectedLeague {
   title: string
@@ -99,7 +137,7 @@ function handleDetails(league: SelectedLeague) {
     <SportFilter v-model="selectedSport" />
     <main class="flex-1 flex flex-wrap items-start justify-start px-4 py-4 gap-4">
       <TeamProbabilityList
-        v-for="league in filteredLeagues"
+        v-for="league in sortedLeagues"
         :key="league.title"
         :title="league.title"
         :teams="league.teams"
@@ -107,6 +145,7 @@ function handleDetails(league: SelectedLeague) {
         :start-date="league.startDate"
         :end-date="league.endDate"
         :icon="'icon' in league ? league.icon : undefined"
+        :pinned="pinnedTournaments.includes(league.id)"
         @details="handleDetails"
       />
     </main>
@@ -125,10 +164,7 @@ function handleDetails(league: SelectedLeague) {
           </div>
         </SheetHeader>
         <div class="overflow-y-auto px-4">
-          <div
-            v-for="(team, index) in selectedLeague?.teams ?? []"
-            :key="team.id"
-          >
+          <div v-for="(team, index) in selectedLeague?.teams ?? []" :key="team.id">
             <div class="flex items-center justify-between py-2">
               <span class="font-medium">{{ team.name }}</span>
               <Badge variant="secondary">
