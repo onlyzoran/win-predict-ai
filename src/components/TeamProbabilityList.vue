@@ -101,7 +101,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
         </CardTitle>
         <button
           @click="handlePinClick"
-          class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground hover:text-foreground hover:bg-accent cursor-pointer transition-colors"
+          class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           :aria-label="t('language.switch')"
         >
           <IconPin v-if="!pinned" />
