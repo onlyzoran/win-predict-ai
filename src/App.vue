@@ -102,7 +102,7 @@ const leagues = [
 ].map((league) => ({ ...league, ...getDates(league.id) }))
 
 const selectedSport = ref<Sport | 'all'>('all')
-const pinnedTournaments = useStorage('pinnedTournaments', [])
+const pinnedTournaments = useStorage<string[]>('pinnedTournaments', [])
 
 const filteredLeagues = computed(() =>
   selectedSport.value === 'all'
@@ -112,20 +112,18 @@ const filteredLeagues = computed(() =>
 
 const sortedLeagues = computed(() => {
   const pinnedSet = new Set(pinnedTournaments.value)
-  const arr = filteredLeagues.value
-  const result = []
-  const tempResult = []
+  const pinned = []
+  const unpinned = []
 
-  for (let i = 0; i < arr.length; i++) {
-    if (pinnedSet.has(arr[i].id)) {
-      result.push(arr[i])
+  for (const league of filteredLeagues.value) {
+    if (pinnedSet.has(league.id)) {
+      pinned.push(league)
     } else {
-      tempResult.push(arr[i])
+      unpinned.push(league)
     }
   }
 
-  result.push(...tempResult)
-  return result
+  return [...pinned, ...unpinned]
 })
 
 interface SelectedLeague {

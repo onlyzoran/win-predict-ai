@@ -41,6 +41,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  pin: [id: string, pinned: boolean]
   details: [
     league: {
       title: string
