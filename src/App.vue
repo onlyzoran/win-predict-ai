@@ -15,18 +15,27 @@ import { Progress } from '@/components/ui/progress'
 import { locale } from '@/i18n'
 import { formatDate, formatPercent, getTournamentProgress } from '@/lib/utils'
 
-const DATA_BASE_URL = (import.meta.env.VITE_DATA_BASE_URL ?? `${import.meta.env.BASE_URL}data`).replace(
-  /\/$/,
-  '',
-)
+const DATA_BASE_URL = (
+  import.meta.env.VITE_DATA_BASE_URL ?? `${import.meta.env.BASE_URL}data`
+).replace(/\/$/, '')
+
+const sportIcons: Record<Sport, Component> = {
+  football: IconBallFootball,
+  basketball: IconBallBasketball,
+  americanFootball: IconBallAmericanFootball,
+  hockey: IconHockey,
+}
 
 interface LeagueEntry {
   team: string
   win_predict: number
 }
 
-interface TournamentDates {
+interface LeagueManifest {
   id: string
+  title: string
+  sport: Sport
+  file: string
   startDate: string
   endDate: string
   endDateTo?: string
@@ -43,53 +52,11 @@ interface League {
   title: string
   teams: TeamProbability[]
   sport: Sport
-  icon?: Component
+  icon: Component
   progress: number
   startDate: string
   endDate: string
 }
-
-interface LeagueConfig {
-  id: string
-  title: string
-  file: string
-  sport: Sport
-  icon?: Component
-}
-
-const LEAGUE_CONFIGS: LeagueConfig[] = [
-  { id: 'epl-26-27', title: 'EPL 26/27', file: 'epl-26-27.json', sport: 'football' },
-  { id: 'serie-a-26-27', title: 'Serie A 26/27', file: 'serie-a-26-27.json', sport: 'football' },
-  { id: 'la-liga-26-27', title: 'La Liga 26/27', file: 'la-liga-26-27.json', sport: 'football' },
-  {
-    id: 'bundesliga-26-27',
-    title: 'Bundesliga 26/27',
-    file: 'bundesliga-26-27.json',
-    sport: 'football',
-  },
-  { id: 'rpl-26-27', title: 'RPL 26/27', file: 'rpl-26-27.json', sport: 'football' },
-  {
-    id: 'nfl-super-bowl-26-27',
-    title: 'NFL Super Bowl 26/27',
-    file: 'nfl-super-bowl-26-27.json',
-    sport: 'americanFootball',
-    icon: IconBallAmericanFootball,
-  },
-  {
-    id: 'nba-26-27',
-    title: 'NBA 26/27',
-    file: 'nba-26-27.json',
-    sport: 'basketball',
-    icon: IconBallBasketball,
-  },
-  {
-    id: 'nhl-stanley-cup-26-27',
-    title: 'NHL Stanley Cup 26/27',
-    file: 'nhl-stanley-cup-26-27.json',
-    sport: 'hockey',
-    icon: IconHockey,
-  },
-]
 
 async function fetchJson<T>(file: string): Promise<T> {
   const res = await fetch(`${DATA_BASE_URL}/${file}`, {
@@ -99,20 +66,6 @@ async function fetchJson<T>(file: string): Promise<T> {
     throw new Error(`Failed to load ${file}: ${res.status}`)
   }
   return res.json() as Promise<T>
-}
-
-function getDates(id: string, tournamentDates: TournamentDates[]) {
-  const dates = tournamentDates.find((tournament) => tournament.id === id)
-
-  if (!dates) {
-    return { progress: 0, startDate: '', endDate: '' }
-  }
-
-  return {
-    progress: getTournamentProgress(dates.startDate, dates.endDate, dates.endDateTo),
-    startDate: dates.startDate,
-    endDate: dates.endDateTo || dates.endDate,
-  }
 }
 
 function toTeams(entries: LeagueEntry[]) {
@@ -129,17 +82,19 @@ const loadError = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    const tournamentDates = await fetchJson<TournamentDates[]>('tournament-dates.json')
+    const configs = await fetchJson<LeagueManifest[]>('leagues.json')
     const loaded = await Promise.all(
-      LEAGUE_CONFIGS.map(async (config) => {
+      configs.map(async (config) => {
         const entries = await fetchJson<LeagueEntry[]>(config.file)
         return {
           id: config.id,
           title: config.title,
           teams: toTeams(entries),
           sport: config.sport,
-          icon: config.icon,
-          ...getDates(config.id, tournamentDates),
+          icon: sportIcons[config.sport],
+          progress: getTournamentProgress(config.startDate, config.endDate, config.endDateTo),
+          startDate: config.startDate,
+          endDate: config.endDateTo || config.endDate,
         }
       }),
     )
@@ -208,7 +163,9 @@ function handlePin(id: string, pinned: boolean) {
     <SportFilter v-model="selectedSport" />
     <main class="flex-1 flex flex-wrap items-start justify-start px-4 py-4 gap-4">
       <p v-if="isLoading" class="text-sm text-muted-foreground">{{ $t('data.loading') }}</p>
-      <p v-else-if="loadError" class="text-sm text-destructive">{{ $t('data.error') }}: {{ loadError }}</p>
+      <p v-else-if="loadError" class="text-sm text-destructive">
+        {{ $t('data.error') }}: {{ loadError }}
+      </p>
       <template v-else>
         <TeamProbabilityList
           v-for="league in sortedLeagues"
