@@ -8,7 +8,13 @@ const { t } = useI18n()
 
 const nextLocale = computed(() => (locale.value === 'en' ? 'ru' : 'en'))
 
-const mode = useColorMode()
+const mode = useColorMode({
+  modes: {
+    auto: '',
+    light: '',
+    dark: 'dark',
+  },
+})
 const isDark = computed(() => mode.value === 'dark')
 
 function toggleTheme() {

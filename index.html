@@ -1,10 +1,28 @@
 <!DOCTYPE html>
-<html lang="" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Win Predict AI</title>
+    <script>
+      (function () {
+        try {
+          var localeRaw = localStorage.getItem('locale')
+          var locale = localeRaw ? JSON.parse(localeRaw) : null
+          if (locale !== 'en' && locale !== 'ru') {
+            locale = navigator.language.toLowerCase().startsWith('ru') ? 'ru' : 'en'
+          }
+          document.documentElement.lang = locale
+
+          var schemeRaw = localStorage.getItem('vueuse-color-scheme')
+          var preference = schemeRaw ? JSON.parse(schemeRaw) : 'auto'
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          var isDark = preference === 'dark' || (preference !== 'light' && prefersDark)
+          document.documentElement.classList.toggle('dark', isDark)
+        } catch (_) {}
+      })()
+    </script>
   </head>
   <body>
     <div id="app"></div>
