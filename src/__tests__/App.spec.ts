@@ -1,11 +1,33 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-import { mount } from '@vue/test-utils'
+import { mount, flushPromises } from '@vue/test-utils'
 import App from '../App.vue'
+import { i18n } from '@/i18n'
 
 describe('App', () => {
-  it('mounts renders properly', () => {
-    const wrapper = mount(App)
-    expect(wrapper.text()).toContain('You did it!')
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => [],
+      }),
+    )
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('mounts and renders the app title', async () => {
+    const wrapper = mount(App, {
+      global: {
+        plugins: [i18n],
+      },
+    })
+
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Win Predict AI')
   })
 })
