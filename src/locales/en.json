@@ -19,5 +19,9 @@
     "basketball": "Basketball",
     "americanFootball": "American Football",
     "hockey": "Hockey"
+  },
+  "data": {
+    "loading": "Loading predictions…",
+    "error": "Could not load data"
   }
 }
