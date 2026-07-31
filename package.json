@@ -16,7 +16,6 @@
     "format": "oxfmt src/"
   },
   "dependencies": {
-    "@lucide/vue": "^1.27.0",
     "@tabler/icons-vue": "^3.46.0",
     "@tailwindcss/vite": "^4.3.3",
     "@vueuse/core": "^14.4.0",
