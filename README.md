@@ -1,54 +1,60 @@
-# .
+# Win Predict AI
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue 3 frontend that shows win probabilities for sports tournaments and other events. League data is **not** stored in this repo — it is loaded at runtime from a separate [data repository](https://github.com/onlyzoran/win-predict-ai-data) published on GitHub Pages.
 
-## Recommended IDE Setup
+## Data repository
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Predictions live in [`win-predict-ai-data`](https://github.com/onlyzoran/win-predict-ai-data) and are served from:
 
-## Recommended Browser Setup
+```
+https://onlyzoran.github.io/win-predict-ai-data/data/
+```
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+On load the app fetches:
 
-## Type Support for `.vue` Imports in TS
+1. **`leagues.json`** — manifest of leagues (id, title, sport, dates, path to the predictions file)
+2. **Per-league JSON** (e.g. `epl-26-27.json`) — array of `{ "team": string, "win_predict": number }`
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+Update predictions by changing files in the data repo; this app picks them up without a redeploy (after the Pages CDN refreshes).
 
-## Customize configuration
+### Local / alternate data source
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+If `VITE_DATA_BASE_URL` is unset, the app falls back to `{BASE_URL}data` (i.e. a `public/data` folder under the Vite base path). Point the env var at any origin that serves the same JSON layout.
 
-## Project Setup
+## Environment
+
+| Variable | Description |
+| --- | --- |
+| `VITE_DATA_BASE_URL` | Base URL for JSON data (no trailing slash). Defaults to `{BASE_URL}data` if omitted. |
+
+Committed defaults:
+
+- [`.env.development`](.env.development) — remote data repo (same as production)
+- [`.env.production`](.env.production) — remote data repo used for the GitHub Pages build
+
+Override locally with `.env.local` (gitignored), for example:
+
+```sh
+# .env.local
+VITE_DATA_BASE_URL=http://localhost:4173/data
+```
+
+## Setup
+
+Node `^22.18.0` or `>=24.12.0`.
 
 ```sh
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Dev server with HMR |
+| `npm run build` | Type-check and production build |
+| `npm run preview` | Preview the production build |
+| `npm run test:unit` | Unit tests (Vitest) |
+| `npm run lint` | ESLint + Oxlint |
+| `npm run format` | Format `src/` with Oxfmt |
 
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+The app is configured with `base: '/win-predict-ai/'` for GitHub Pages deployment (see [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
