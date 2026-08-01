@@ -8,10 +8,19 @@
     <script>
       (function () {
         try {
+          var supported = ['en', 'de', 'fr', 'es', 'it', 'ru']
           var localeRaw = localStorage.getItem('locale')
           var locale = localeRaw ? JSON.parse(localeRaw) : null
-          if (locale !== 'en' && locale !== 'ru') {
-            locale = navigator.language.toLowerCase().startsWith('ru') ? 'ru' : 'en'
+          if (supported.indexOf(locale) === -1) {
+            var language = navigator.language.toLowerCase()
+            locale = 'en'
+            for (var i = 0; i < supported.length; i++) {
+              var code = supported[i]
+              if (language === code || language.indexOf(code + '-') === 0) {
+                locale = code
+                break
+              }
+            }
           }
           document.documentElement.lang = locale
 
