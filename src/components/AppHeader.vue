@@ -39,7 +39,7 @@ function onLocaleChange(value: string | number | bigint | Record<string, unknown
   >
     <span class="font-semibold text-foreground">{{ t('app.title') }}</span>
     <div class="flex items-center gap-1">
-      <DropdownMenu>
+      <DropdownMenu :modal="false">
         <DropdownMenuTrigger
           class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground hover:text-foreground hover:bg-accent transition-colors outline-none focus-visible:ring-ring/50 focus-visible:ring-3"
           :aria-label="t('language.label')"
