@@ -7,7 +7,7 @@ const ROW_COUNT = 6
 </script>
 
 <template>
-  <Card class="w-full max-w-xs min-w-3xs p-0" aria-hidden="true">
+  <Card class="w-full sm:max-w-xs sm:min-w-3xs p-0" aria-hidden="true">
     <CardHeader class="px-4 pt-4">
       <div class="flex justify-between">
         <div class="flex items-center gap-2">
