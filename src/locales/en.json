@@ -11,7 +11,7 @@
     "switchToDark": "Switch to dark mode"
   },
   "language": {
-    "switch": "Switch language"
+    "label": "Language"
   },
   "pin": {
     "add": "Pin tournament",

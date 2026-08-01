@@ -1,0 +1,34 @@
+{
+  "app": {
+    "title": "Win Predict AI"
+  },
+  "team": {
+    "details": "Détails",
+    "others": "Autres ({count})"
+  },
+  "theme": {
+    "switchToLight": "Passer en mode clair",
+    "switchToDark": "Passer en mode sombre"
+  },
+  "language": {
+    "label": "Langue"
+  },
+  "pin": {
+    "add": "Épingler le tournoi",
+    "remove": "Désépingler le tournoi"
+  },
+  "sports": {
+    "all": "Tous",
+    "football": "Football",
+    "basketball": "Basket-ball",
+    "americanFootball": "Football américain",
+    "hockey": "Hockey",
+    "baseball": "Baseball",
+    "golf": "Golf",
+    "politics": "Politique"
+  },
+  "data": {
+    "loading": "Chargement des prédictions…",
+    "error": "Impossible de charger les données"
+  }
+}

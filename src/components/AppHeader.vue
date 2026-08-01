@@ -2,11 +2,16 @@
 import { computed } from 'vue'
 import { useColorMode } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
-import { locale, toggleLocale } from '@/i18n'
+import { locale, localeLabels, locales, setLocale, type Locale } from '@/i18n'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 const { t } = useI18n()
-
-const nextLocale = computed(() => (locale.value === 'en' ? 'ru' : 'en'))
 
 const mode = useColorMode({
   modes: {
@@ -20,6 +25,12 @@ const isDark = computed(() => mode.value === 'dark')
 function toggleTheme() {
   mode.value = isDark.value ? 'light' : 'dark'
 }
+
+function onLocaleChange(value: string | number | bigint | Record<string, unknown> | null) {
+  if (typeof value === 'string' && locales.includes(value as Locale)) {
+    setLocale(value as Locale)
+  }
+}
 </script>
 
 <template>
@@ -28,13 +39,22 @@ function toggleTheme() {
   >
     <span class="font-semibold text-foreground">{{ t('app.title') }}</span>
     <div class="flex items-center gap-1">
-      <button
-        @click="toggleLocale"
-        class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-        :aria-label="t('language.switch')"
-      >
-        {{ nextLocale }}
-      </button>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground hover:text-foreground hover:bg-accent transition-colors outline-none focus-visible:ring-ring/50 focus-visible:ring-3"
+          :aria-label="t('language.label')"
+        >
+          {{ locale }}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuRadioGroup :model-value="locale" @update:model-value="onLocaleChange">
+            <DropdownMenuRadioItem v-for="code in locales" :key="code" :value="code">
+              <span class="w-6 uppercase text-muted-foreground">{{ code }}</span>
+              {{ localeLabels[code] }}
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <button
         @click="toggleTheme"
         class="rounded-md p-2 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
