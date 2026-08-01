@@ -1,0 +1,34 @@
+<script setup lang="ts">
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
+
+const ROW_COUNT = 6
+</script>
+
+<template>
+  <Card class="w-full max-w-xs min-w-3xs p-0" aria-hidden="true">
+    <CardHeader class="px-4 pt-4">
+      <div class="flex justify-between">
+        <div class="flex items-center gap-2">
+          <Skeleton class="size-4 rounded-sm" />
+          <Skeleton class="h-5 w-32" />
+        </div>
+        <Skeleton class="size-8 rounded-md" />
+      </div>
+      <Skeleton class="mt-4 h-1 w-full" />
+    </CardHeader>
+    <CardContent class="p-0">
+      <template v-for="index in ROW_COUNT" :key="index">
+        <div class="flex items-center justify-between px-4 py-2">
+          <Skeleton class="h-5 w-28" />
+          <Skeleton class="h-5 w-12 rounded-full" />
+        </div>
+        <Separator v-if="index < ROW_COUNT" />
+      </template>
+    </CardContent>
+    <CardFooter class="px-4 pb-4">
+      <Skeleton class="h-9 w-full" />
+    </CardFooter>
+  </Card>
+</template>

@@ -14,6 +14,7 @@ import IconHockey from '@/components/icons/IconHockey.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import SportFilter from '@/components/SportFilter.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
+import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleton.vue'
 import type { Sport } from '@/types/sport'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -172,7 +173,10 @@ function handlePin(id: string, pinned: boolean) {
     <AppHeader />
     <SportFilter v-model="selectedSport" />
     <main class="flex-1 flex flex-wrap items-start justify-start px-4 py-4 gap-4">
-      <p v-if="isLoading" class="text-sm text-muted-foreground">{{ $t('data.loading') }}</p>
+      <template v-if="isLoading">
+        <span class="sr-only">{{ $t('data.loading') }}</span>
+        <TeamProbabilityListSkeleton v-for="n in 10" :key="n" />
+      </template>
       <p v-else-if="loadError" class="text-sm text-destructive">
         {{ $t('data.error') }}: {{ loadError }}
       </p>
