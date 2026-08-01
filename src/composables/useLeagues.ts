@@ -63,11 +63,13 @@ async function fetchJsonWithRetry<T>(file: string, attempts = LEAGUE_FETCH_ATTEM
 }
 
 function toTeams(entries: LeagueEntry[]) {
-  return entries.map((entry, index) => ({
-    id: String(index + 1),
-    name: entry.team,
-    winProbability: entry.win_predict,
-  }))
+  return entries
+    .map((entry, index) => ({
+      id: String(index + 1),
+      name: entry.team,
+      winProbability: entry.win_predict,
+    }))
+    .sort((a, b) => b.winProbability - a.winProbability)
 }
 
 function toLeague(config: LeagueManifest, entries: LeagueEntry[]): League {
