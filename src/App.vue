@@ -51,6 +51,7 @@ interface LeagueManifest {
   startDate: string
   endDate: string
   endDateTo?: string
+  popularPriority: number
 }
 
 interface TeamProbability {
@@ -68,11 +69,13 @@ interface League {
   progress: number
   startDate: string
   endDate: string
+  popularPriority: number
 }
 
 interface LeagueSlot {
   id: string
   sport: Sport
+  popularPriority: number
   league: League | null
 }
 
@@ -104,6 +107,7 @@ function toLeague(config: LeagueManifest, entries: LeagueEntry[]): League {
     progress: getTournamentProgress(config.startDate, config.endDate, config.endDateTo),
     startDate: config.startDate,
     endDate: config.endDateTo || config.endDate,
+    popularPriority: config.popularPriority,
   }
 }
 
@@ -117,6 +121,7 @@ onMounted(async () => {
     slots.value = configs.map((config) => ({
       id: config.id,
       sport: config.sport,
+      popularPriority: config.popularPriority,
       league: null,
     }))
     isManifestLoading.value = false
@@ -167,19 +172,21 @@ const filteredSlots = computed(() => {
 })
 
 function compareSlots(a: LeagueSlot, b: LeagueSlot) {
-  if (!a.league && !b.league) return 0
-  if (!a.league) return 1
-  if (!b.league) return -1
-
   if (sortMode.value === 'name') {
+    if (!a.league && !b.league) return 0
+    if (!a.league) return 1
+    if (!b.league) return -1
     return a.league.title.localeCompare(b.league.title, locale.value)
   }
 
   if (sortMode.value === 'endingSoon') {
+    if (!a.league && !b.league) return 0
+    if (!a.league) return 1
+    if (!b.league) return -1
     return a.league.endDate.localeCompare(b.league.endDate)
   }
 
-  return 0
+  return a.popularPriority - b.popularPriority
 }
 
 const sortedSlots = computed(() => {
@@ -195,10 +202,8 @@ const sortedSlots = computed(() => {
     }
   }
 
-  if (sortMode.value !== 'popular') {
-    pinned.sort(compareSlots)
-    unpinned.sort(compareSlots)
-  }
+  pinned.sort(compareSlots)
+  unpinned.sort(compareSlots)
 
   return [...pinned, ...unpinned]
 })
