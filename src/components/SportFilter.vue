@@ -50,7 +50,7 @@ const sports = computed<Array<{ id: Sport | 'all'; label: string; icon?: Compone
       @click="emit('update:modelValue', sport.id)"
     >
       <component :is="sport.icon" v-if="sport.icon" class="size-4" />
-      <span :class="sport.icon ? 'hidden min-[860px]:inline' : undefined">{{ sport.label }}</span>
+      <span :class="sport.icon ? 'hidden min-[930px]:inline' : undefined">{{ sport.label }}</span>
     </Button>
   </div>
 </template>
