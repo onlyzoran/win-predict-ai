@@ -1,17 +1,8 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { computed } from 'vue'
-import {
-  IconArrowsSort,
-  IconBallAmericanFootball,
-  IconBallBaseball,
-  IconBallBasketball,
-  IconBallFootball,
-  IconFlag,
-  IconGolf,
-} from '@tabler/icons-vue'
+import { IconArrowsSort } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
-import IconHockey from '@/components/icons/IconHockey.vue'
 import TournamentSearch from '@/components/TournamentSearch.vue'
 import { Button } from '@/components/ui/button'
 import {
@@ -21,6 +12,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { sportIcons } from '@/lib/sportIcons'
 import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
 
@@ -40,13 +32,11 @@ const emit = defineEmits<{
 
 const sports = computed<Array<{ id: Sport | 'all'; label: string; icon?: Component }>>(() => [
   { id: 'all', label: t('sports.all') },
-  { id: 'football', label: t('sports.football'), icon: IconBallFootball },
-  { id: 'basketball', label: t('sports.basketball'), icon: IconBallBasketball },
-  { id: 'americanFootball', label: t('sports.americanFootball'), icon: IconBallAmericanFootball },
-  { id: 'hockey', label: t('sports.hockey'), icon: IconHockey },
-  { id: 'baseball', label: t('sports.baseball'), icon: IconBallBaseball },
-  { id: 'golf', label: t('sports.golf'), icon: IconGolf },
-  { id: 'politics', label: t('sports.politics'), icon: IconFlag },
+  ...(Object.keys(sportIcons) as Sport[]).map((id) => ({
+    id,
+    label: t(`sports.${id}`),
+    icon: sportIcons[id],
+  })),
 ])
 
 const sortOptions = computed<Array<{ id: SortMode; label: string }>>(() => [

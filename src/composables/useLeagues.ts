@@ -1,21 +1,11 @@
 import { computed, onMounted, ref } from 'vue'
-import type { Component } from 'vue'
-import {
-  IconBallAmericanFootball,
-  IconBallBaseball,
-  IconBallBasketball,
-  IconBallFootball,
-  IconFlag,
-  IconGolf,
-} from '@tabler/icons-vue'
-import IconHockey from '@/components/icons/IconHockey.vue'
 import type {
   League,
   LeagueEntry,
   LeagueManifest,
   LeagueSlot,
 } from '@/types/league'
-import type { Sport } from '@/types/sport'
+import { sportIcons } from '@/lib/sportIcons'
 import { getTournamentProgress } from '@/lib/utils'
 
 const DATA_BASE_URL = (
@@ -24,16 +14,6 @@ const DATA_BASE_URL = (
 
 const LEAGUE_FETCH_ATTEMPTS = 2
 const RETRY_DELAY_MS = 400
-
-const sportIcons: Record<Sport, Component> = {
-  football: IconBallFootball,
-  basketball: IconBallBasketball,
-  americanFootball: IconBallAmericanFootball,
-  hockey: IconHockey,
-  baseball: IconBallBaseball,
-  golf: IconGolf,
-  politics: IconFlag,
-}
 
 async function fetchJson<T>(file: string): Promise<T> {
   const res = await fetch(`${DATA_BASE_URL}/${file}`, {
