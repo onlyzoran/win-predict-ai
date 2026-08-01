@@ -29,7 +29,9 @@
   },
   "data": {
     "loading": "Cargando predicciones…",
-    "error": "No se pudieron cargar los datos"
+    "error": "No se pudieron cargar los datos",
+    "partialError": "{count} torneos no se pudieron cargar",
+    "retry": "Reintentar"
   },
   "search": {
     "placeholder": "Buscar…",

@@ -29,7 +29,9 @@
   },
   "data": {
     "loading": "Prognosen werden geladen…",
-    "error": "Daten konnten nicht geladen werden"
+    "error": "Daten konnten nicht geladen werden",
+    "partialError": "{count} Turniere konnten nicht geladen werden",
+    "retry": "Erneut versuchen"
   },
   "search": {
     "placeholder": "Suchen…",

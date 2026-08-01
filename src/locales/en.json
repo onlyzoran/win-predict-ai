@@ -29,7 +29,9 @@
   },
   "data": {
     "loading": "Loading predictions…",
-    "error": "Could not load data"
+    "error": "Could not load data",
+    "partialError": "{count} tournaments failed to load",
+    "retry": "Retry"
   },
   "search": {
     "placeholder": "Search…",

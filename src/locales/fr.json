@@ -29,7 +29,9 @@
   },
   "data": {
     "loading": "Chargement des prédictions…",
-    "error": "Impossible de charger les données"
+    "error": "Impossible de charger les données",
+    "partialError": "{count} tournois n'ont pas pu être chargés",
+    "retry": "Réessayer"
   },
   "search": {
     "placeholder": "Rechercher…",

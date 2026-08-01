@@ -29,7 +29,9 @@
   },
   "data": {
     "loading": "Caricamento previsioni…",
-    "error": "Impossibile caricare i dati"
+    "error": "Impossibile caricare i dati",
+    "partialError": "{count} tornei non sono stati caricati",
+    "retry": "Riprova"
   },
   "search": {
     "placeholder": "Cerca…",

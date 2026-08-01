@@ -115,7 +115,8 @@ describe('App', () => {
     expect(wrapper.text()).toContain('Could not load data')
   })
 
-  it('drops a league that fails to load and keeps the rest', async () => {
+  it('shows a partial error when a league fails to load and keeps the rest', async () => {
+    vi.useFakeTimers()
     vi.stubGlobal(
       'fetch',
       mockFetchByFile({
@@ -125,11 +126,56 @@ describe('App', () => {
       }),
     )
 
-    const wrapper = mountApp()
-    await flushPromises()
+    try {
+      const wrapper = mountApp()
+      await flushPromises()
+      await vi.runAllTimersAsync()
+      await flushPromises()
 
-    expect(wrapper.text()).toContain('Premier League')
-    expect(wrapper.text()).not.toContain('NBA')
-    expect(wrapper.text()).not.toContain('Could not load data')
+      expect(wrapper.text()).toContain('Premier League')
+      expect(wrapper.text()).not.toContain('NBA')
+      expect(wrapper.text()).toContain('1 tournaments failed to load')
+      expect(wrapper.text()).toContain('Retry')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('retries failed leagues when Retry is clicked', async () => {
+    vi.useFakeTimers()
+    let nbaAttempts = 0
+    vi.stubGlobal(
+      'fetch',
+      mockFetchByFile({
+        'leagues.json': () => jsonResponse(manifest),
+        'epl.json': () => jsonResponse(eplTeams),
+        'nba.json': () => {
+          nbaAttempts += 1
+          return nbaAttempts <= 2 ? errorResponse(404) : jsonResponse(nbaTeams)
+        },
+      }),
+    )
+
+    try {
+      const wrapper = mountApp()
+      await flushPromises()
+      await vi.runAllTimersAsync()
+      await flushPromises()
+
+      expect(wrapper.text()).toContain('1 tournaments failed to load')
+
+      const retryButton = wrapper.findAll('button').find((button) => button.text() === 'Retry')
+      expect(retryButton).toBeTruthy()
+      await retryButton!.trigger('click')
+      await flushPromises()
+      await vi.runAllTimersAsync()
+      await flushPromises()
+
+      expect(wrapper.text()).toContain('NBA')
+      expect(wrapper.text()).toContain('Lakers')
+      expect(wrapper.text()).not.toContain('tournaments failed to load')
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })

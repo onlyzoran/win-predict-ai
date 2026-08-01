@@ -12,6 +12,7 @@ import type { SelectedLeague } from '@/types/league'
 import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Progress } from '@/components/ui/progress'
@@ -19,7 +20,7 @@ import { locale } from '@/i18n'
 import { filterSlots, sortSlotsWithPinned } from '@/lib/tournaments'
 import { formatDate, formatPercent } from '@/lib/utils'
 
-const { slots, isManifestLoading, loadError } = useLeagues()
+const { slots, isManifestLoading, loadError, failedCount, isRetrying, retryFailed } = useLeagues()
 const { pinnedTournaments, handlePin } = usePinnedTournaments()
 
 const selectedSport = ref<Sport | 'all'>('all')
@@ -63,6 +64,22 @@ function handleDetails(league: SelectedLeague) {
       </p>
       <template v-else>
         <span v-if="hasPendingSlots" class="sr-only">{{ $t('data.loading') }}</span>
+        <div
+          v-if="failedCount > 0"
+          class="w-full flex flex-wrap items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+          role="alert"
+        >
+          <p>{{ $t('data.partialError', { count: failedCount }) }}</p>
+          <Button
+            variant="outline"
+            size="sm"
+            class="border-destructive/40 text-destructive hover:bg-destructive/10"
+            :disabled="isRetrying"
+            @click="retryFailed"
+          >
+            {{ $t('data.retry') }}
+          </Button>
+        </div>
         <p
           v-if="sortedSlots.length === 0"
           class="w-full py-8 text-center text-sm text-muted-foreground"
