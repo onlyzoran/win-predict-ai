@@ -30,5 +30,10 @@
   "data": {
     "loading": "Cargando predicciones…",
     "error": "No se pudieron cargar los datos"
+  },
+  "search": {
+    "placeholder": "Buscar…",
+    "clear": "Borrar búsqueda",
+    "empty": "No se encontraron torneos"
   }
 }

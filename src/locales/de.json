@@ -30,5 +30,10 @@
   "data": {
     "loading": "Prognosen werden geladen…",
     "error": "Daten konnten nicht geladen werden"
+  },
+  "search": {
+    "placeholder": "Suchen…",
+    "clear": "Suche löschen",
+    "empty": "Keine Turniere gefunden"
   }
 }

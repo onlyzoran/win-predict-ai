@@ -137,13 +137,32 @@ onMounted(async () => {
 })
 
 const selectedSport = ref<Sport | 'all'>('all')
+const searchQuery = ref('')
 const pinnedTournaments = useStorage<string[]>('pinnedTournaments', [])
 
-const filteredSlots = computed(() =>
-  selectedSport.value === 'all'
-    ? slots.value
-    : slots.value.filter((slot) => slot.sport === selectedSport.value),
-)
+const filteredSlots = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+
+  return slots.value.filter((slot) => {
+    if (selectedSport.value !== 'all' && slot.sport !== selectedSport.value) {
+      return false
+    }
+
+    if (!query) {
+      return true
+    }
+
+    if (!slot.league) {
+      return false
+    }
+
+    if (slot.league.title.toLowerCase().includes(query)) {
+      return true
+    }
+
+    return slot.league.teams.some((team) => team.name.toLowerCase().includes(query))
+  })
+})
 
 const sortedSlots = computed(() => {
   const pinnedSet = new Set(pinnedTournaments.value)
@@ -192,7 +211,7 @@ function handlePin(id: string, pinned: boolean) {
 <template>
   <div class="min-h-screen flex flex-col bg-background">
     <AppHeader />
-    <SportFilter v-model="selectedSport" />
+    <SportFilter v-model="selectedSport" v-model:search="searchQuery" />
     <main class="flex-1 flex flex-wrap items-start justify-start px-4 py-4 gap-4">
       <template v-if="isManifestLoading">
         <span class="sr-only">{{ $t('data.loading') }}</span>
@@ -203,6 +222,12 @@ function handlePin(id: string, pinned: boolean) {
       </p>
       <template v-else>
         <span v-if="hasPendingSlots" class="sr-only">{{ $t('data.loading') }}</span>
+        <p
+          v-if="sortedSlots.length === 0"
+          class="w-full py-8 text-center text-sm text-muted-foreground"
+        >
+          {{ $t('search.empty') }}
+        </p>
         <template v-for="slot in sortedSlots" :key="slot.id">
           <TeamProbabilityList
             v-if="slot.league"

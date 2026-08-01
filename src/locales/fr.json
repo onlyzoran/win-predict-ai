@@ -30,5 +30,10 @@
   "data": {
     "loading": "Chargement des prédictions…",
     "error": "Impossible de charger les données"
+  },
+  "search": {
+    "placeholder": "Rechercher…",
+    "clear": "Effacer la recherche",
+    "empty": "Aucun tournoi trouvé"
   }
 }

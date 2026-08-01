@@ -30,5 +30,10 @@
   "data": {
     "loading": "Caricamento previsioni…",
     "error": "Impossibile caricare i dati"
+  },
+  "search": {
+    "placeholder": "Cerca…",
+    "clear": "Cancella ricerca",
+    "empty": "Nessun torneo trovato"
   }
 }

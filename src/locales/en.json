@@ -30,5 +30,10 @@
   "data": {
     "loading": "Loading predictions…",
     "error": "Could not load data"
+  },
+  "search": {
+    "placeholder": "Search…",
+    "clear": "Clear search",
+    "empty": "No tournaments found"
   }
 }
