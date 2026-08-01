@@ -20,8 +20,8 @@ const ROW_COUNT = 6
     </CardHeader>
     <CardContent class="p-0">
       <template v-for="index in ROW_COUNT" :key="index">
-        <div class="flex items-center justify-between px-4 py-2">
-          <Skeleton class="h-5 w-28" />
+        <div class="flex h-10 items-center justify-between px-4">
+          <Skeleton class="h-4 w-28" />
           <Skeleton class="h-5 w-12 rounded-full" />
         </div>
         <Separator v-if="index < ROW_COUNT" />

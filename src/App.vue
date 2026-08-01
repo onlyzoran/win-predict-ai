@@ -69,6 +69,12 @@ interface League {
   endDate: string
 }
 
+interface LeagueSlot {
+  id: string
+  sport: Sport
+  league: League | null
+}
+
 async function fetchJson<T>(file: string): Promise<T> {
   const res = await fetch(`${DATA_BASE_URL}/${file}`, {
     headers: { Accept: 'application/json' },
@@ -87,60 +93,75 @@ function toTeams(entries: LeagueEntry[]) {
   }))
 }
 
-const leagues = ref<League[]>([])
-const isLoading = ref(true)
+function toLeague(config: LeagueManifest, entries: LeagueEntry[]): League {
+  return {
+    id: config.id,
+    title: config.title,
+    teams: toTeams(entries),
+    sport: config.sport,
+    icon: sportIcons[config.sport],
+    progress: getTournamentProgress(config.startDate, config.endDate, config.endDateTo),
+    startDate: config.startDate,
+    endDate: config.endDateTo || config.endDate,
+  }
+}
+
+const slots = ref<LeagueSlot[]>([])
+const isManifestLoading = ref(true)
 const loadError = ref<string | null>(null)
 
 onMounted(async () => {
   try {
     const configs = await fetchJson<LeagueManifest[]>('leagues.json')
-    const loaded = await Promise.all(
-      configs.map(async (config) => {
+    slots.value = configs.map((config) => ({
+      id: config.id,
+      sport: config.sport,
+      league: null,
+    }))
+    isManifestLoading.value = false
+
+    for (const config of configs) {
+      try {
         const entries = await fetchJson<LeagueEntry[]>(config.file)
-        return {
-          id: config.id,
-          title: config.title,
-          teams: toTeams(entries),
-          sport: config.sport,
-          icon: sportIcons[config.sport],
-          progress: getTournamentProgress(config.startDate, config.endDate, config.endDateTo),
-          startDate: config.startDate,
-          endDate: config.endDateTo || config.endDate,
-        }
-      }),
-    )
-    leagues.value = loaded
+        slots.value = slots.value.map((slot) =>
+          slot.id === config.id ? { ...slot, league: toLeague(config, entries) } : slot,
+        )
+      } catch {
+        slots.value = slots.value.filter((slot) => slot.id !== config.id)
+      }
+    }
   } catch (error) {
     loadError.value = error instanceof Error ? error.message : 'Failed to load data'
-  } finally {
-    isLoading.value = false
+    isManifestLoading.value = false
   }
 })
 
 const selectedSport = ref<Sport | 'all'>('all')
 const pinnedTournaments = useStorage<string[]>('pinnedTournaments', [])
 
-const filteredLeagues = computed(() =>
+const filteredSlots = computed(() =>
   selectedSport.value === 'all'
-    ? leagues.value
-    : leagues.value.filter((league) => league.sport === selectedSport.value),
+    ? slots.value
+    : slots.value.filter((slot) => slot.sport === selectedSport.value),
 )
 
-const sortedLeagues = computed(() => {
+const sortedSlots = computed(() => {
   const pinnedSet = new Set(pinnedTournaments.value)
   const pinned = []
   const unpinned = []
 
-  for (const league of filteredLeagues.value) {
-    if (pinnedSet.has(league.id)) {
-      pinned.push(league)
+  for (const slot of filteredSlots.value) {
+    if (pinnedSet.has(slot.id)) {
+      pinned.push(slot)
     } else {
-      unpinned.push(league)
+      unpinned.push(slot)
     }
   }
 
   return [...pinned, ...unpinned]
 })
+
+const hasPendingSlots = computed(() => sortedSlots.value.some((slot) => !slot.league))
 
 interface SelectedLeague {
   title: string
@@ -173,28 +194,31 @@ function handlePin(id: string, pinned: boolean) {
     <AppHeader />
     <SportFilter v-model="selectedSport" />
     <main class="flex-1 flex flex-wrap items-start justify-start px-4 py-4 gap-4">
-      <template v-if="isLoading">
+      <template v-if="isManifestLoading">
         <span class="sr-only">{{ $t('data.loading') }}</span>
-        <TeamProbabilityListSkeleton v-for="n in 10" :key="n" />
+        <TeamProbabilityListSkeleton v-for="n in 6" :key="n" />
       </template>
       <p v-else-if="loadError" class="text-sm text-destructive">
         {{ $t('data.error') }}: {{ loadError }}
       </p>
       <template v-else>
-        <TeamProbabilityList
-          v-for="league in sortedLeagues"
-          :key="league.id"
-          :id="league.id"
-          :title="league.title"
-          :teams="league.teams"
-          :progress="league.progress"
-          :start-date="league.startDate"
-          :end-date="league.endDate"
-          :icon="league.icon"
-          :pinned="pinnedTournaments.includes(league.id)"
-          @pin="handlePin"
-          @details="handleDetails"
-        />
+        <span v-if="hasPendingSlots" class="sr-only">{{ $t('data.loading') }}</span>
+        <template v-for="slot in sortedSlots" :key="slot.id">
+          <TeamProbabilityList
+            v-if="slot.league"
+            :id="slot.league.id"
+            :title="slot.league.title"
+            :teams="slot.league.teams"
+            :progress="slot.league.progress"
+            :start-date="slot.league.startDate"
+            :end-date="slot.league.endDate"
+            :icon="slot.league.icon"
+            :pinned="pinnedTournaments.includes(slot.league.id)"
+            @pin="handlePin"
+            @details="handleDetails"
+          />
+          <TeamProbabilityListSkeleton v-else />
+        </template>
       </template>
     </main>
 
