@@ -35,5 +35,11 @@
     "placeholder": "Suchen…",
     "clear": "Suche löschen",
     "empty": "Keine Turniere gefunden"
+  },
+  "sort": {
+    "label": "Sortierung",
+    "popular": "Beliebt",
+    "name": "Name",
+    "endingSoon": "Endet bald"
   }
 }

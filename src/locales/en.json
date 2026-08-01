@@ -35,5 +35,11 @@
     "placeholder": "Search…",
     "clear": "Clear search",
     "empty": "No tournaments found"
+  },
+  "sort": {
+    "label": "Sort",
+    "popular": "Popular",
+    "name": "Name",
+    "endingSoon": "Ending soon"
   }
 }

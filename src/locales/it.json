@@ -35,5 +35,11 @@
     "placeholder": "Cerca…",
     "clear": "Cancella ricerca",
     "empty": "Nessun torneo trovato"
+  },
+  "sort": {
+    "label": "Ordina",
+    "popular": "Popolari",
+    "name": "Nome",
+    "endingSoon": "In scadenza"
   }
 }

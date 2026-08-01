@@ -15,6 +15,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import SportFilter from '@/components/SportFilter.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleton.vue'
+import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -138,6 +139,7 @@ onMounted(async () => {
 
 const selectedSport = ref<Sport | 'all'>('all')
 const searchQuery = ref('')
+const sortMode = useStorage<SortMode>('tournamentSort', 'popular')
 const pinnedTournaments = useStorage<string[]>('pinnedTournaments', [])
 
 const filteredSlots = computed(() => {
@@ -164,10 +166,26 @@ const filteredSlots = computed(() => {
   })
 })
 
+function compareSlots(a: LeagueSlot, b: LeagueSlot) {
+  if (!a.league && !b.league) return 0
+  if (!a.league) return 1
+  if (!b.league) return -1
+
+  if (sortMode.value === 'name') {
+    return a.league.title.localeCompare(b.league.title, locale.value)
+  }
+
+  if (sortMode.value === 'endingSoon') {
+    return a.league.endDate.localeCompare(b.league.endDate)
+  }
+
+  return 0
+}
+
 const sortedSlots = computed(() => {
   const pinnedSet = new Set(pinnedTournaments.value)
-  const pinned = []
-  const unpinned = []
+  const pinned: LeagueSlot[] = []
+  const unpinned: LeagueSlot[] = []
 
   for (const slot of filteredSlots.value) {
     if (pinnedSet.has(slot.id)) {
@@ -175,6 +193,11 @@ const sortedSlots = computed(() => {
     } else {
       unpinned.push(slot)
     }
+  }
+
+  if (sortMode.value !== 'popular') {
+    pinned.sort(compareSlots)
+    unpinned.sort(compareSlots)
   }
 
   return [...pinned, ...unpinned]
@@ -211,7 +234,11 @@ function handlePin(id: string, pinned: boolean) {
 <template>
   <div class="min-h-screen flex flex-col bg-background">
     <AppHeader />
-    <SportFilter v-model="selectedSport" v-model:search="searchQuery" />
+    <SportFilter
+      v-model="selectedSport"
+      v-model:search="searchQuery"
+      v-model:sort="sortMode"
+    />
     <main class="flex-1 flex flex-wrap items-start justify-start px-4 py-4 gap-4">
       <template v-if="isManifestLoading">
         <span class="sr-only">{{ $t('data.loading') }}</span>

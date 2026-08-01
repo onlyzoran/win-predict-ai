@@ -35,5 +35,11 @@
     "placeholder": "Rechercher…",
     "clear": "Effacer la recherche",
     "empty": "Aucun tournoi trouvé"
+  },
+  "sort": {
+    "label": "Trier",
+    "popular": "Populaires",
+    "name": "Nom",
+    "endingSoon": "Bientôt terminés"
   }
 }
