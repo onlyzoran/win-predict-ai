@@ -22,6 +22,7 @@ import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Progress } from '@/components/ui/progress'
 import { locale } from '@/i18n'
+import { filterSlots, sortSlotsWithPinned, togglePinned } from '@/lib/tournaments'
 import { formatDate, formatPercent, getTournamentProgress } from '@/lib/utils'
 
 const DATA_BASE_URL = (
@@ -147,66 +148,13 @@ const searchQuery = ref('')
 const sortMode = useStorage<SortMode>('tournamentSort', 'popular')
 const pinnedTournaments = useStorage<string[]>('pinnedTournaments', [])
 
-const filteredSlots = computed(() => {
-  const query = searchQuery.value.trim().toLowerCase()
+const filteredSlots = computed(() =>
+  filterSlots(slots.value, selectedSport.value, searchQuery.value),
+)
 
-  return slots.value.filter((slot) => {
-    if (selectedSport.value !== 'all' && slot.sport !== selectedSport.value) {
-      return false
-    }
-
-    if (!query) {
-      return true
-    }
-
-    if (!slot.league) {
-      return false
-    }
-
-    if (slot.league.title.toLowerCase().includes(query)) {
-      return true
-    }
-
-    return slot.league.teams.some((team) => team.name.toLowerCase().includes(query))
-  })
-})
-
-function compareSlots(a: LeagueSlot, b: LeagueSlot) {
-  if (sortMode.value === 'name') {
-    if (!a.league && !b.league) return 0
-    if (!a.league) return 1
-    if (!b.league) return -1
-    return a.league.title.localeCompare(b.league.title, locale.value)
-  }
-
-  if (sortMode.value === 'endingSoon') {
-    if (!a.league && !b.league) return 0
-    if (!a.league) return 1
-    if (!b.league) return -1
-    return a.league.endDate.localeCompare(b.league.endDate)
-  }
-
-  return a.popularPriority - b.popularPriority
-}
-
-const sortedSlots = computed(() => {
-  const pinnedSet = new Set(pinnedTournaments.value)
-  const pinned: LeagueSlot[] = []
-  const unpinned: LeagueSlot[] = []
-
-  for (const slot of filteredSlots.value) {
-    if (pinnedSet.has(slot.id)) {
-      pinned.push(slot)
-    } else {
-      unpinned.push(slot)
-    }
-  }
-
-  pinned.sort(compareSlots)
-  unpinned.sort(compareSlots)
-
-  return [...pinned, ...unpinned]
-})
+const sortedSlots = computed(() =>
+  sortSlotsWithPinned(filteredSlots.value, pinnedTournaments.value, sortMode.value, locale.value),
+)
 
 const hasPendingSlots = computed(() => sortedSlots.value.some((slot) => !slot.league))
 
@@ -228,11 +176,7 @@ function handleDetails(league: SelectedLeague) {
 }
 
 function handlePin(id: string, pinned: boolean) {
-  if (pinned) {
-    pinnedTournaments.value = pinnedTournaments.value.filter((tournamentId) => tournamentId !== id)
-  } else {
-    pinnedTournaments.value.push(id)
-  }
+  pinnedTournaments.value = togglePinned(pinnedTournaments.value, id, pinned)
 }
 </script>
 
