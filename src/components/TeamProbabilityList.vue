@@ -8,15 +8,10 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
+import type { TeamProbability } from '@/types/league'
 import { formatPercent } from '@/lib/utils'
 
 const { t } = useI18n()
-
-interface TeamProbability {
-  id: string
-  name: string
-  winProbability: number // 0–100
-}
 
 const TOP_TEAMS_COUNT = 5
 
