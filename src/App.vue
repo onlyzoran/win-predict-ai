@@ -2,7 +2,14 @@
 import { computed, onMounted, ref } from 'vue'
 import type { Component } from 'vue'
 import { useStorage } from '@vueuse/core'
-import { IconBallAmericanFootball, IconBallBasketball, IconBallFootball } from '@tabler/icons-vue'
+import {
+  IconBallAmericanFootball,
+  IconBallBaseball,
+  IconBallBasketball,
+  IconBallFootball,
+  IconFlag,
+  IconGolf,
+} from '@tabler/icons-vue'
 import IconHockey from '@/components/icons/IconHockey.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import SportFilter from '@/components/SportFilter.vue'
@@ -24,6 +31,9 @@ const sportIcons: Record<Sport, Component> = {
   basketball: IconBallBasketball,
   americanFootball: IconBallAmericanFootball,
   hockey: IconHockey,
+  baseball: IconBallBaseball,
+  golf: IconGolf,
+  politics: IconFlag,
 }
 
 interface LeagueEntry {

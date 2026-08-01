@@ -22,7 +22,10 @@
     "football": "Футбол",
     "basketball": "Баскетбол",
     "americanFootball": "Американский футбол",
-    "hockey": "Хоккей"
+    "hockey": "Хоккей",
+    "baseball": "Бейсбол",
+    "golf": "Гольф",
+    "politics": "Политика"
   },
   "data": {
     "loading": "Загрузка прогнозов…",

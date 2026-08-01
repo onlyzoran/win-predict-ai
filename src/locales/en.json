@@ -22,7 +22,10 @@
     "football": "Football",
     "basketball": "Basketball",
     "americanFootball": "American Football",
-    "hockey": "Hockey"
+    "hockey": "Hockey",
+    "baseball": "Baseball",
+    "golf": "Golf",
+    "politics": "Politics"
   },
   "data": {
     "loading": "Loading predictions…",

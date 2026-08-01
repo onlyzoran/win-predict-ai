@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { computed } from 'vue'
-import { IconBallAmericanFootball, IconBallBasketball, IconBallFootball } from '@tabler/icons-vue'
+import {
+  IconBallAmericanFootball,
+  IconBallBaseball,
+  IconBallBasketball,
+  IconBallFootball,
+  IconFlag,
+  IconGolf,
+} from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import IconHockey from '@/components/icons/IconHockey.vue'
 import { Button } from '@/components/ui/button'
@@ -23,6 +30,9 @@ const sports = computed<Array<{ id: Sport | 'all'; label: string; icon?: Compone
   { id: 'basketball', label: t('sports.basketball'), icon: IconBallBasketball },
   { id: 'americanFootball', label: t('sports.americanFootball'), icon: IconBallAmericanFootball },
   { id: 'hockey', label: t('sports.hockey'), icon: IconHockey },
+  { id: 'baseball', label: t('sports.baseball'), icon: IconBallBaseball },
+  { id: 'golf', label: t('sports.golf'), icon: IconGolf },
+  { id: 'politics', label: t('sports.politics'), icon: IconFlag },
 ])
 </script>
 

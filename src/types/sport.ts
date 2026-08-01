@@ -1,1 +1,8 @@
-export type Sport = 'football' | 'basketball' | 'americanFootball' | 'hockey'
+export type Sport =
+  | 'football'
+  | 'basketball'
+  | 'americanFootball'
+  | 'hockey'
+  | 'baseball'
+  | 'golf'
+  | 'politics'
