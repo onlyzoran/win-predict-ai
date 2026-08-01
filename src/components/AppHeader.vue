@@ -20,7 +20,7 @@ const mode = useColorMode({
     dark: 'dark',
   },
 })
-const isDark = computed(() => mode.value === 'dark')
+const isDark = computed(() => mode.state.value === 'dark')
 
 function toggleTheme() {
   mode.value = isDark.value ? 'light' : 'dark'
