@@ -3,9 +3,12 @@
     "title": "Win Predict AI"
   },
   "team": {
+    "preview": "Обзор",
     "details": "Подробнее",
     "others": "Остальные ({count})",
-    "season": "Сезон"
+    "season": "Сезон",
+    "back": "Назад",
+    "notFound": "Турнир не найден"
   },
   "theme": {
     "switchToLight": "Переключить на светлую тему",

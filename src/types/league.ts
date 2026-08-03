@@ -45,6 +45,7 @@ export interface LeagueSlot {
 }
 
 export interface SelectedLeague {
+  id: string
   title: string
   fullTitle?: string
   teams: TeamProbability[]

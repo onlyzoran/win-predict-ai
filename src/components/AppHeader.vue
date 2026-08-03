@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useColorMode } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
 import { locale, localeLabels, locales, setLocale, type Locale } from '@/i18n'
@@ -37,7 +38,9 @@ function onLocaleChange(value: string | number | bigint | Record<string, unknown
   <header
     class="fixed top-0 left-0 right-0 z-50 px-6 h-14 flex items-center justify-between border-b bg-background/80 backdrop-blur-md shadow-sm"
   >
-    <span class="font-semibold text-foreground">{{ t('app.title') }}</span>
+    <RouterLink to="/" class="font-semibold text-foreground hover:opacity-80">
+      {{ t('app.title') }}
+    </RouterLink>
     <div class="flex items-center gap-1">
       <DropdownMenu :modal="false">
         <DropdownMenuTrigger

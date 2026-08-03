@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import type { Component } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { RouterLink } from 'vue-router'
 import { IconBallFootball, IconPin, IconPinnedOff } from '@tabler/icons-vue'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -39,8 +40,9 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   pin: [id: string, pinned: boolean]
-  details: [
+  preview: [
     league: {
+      id: string
       title: string
       fullTitle?: string
       teams: TeamProbability[]
@@ -64,8 +66,9 @@ const displayTitle = computed(() => {
   return `${baseTitle} ${season.value}`
 })
 
-function handleDetailsClick() {
-  emit('details', {
+function handlePreviewClick() {
+  emit('preview', {
+    id: props.id,
     title: props.title,
     fullTitle: props.fullTitle,
     teams: props.teams,
@@ -103,7 +106,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
 </script>
 
 <template>
-  <Card class="w-full sm:max-w-xs sm:min-w-3xs p-0">
+  <Card class="w-full p-0 sm:max-w-xs sm:min-w-3xs">
     <CardHeader class="px-4 pt-4">
       <div class="flex justify-between">
         <CardTitle class="flex items-center gap-2">
@@ -111,9 +114,9 @@ const visibleTeams = computed<TeamProbability[]>(() => {
           {{ displayTitle }}
         </CardTitle>
         <button
-          @click="handlePinClick"
-          class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           :aria-label="pinned ? t('pin.remove') : t('pin.add')"
+          @click="handlePinClick"
         >
           <IconPin v-if="!pinned" />
           <IconPinnedOff v-else />
@@ -132,9 +135,14 @@ const visibleTeams = computed<TeamProbability[]>(() => {
         <Separator v-if="index < visibleTeams.length - 1" />
       </div>
     </CardContent>
-    <CardFooter class="px-4 pb-4">
-      <Button variant="outline" class="w-full cursor-pointer" @click="handleDetailsClick">
-        {{ t('team.details') }}
+    <CardFooter class="flex gap-2 px-4 pb-4">
+      <Button variant="outline" class="flex-1 cursor-pointer" @click="handlePreviewClick">
+        {{ t('team.preview') }}
+      </Button>
+      <Button as-child class="flex-1 cursor-pointer">
+        <RouterLink :to="{ name: 'tournament', params: { id } }">
+          {{ t('team.details') }}
+        </RouterLink>
       </Button>
     </CardFooter>
   </Card>
