@@ -77,4 +77,16 @@ describe('TeamProbabilityList', () => {
       pinned: true,
     })
   })
+
+  it('shows season years in the title from start and end dates', () => {
+    const wrapper = mountList({
+      title: 'UCL 26/27',
+      startDate: '2026-09-15',
+      endDate: '2027-05-30',
+    })
+
+    expect(wrapper.text()).toContain('UCL 26/27')
+    expect(wrapper.text()).not.toContain('Season')
+    expect(wrapper.text()).not.toContain('2026')
+  })
 })

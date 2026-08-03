@@ -38,7 +38,11 @@ export function formatDate(date: string, locale: string) {
   })
 }
 
-export function formatSeason(startDate: string, endDate: string) {
+export function formatSeason(
+  startDate: string,
+  endDate: string,
+  options?: { short?: boolean },
+) {
   if (!startDate || !endDate) {
     return ''
   }
@@ -50,11 +54,14 @@ export function formatSeason(startDate: string, endDate: string) {
     return ''
   }
 
+  const formatYear = (year: number) =>
+    options?.short ? String(year).slice(-2) : String(year)
+
   if (startYear === endYear) {
-    return String(startYear)
+    return formatYear(startYear)
   }
 
-  return `${startYear}/${endYear}`
+  return `${formatYear(startYear)}/${formatYear(endYear)}`
 }
 
 export function formatPercent(value: number) {

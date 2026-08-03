@@ -80,5 +80,10 @@ describe('formatSeason', () => {
   it('formats a same-year season as a single year', () => {
     expect(formatSeason('2027-04-08', '2027-04-11')).toBe('2027')
   })
+
+  it('formats short years when requested', () => {
+    expect(formatSeason('2026-09-15', '2027-05-30', { short: true })).toBe('26/27')
+    expect(formatSeason('2027-04-08', '2027-04-11', { short: true })).toBe('27')
+  })
 })
 

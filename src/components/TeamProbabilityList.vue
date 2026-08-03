@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import type { TeamProbability } from '@/types/league'
-import { formatPercent } from '@/lib/utils'
+import { formatPercent, formatSeason } from '@/lib/utils'
 
 const { t } = useI18n()
 
@@ -52,6 +52,17 @@ const emit = defineEmits<{
     },
   ]
 }>()
+
+const season = computed(() => formatSeason(props.startDate, props.endDate, { short: true }))
+
+const displayTitle = computed(() => {
+  if (!season.value) {
+    return props.title
+  }
+
+  const baseTitle = props.title.replace(/\s+(?:\d{4}|\d{2})(?:\/(?:\d{4}|\d{2}))?$/, '')
+  return `${baseTitle} ${season.value}`
+})
 
 function handleDetailsClick() {
   emit('details', {
@@ -97,7 +108,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
       <div class="flex justify-between">
         <CardTitle class="flex items-center gap-2">
           <component :is="icon" class="size-4" />
-          {{ title }}
+          {{ displayTitle }}
         </CardTitle>
         <button
           @click="handlePinClick"
