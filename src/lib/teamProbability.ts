@@ -2,15 +2,16 @@ import type { TeamProbability } from '@/types/league'
 
 export const TOP_TEAMS_COUNT = 5
 
+// cool violet, aligned with zinc/theme hue ~270
 export const CHART_COLORS = [
-  'var(--chart-1)',
-  'var(--chart-2)',
-  'var(--chart-3)',
-  'var(--chart-4)',
-  'var(--chart-5)',
+  'oklch(0.78 0.12 270)',
+  'oklch(0.68 0.13 270)',
+  'oklch(0.58 0.14 270)',
+  'oklch(0.48 0.13 270)',
+  'oklch(0.40 0.11 270)',
 ] as const
 
-export const OTHERS_CHART_COLOR = 'var(--muted-foreground)'
+export const OTHERS_CHART_COLOR = 'oklch(0.32 0.06 270)'
 
 export function getTeamChartColor(index: number, topN = TOP_TEAMS_COUNT): string | undefined {
   if (index < 0 || index >= topN) {

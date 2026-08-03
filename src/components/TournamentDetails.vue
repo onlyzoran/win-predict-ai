@@ -8,7 +8,6 @@ import { Separator } from '@/components/ui/separator'
 import WinProbabilityPieChart from '@/components/WinProbabilityPieChart.vue'
 import type { TeamProbability } from '@/types/league'
 import { locale } from '@/i18n'
-import { getTeamChartColor } from '@/lib/teamProbability'
 import { formatDate, formatPercent, formatSeason } from '@/lib/utils'
 
 withDefaults(
@@ -33,10 +32,6 @@ withDefaults(
 )
 
 const { t } = useI18n()
-
-function teamColor(index: number) {
-  return getTeamChartColor(index)
-}
 </script>
 
 <template>
@@ -61,24 +56,14 @@ function teamColor(index: number) {
       class="mt-6"
       :class="
         showChart
-          ? 'grid items-start gap-6 md:grid-cols-[minmax(0,240px)_minmax(0,1fr)] lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)]'
+          ? 'grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,240px)] lg:grid-cols-[minmax(0,1fr)_minmax(0,280px)]'
           : undefined
       "
     >
-      <WinProbabilityPieChart v-if="showChart" :teams="teams" class="md:sticky md:top-20" />
-
-      <div :class="showChart ? undefined : 'mt-4'">
+      <div>
         <div v-for="(team, index) in teams" :key="team.id">
           <div class="flex items-center justify-between gap-3 py-2">
-            <span class="flex min-w-0 items-center gap-2 font-medium">
-              <span
-                v-if="showChart && teamColor(index)"
-                class="size-2.5 shrink-0 rounded-xs"
-                :style="{ backgroundColor: teamColor(index) }"
-                aria-hidden="true"
-              />
-              <span class="truncate">{{ team.name }}</span>
-            </span>
+            <span class="truncate font-medium">{{ team.name }}</span>
             <Badge variant="secondary" class="shrink-0">
               {{ formatPercent(team.winProbability) }}
             </Badge>
@@ -86,6 +71,8 @@ function teamColor(index: number) {
           <Separator v-if="index < teams.length - 1" />
         </div>
       </div>
+
+      <WinProbabilityPieChart v-if="showChart" :teams="teams" class="md:sticky md:top-20" />
     </div>
   </div>
 </template>

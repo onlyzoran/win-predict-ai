@@ -14,6 +14,7 @@ import {
   TOP_TEAMS_COUNT,
 } from '@/lib/teamProbability'
 import WinProbabilityPieTooltip from '@/components/WinProbabilityPieTooltip.vue'
+import { formatPercent } from '@/lib/utils'
 
 interface PieSlice {
   key: string
@@ -71,12 +72,28 @@ const tooltipTriggers = {
 </script>
 
 <template>
-  <div data-testid="win-probability-pie" class="w-full">
+  <div data-testid="win-probability-pie" class="w-full space-y-4">
     <ChartContainer :config="chartConfig" class="mx-auto aspect-square max-h-[260px] w-full">
       <VisSingleContainer :data="slices" :margin="{ top: 4, bottom: 4 }">
-        <VisDonut :value="valueAccessor" :color="colorAccessor" :arc-width="0" />
+        <VisDonut :value="valueAccessor" :color="colorAccessor" :arc-width="28" />
         <ChartTooltip :triggers="tooltipTriggers" />
       </VisSingleContainer>
     </ChartContainer>
+
+    <ul class="grid gap-2 text-sm">
+      <li v-for="slice in slices" :key="slice.key" class="flex items-center justify-between gap-3">
+        <span class="flex min-w-0 items-center gap-2">
+          <span
+            class="size-2.5 shrink-0 rounded-xs"
+            :style="{ backgroundColor: slice.fill }"
+            aria-hidden="true"
+          />
+          <span class="truncate font-medium">{{ slice.name }}</span>
+        </span>
+        <span class="shrink-0 text-muted-foreground tabular-nums">
+          {{ formatPercent(slice.winProbability) }}
+        </span>
+      </li>
+    </ul>
   </div>
 </template>
