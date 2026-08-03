@@ -1,6 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
+import { createMemoryHistory, createRouter } from 'vue-router'
 import App from '../App.vue'
+import HomeView from '@/views/HomeView.vue'
+import TournamentView from '@/views/TournamentView.vue'
 import { i18n } from '@/i18n'
 
 const manifest = [
@@ -50,7 +53,7 @@ function errorResponse(status = 500) {
 }
 
 function mockFetchByFile(handlers: Record<string, () => unknown>) {
-  return vi.fn(async (input: RequestInfo | URL) => {
+  return vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async (input) => {
     const url = String(input)
     for (const [file, handler] of Object.entries(handlers)) {
       if (url.endsWith(file)) {
@@ -61,10 +64,20 @@ function mockFetchByFile(handlers: Record<string, () => unknown>) {
   })
 }
 
-function mountApp() {
+async function mountApp(initialPath = '/') {
+  const router = createRouter({
+    history: createMemoryHistory(),
+    routes: [
+      { path: '/', name: 'home', component: HomeView },
+      { path: '/tournament/:id', name: 'tournament', component: TournamentView },
+    ],
+  })
+  await router.push(initialPath)
+  await router.isReady()
+
   return mount(App, {
     global: {
-      plugins: [i18n],
+      plugins: [i18n, router],
     },
   })
 }
@@ -79,9 +92,9 @@ describe('App', () => {
   })
 
   it('mounts and renders the app title', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse([])))
+    vi.stubGlobal('fetch', vi.fn<() => Promise<unknown>>().mockResolvedValue(jsonResponse([])))
 
-    const wrapper = mountApp()
+    const wrapper = await mountApp()
     await flushPromises()
 
     expect(wrapper.text()).toContain('Win Predict AI')
@@ -97,7 +110,7 @@ describe('App', () => {
       }),
     )
 
-    const wrapper = mountApp()
+    const wrapper = await mountApp()
     await flushPromises()
 
     expect(wrapper.text()).toContain('Premier League')
@@ -107,9 +120,9 @@ describe('App', () => {
   })
 
   it('shows an error when the manifest fails to load', async () => {
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(errorResponse(503)))
+    vi.stubGlobal('fetch', vi.fn<() => Promise<unknown>>().mockResolvedValue(errorResponse(503)))
 
-    const wrapper = mountApp()
+    const wrapper = await mountApp()
     await flushPromises()
 
     expect(wrapper.text()).toContain('Could not load data')
@@ -127,7 +140,7 @@ describe('App', () => {
     )
 
     try {
-      const wrapper = mountApp()
+      const wrapper = await mountApp()
       await flushPromises()
       await vi.runAllTimersAsync()
       await flushPromises()
@@ -157,7 +170,7 @@ describe('App', () => {
     )
 
     try {
-      const wrapper = mountApp()
+      const wrapper = await mountApp()
       await flushPromises()
       await vi.runAllTimersAsync()
       await flushPromises()
@@ -177,5 +190,37 @@ describe('App', () => {
     } finally {
       vi.useRealTimers()
     }
+  })
+
+  it('opens the tournament page for a league id', async () => {
+    vi.stubGlobal(
+      'fetch',
+      mockFetchByFile({
+        'leagues.json': () => jsonResponse(manifest),
+        'epl.json': () => jsonResponse(eplTeams),
+      }),
+    )
+
+    const wrapper = await mountApp('/tournament/epl')
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Premier League')
+    expect(wrapper.text()).toContain('Arsenal')
+    expect(wrapper.text()).toContain('Chelsea')
+    expect(wrapper.text()).toContain('Back')
+  })
+
+  it('shows not found when the tournament id is unknown', async () => {
+    vi.stubGlobal(
+      'fetch',
+      mockFetchByFile({
+        'leagues.json': () => jsonResponse(manifest),
+      }),
+    )
+
+    const wrapper = await mountApp('/tournament/missing')
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Tournament not found')
   })
 })

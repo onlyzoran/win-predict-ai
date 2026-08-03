@@ -3,9 +3,12 @@
     "title": "Win Predict AI"
   },
   "team": {
+    "preview": "Aperçu",
     "details": "Détails",
     "others": "Autres ({count})",
-    "season": "Saison"
+    "season": "Saison",
+    "back": "Retour",
+    "notFound": "Tournoi introuvable"
   },
   "theme": {
     "switchToLight": "Passer en mode clair",
