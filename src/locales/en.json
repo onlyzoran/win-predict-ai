@@ -9,6 +9,7 @@
     "season": "Season",
     "daysUntilStart": "in {n} day | in {n} days",
     "daysUntilEnd": "{n} day left | {n} days left",
+    "daysSinceStart": "ongoing for {n} day | ongoing for {n} days",
     "started": "Started",
     "ended": "Ended",
     "back": "Back",

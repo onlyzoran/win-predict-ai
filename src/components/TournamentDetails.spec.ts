@@ -78,6 +78,15 @@ describe('TournamentDetails', () => {
     expect(text).toContain('(302 days left)')
   })
 
+  it('renders how long the tournament has been ongoing when in progress', () => {
+    vi.setSystemTime(new Date('2026-09-10T12:00:00Z'))
+    const wrapper = mountDetails()
+    const text = wrapper.text()
+
+    expect(text).toContain('(ongoing for 20 days)')
+    expect(text).toContain('(262 days left)')
+  })
+
   it('renders started and ended labels when dates have passed', () => {
     vi.setSystemTime(new Date('2027-06-01T12:00:00Z'))
     const wrapper = mountDetails()

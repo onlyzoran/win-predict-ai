@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { formatDate, formatPercent, formatSeason, getDaysUntil, getTournamentProgress } from './utils'
+import { formatDate, formatPercent, formatSeason, getDaysSince, getDaysUntil, getTournamentProgress } from './utils'
 
 describe('getTournamentProgress', () => {
   beforeEach(() => {
@@ -63,6 +63,34 @@ describe('getDaysUntil', () => {
   it('returns 0 after the target date', () => {
     vi.setSystemTime(new Date('2026-08-22T12:00:00Z'))
     expect(getDaysUntil('2026-08-21')).toBe(0)
+  })
+})
+
+describe('getDaysSince', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('returns null when the date is missing or invalid', () => {
+    expect(getDaysSince('')).toBeNull()
+    expect(getDaysSince('not-a-date')).toBeNull()
+  })
+
+  it('returns 0 before and on the target date', () => {
+    vi.setSystemTime(new Date('2026-08-20T12:00:00Z'))
+    expect(getDaysSince('2026-08-21')).toBe(0)
+
+    vi.setSystemTime(new Date('2026-08-21T12:00:00Z'))
+    expect(getDaysSince('2026-08-21')).toBe(0)
+  })
+
+  it('returns the number of days since the target date', () => {
+    vi.setSystemTime(new Date('2026-09-10T12:00:00Z'))
+    expect(getDaysSince('2026-08-21')).toBe(20)
   })
 })
 

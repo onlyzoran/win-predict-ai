@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator'
 import WinProbabilityPieChart from '@/components/WinProbabilityPieChart.vue'
 import type { TeamProbability } from '@/types/league'
 import { locale } from '@/i18n'
-import { formatDate, formatPercent, formatSeason, getDaysUntil } from '@/lib/utils'
+import { formatDate, formatPercent, formatSeason, getDaysSince, getDaysUntil } from '@/lib/utils'
 
 const props = withDefaults(
   defineProps<{
@@ -37,6 +37,23 @@ const { t } = useI18n()
 
 const daysUntilStart = computed(() => getDaysUntil(startDate.value))
 const daysUntilEnd = computed(() => getDaysUntil(endDate.value))
+const daysSinceStart = computed(() => getDaysSince(startDate.value))
+
+const startCountdownLabel = computed(() => {
+  if (daysUntilStart.value === null) {
+    return null
+  }
+
+  if (daysUntilStart.value > 0) {
+    return t('team.daysUntilStart', daysUntilStart.value)
+  }
+
+  if (daysUntilEnd.value !== null && daysUntilEnd.value > 0 && (daysSinceStart.value ?? 0) > 0) {
+    return t('team.daysSinceStart', daysSinceStart.value!)
+  }
+
+  return t('team.started')
+})
 </script>
 
 <template>
@@ -54,11 +71,7 @@ const daysUntilEnd = computed(() => getDaysUntil(endDate.value))
       <div class="flex items-center justify-between text-xs text-muted-foreground">
         <span>
           {{ formatDate(startDate, locale) }}
-          <template v-if="daysUntilStart !== null">
-            ({{
-              daysUntilStart === 0 ? t('team.started') : t('team.daysUntilStart', daysUntilStart)
-            }})
-          </template>
+          <template v-if="startCountdownLabel !== null"> ({{ startCountdownLabel }})</template>
         </span>
         <span>
           {{ formatDate(endDate, locale) }}

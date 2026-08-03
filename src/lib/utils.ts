@@ -44,6 +44,22 @@ export function getDaysUntil(date: string): number | null {
   return Math.max(0, targetDay - nowDay)
 }
 
+export function getDaysSince(date: string): number | null {
+  if (!date) {
+    return null
+  }
+
+  const target = new Date(date)
+  if (Number.isNaN(target.getTime())) {
+    return null
+  }
+
+  const targetDay = Math.floor(target.getTime() / MS_PER_DAY)
+  const nowDay = Math.floor(Date.now() / MS_PER_DAY)
+
+  return Math.max(0, nowDay - targetDay)
+}
+
 export function formatDate(date: string, locale: string) {
   if (!date) {
     return ''
