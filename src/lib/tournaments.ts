@@ -46,7 +46,12 @@ export function filterSlots<T extends FilterableSlot>(
   })
 }
 
-export function compareSlots(a: FilterableSlot, b: FilterableSlot, sortMode: SortMode, locale: string) {
+export function compareSlots(
+  a: FilterableSlot,
+  b: FilterableSlot,
+  sortMode: SortMode,
+  locale: string,
+) {
   if (sortMode === 'name') {
     if (!a.league && !b.league) return 0
     if (!a.league) return 1
@@ -88,7 +93,11 @@ export function sortSlotsWithPinned<T extends FilterableSlot>(
   return [...pinned, ...unpinned]
 }
 
-export function togglePinned(pinnedIds: string[], id: string, isCurrentlyPinned: boolean): string[] {
+export function togglePinned(
+  pinnedIds: string[],
+  id: string,
+  isCurrentlyPinned: boolean,
+): string[] {
   if (isCurrentlyPinned) {
     return pinnedIds.filter((tournamentId) => tournamentId !== id)
   }
