@@ -95,4 +95,33 @@ describe('TournamentDetails', () => {
     expect(text).toContain('(Started)')
     expect(text).toContain('(Ended)')
   })
+
+  it('renders standings columns when teams include wins standings', () => {
+    const wrapper = mountDetails({
+      title: 'MLB',
+      teams: [
+        {
+          id: '1',
+          name: 'Milwaukee Brewers',
+          winProbability: 18,
+          standings: {
+            group: 'National League',
+            playoffSeed: 1,
+            played: 111,
+            wins: 69,
+            losses: 42,
+            winPercent: 0.6216216,
+          },
+        },
+      ],
+    })
+    const text = wrapper.text()
+
+    expect(text).toContain('Conf')
+    expect(text).toContain('NL')
+    expect(text).toContain('111')
+    expect(text).toContain('69–42')
+    expect(text).toContain('.622')
+    expect(text).toContain('18%')
+  })
 })

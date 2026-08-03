@@ -15,6 +15,15 @@
     "back": "Back",
     "notFound": "Tournament not found"
   },
+  "standings": {
+    "team": "Team",
+    "conf": "Conf",
+    "pos": "Pos",
+    "gp": "GP",
+    "record": "W–L",
+    "pct": "PCT",
+    "winChance": "Win %"
+  },
   "theme": {
     "switchToLight": "Switch to light mode",
     "switchToDark": "Switch to dark mode"

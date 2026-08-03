@@ -18,10 +18,41 @@ export interface LeagueManifest {
   popularPriority: number
 }
 
+export interface StandingRow {
+  team: string
+  played?: number
+  wins?: number
+  losses?: number
+  winPercent?: number
+  playoffSeed?: number
+  group: string
+  points?: number
+  draws?: number
+  rank?: number
+  sourceRank?: number
+}
+
+export interface LeagueHistorySnapshot {
+  leagueId: string
+  date: string
+  metric: string
+  standings: StandingRow[]
+}
+
+export interface TeamStandings {
+  group: string
+  playoffSeed?: number
+  played?: number
+  wins: number
+  losses: number
+  winPercent: number
+}
+
 export interface TeamProbability {
   id: string
   name: string
   winProbability: number
+  standings?: TeamStandings
 }
 
 export interface League {

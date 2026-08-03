@@ -20,7 +20,7 @@ function goBack() {
 </script>
 
 <template>
-  <main class="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 py-6 pt-20">
+  <main class="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6 pt-20">
     <Button variant="ghost" size="sm" class="mb-4 w-fit cursor-pointer gap-1.5" @click="goBack">
       <IconArrowLeft class="size-4" />
       {{ t('team.back') }}

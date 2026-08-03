@@ -15,6 +15,15 @@
     "back": "Назад",
     "notFound": "Турнир не найден"
   },
+  "standings": {
+    "team": "Команда",
+    "conf": "Конф",
+    "pos": "Поз",
+    "gp": "И",
+    "record": "В–П",
+    "pct": "PCT",
+    "winChance": "Шанс"
+  },
   "theme": {
     "switchToLight": "Переключить на светлую тему",
     "switchToDark": "Переключить на тёмную тему"
