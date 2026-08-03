@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import { i18n } from '@/i18n'
@@ -47,6 +47,15 @@ function mountDetails(props: Record<string, unknown> = {}) {
 }
 
 describe('TournamentDetails', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-08-01T12:00:00Z'))
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   it('does not render pie chart by default', () => {
     const wrapper = mountDetails()
 
@@ -59,5 +68,31 @@ describe('TournamentDetails', () => {
 
     expect(wrapper.find('[data-testid="win-probability-pie"]').exists()).toBe(true)
     expect(wrapper.text()).toContain('Team F')
+  })
+
+  it('renders days remaining until start and end in parentheses', () => {
+    const wrapper = mountDetails()
+    const text = wrapper.text()
+
+    expect(text).toContain('(in 20 days)')
+    expect(text).toContain('(302 days left)')
+  })
+
+  it('renders how long the tournament has been ongoing when in progress', () => {
+    vi.setSystemTime(new Date('2026-09-10T12:00:00Z'))
+    const wrapper = mountDetails()
+    const text = wrapper.text()
+
+    expect(text).toContain('(ongoing for 20 days)')
+    expect(text).toContain('(262 days left)')
+  })
+
+  it('renders started and ended labels when dates have passed', () => {
+    vi.setSystemTime(new Date('2027-06-01T12:00:00Z'))
+    const wrapper = mountDetails()
+    const text = wrapper.text()
+
+    expect(text).toContain('(Started)')
+    expect(text).toContain('(Ended)')
   })
 })
