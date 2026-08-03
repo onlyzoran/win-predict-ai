@@ -14,11 +14,17 @@ import type { Sport } from '@/types/sport'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { Progress } from '@/components/ui/progress'
 import { locale } from '@/i18n'
 import { filterSlots, sortSlotsWithPinned } from '@/lib/tournaments'
-import { formatDate, formatPercent } from '@/lib/utils'
+import { formatDate, formatPercent, formatSeason } from '@/lib/utils'
 
 const { slots, isManifestLoading, loadError, failedCount, isRetrying, retryFailed } = useLeagues()
 const { pinnedTournaments, handlePin } = usePinnedTournaments()
@@ -91,6 +97,7 @@ function handleDetails(league: SelectedLeague) {
             v-if="slot.league"
             :id="slot.league.id"
             :title="slot.league.title"
+            :full-title="slot.league.fullTitle"
             :teams="slot.league.teams"
             :progress="slot.league.progress"
             :start-date="slot.league.startDate"
@@ -110,8 +117,12 @@ function handleDetails(league: SelectedLeague) {
         <SheetHeader>
           <SheetTitle class="flex items-center gap-2">
             <component :is="selectedLeague?.icon ?? IconBallFootball" class="size-4" />
-            {{ selectedLeague?.title }}
+            {{ selectedLeague?.fullTitle || selectedLeague?.title }}
           </SheetTitle>
+          <SheetDescription v-if="selectedLeague">
+            {{ $t('team.season') }}
+            {{ formatSeason(selectedLeague.startDate, selectedLeague.endDate) }}
+          </SheetDescription>
           <Progress :model-value="selectedLeague?.progress ?? 0" class="mt-2 h-1" />
           <div class="flex items-center justify-between text-xs text-muted-foreground">
             <span>{{ formatDate(selectedLeague?.startDate ?? '', locale) }}</span>

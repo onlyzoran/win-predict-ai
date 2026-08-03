@@ -56,6 +56,7 @@ function toLeague(config: LeagueManifest, entries: LeagueEntry[]): League {
   return {
     id: config.id,
     title: config.title,
+    fullTitle: config.fullTitle,
     teams: toTeams(entries),
     sport: config.sport,
     icon: sportIcons[config.sport],

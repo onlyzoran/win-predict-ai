@@ -38,6 +38,25 @@ export function formatDate(date: string, locale: string) {
   })
 }
 
+export function formatSeason(startDate: string, endDate: string) {
+  if (!startDate || !endDate) {
+    return ''
+  }
+
+  const startYear = new Date(startDate).getFullYear()
+  const endYear = new Date(endDate).getFullYear()
+
+  if (Number.isNaN(startYear) || Number.isNaN(endYear)) {
+    return ''
+  }
+
+  if (startYear === endYear) {
+    return String(startYear)
+  }
+
+  return `${startYear}/${endYear}`
+}
+
 export function formatPercent(value: number) {
   if (value <= 0) {
     return '0%'

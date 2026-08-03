@@ -4,7 +4,8 @@
   },
   "team": {
     "details": "Details",
-    "others": "Others ({count})"
+    "others": "Others ({count})",
+    "season": "Season"
   },
   "theme": {
     "switchToLight": "Switch to light mode",

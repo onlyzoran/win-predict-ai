@@ -9,6 +9,7 @@ export interface LeagueEntry {
 export interface LeagueManifest {
   id: string
   title: string
+  fullTitle?: string
   sport: Sport
   file: string
   startDate: string
@@ -26,6 +27,7 @@ export interface TeamProbability {
 export interface League {
   id: string
   title: string
+  fullTitle?: string
   teams: TeamProbability[]
   sport: Sport
   icon: Component
@@ -44,6 +46,7 @@ export interface LeagueSlot {
 
 export interface SelectedLeague {
   title: string
+  fullTitle?: string
   teams: TeamProbability[]
   progress: number
   startDate: string

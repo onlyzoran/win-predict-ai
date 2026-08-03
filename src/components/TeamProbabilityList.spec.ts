@@ -56,6 +56,7 @@ describe('TeamProbabilityList', () => {
 
   it('emits details with league payload', async () => {
     const wrapper = mountList({
+      fullTitle: 'England Premier League',
       progress: 42,
       startDate: '2026-01-01',
       endDate: '2026-12-31',
@@ -68,6 +69,7 @@ describe('TeamProbabilityList', () => {
 
     expect(wrapper.emitted('details')?.[0]?.[0]).toMatchObject({
       title: 'Premier League',
+      fullTitle: 'England Premier League',
       teams,
       progress: 42,
       startDate: '2026-01-01',

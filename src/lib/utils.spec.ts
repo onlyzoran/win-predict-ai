@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { formatDate, formatPercent, getTournamentProgress } from './utils'
+import { formatDate, formatPercent, formatSeason, getTournamentProgress } from './utils'
 
 describe('getTournamentProgress', () => {
   beforeEach(() => {
@@ -64,6 +64,21 @@ describe('formatDate', () => {
     expect(formatDate('2026-03-15', 'en')).toMatch(/Mar/)
     expect(formatDate('2026-03-15', 'en')).toMatch(/15/)
     expect(formatDate('2026-03-15', 'en')).toMatch(/2026/)
+  })
+})
+
+describe('formatSeason', () => {
+  it('returns an empty string when dates are missing', () => {
+    expect(formatSeason('', '2027-05-30')).toBe('')
+    expect(formatSeason('2026-09-15', '')).toBe('')
+  })
+
+  it('formats a cross-year season', () => {
+    expect(formatSeason('2026-09-15', '2027-05-30')).toBe('2026/2027')
+  })
+
+  it('formats a same-year season as a single year', () => {
+    expect(formatSeason('2027-04-08', '2027-04-11')).toBe('2027')
   })
 })
 

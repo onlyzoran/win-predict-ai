@@ -4,7 +4,8 @@
   },
   "team": {
     "details": "Подробнее",
-    "others": "Остальные ({count})"
+    "others": "Остальные ({count})",
+    "season": "Сезон"
   },
   "theme": {
     "switchToLight": "Переключить на светлую тему",

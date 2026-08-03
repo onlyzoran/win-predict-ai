@@ -19,6 +19,7 @@ const props = withDefaults(
   defineProps<{
     id: string
     title: string
+    fullTitle?: string
     teams: TeamProbability[]
     progress?: number
     startDate?: string
@@ -27,6 +28,7 @@ const props = withDefaults(
     pinned: boolean
   }>(),
   {
+    fullTitle: undefined,
     progress: 0,
     startDate: '',
     endDate: '',
@@ -40,6 +42,7 @@ const emit = defineEmits<{
   details: [
     league: {
       title: string
+      fullTitle?: string
       teams: TeamProbability[]
       progress: number
       startDate: string
@@ -53,6 +56,7 @@ const emit = defineEmits<{
 function handleDetailsClick() {
   emit('details', {
     title: props.title,
+    fullTitle: props.fullTitle,
     teams: props.teams,
     progress: props.progress,
     startDate: props.startDate,
