@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
+import { computed, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { IconBallFootball } from '@tabler/icons-vue'
 import { Badge } from '@/components/ui/badge'
@@ -8,9 +9,9 @@ import { Separator } from '@/components/ui/separator'
 import WinProbabilityPieChart from '@/components/WinProbabilityPieChart.vue'
 import type { TeamProbability } from '@/types/league'
 import { locale } from '@/i18n'
-import { formatDate, formatPercent, formatSeason } from '@/lib/utils'
+import { formatDate, formatPercent, formatSeason, getDaysSince, getDaysUntil } from '@/lib/utils'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     title: string
     fullTitle?: string
@@ -31,7 +32,28 @@ withDefaults(
   },
 )
 
+const { startDate, endDate } = toRefs(props)
 const { t } = useI18n()
+
+const daysUntilStart = computed(() => getDaysUntil(startDate.value))
+const daysUntilEnd = computed(() => getDaysUntil(endDate.value))
+const daysSinceStart = computed(() => getDaysSince(startDate.value))
+
+const startCountdownLabel = computed(() => {
+  if (daysUntilStart.value === null) {
+    return null
+  }
+
+  if (daysUntilStart.value > 0) {
+    return t('team.daysUntilStart', daysUntilStart.value)
+  }
+
+  if (daysUntilEnd.value !== null && daysUntilEnd.value > 0 && (daysSinceStart.value ?? 0) > 0) {
+    return t('team.daysSinceStart', daysSinceStart.value!)
+  }
+
+  return t('team.started')
+})
 </script>
 
 <template>
@@ -47,8 +69,16 @@ const { t } = useI18n()
       </p>
       <Progress :model-value="progress" class="h-1" />
       <div class="flex items-center justify-between text-xs text-muted-foreground">
-        <span>{{ formatDate(startDate, locale) }}</span>
-        <span>{{ formatDate(endDate, locale) }}</span>
+        <span>
+          {{ formatDate(startDate, locale) }}
+          <template v-if="startCountdownLabel !== null"> ({{ startCountdownLabel }})</template>
+        </span>
+        <span>
+          {{ formatDate(endDate, locale) }}
+          <template v-if="daysUntilEnd !== null">
+            ({{ daysUntilEnd === 0 ? t('team.ended') : t('team.daysUntilEnd', daysUntilEnd) }})
+          </template>
+        </span>
       </div>
     </div>
 
