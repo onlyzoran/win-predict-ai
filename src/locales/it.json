@@ -15,6 +15,15 @@
     "back": "Indietro",
     "notFound": "Torneo non trovato"
   },
+  "standings": {
+    "team": "Squadra",
+    "conf": "Conf",
+    "pos": "Pos",
+    "gp": "G",
+    "record": "V–P",
+    "pct": "PCT",
+    "winChance": "Chance"
+  },
   "theme": {
     "switchToLight": "Passa alla modalità chiara",
     "switchToDark": "Passa alla modalità scura"

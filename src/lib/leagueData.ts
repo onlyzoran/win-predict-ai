@@ -1,5 +1,13 @@
-import type { League, LeagueEntry, LeagueManifest, LeagueSlot } from '@/types/league'
+import type {
+  League,
+  LeagueEntry,
+  LeagueHistorySnapshot,
+  LeagueManifest,
+  LeagueSlot,
+  StandingRow,
+} from '@/types/league'
 import { sportIcons } from '@/lib/sportIcons'
+import { mergeStandings } from '@/lib/standings'
 import { getTournamentProgress } from '@/lib/utils'
 
 const DATA_BASE_URL = (
@@ -39,6 +47,15 @@ export async function fetchJsonWithRetry<T>(
   throw lastError
 }
 
+export async function fetchStandingsOptional(leagueId: string): Promise<StandingRow[] | null> {
+  try {
+    const snapshot = await fetchJson<LeagueHistorySnapshot>(`history/${leagueId}/latest.json`)
+    return snapshot.standings
+  } catch {
+    return null
+  }
+}
+
 export function toTeams(entries: LeagueEntry[]) {
   return entries
     .map((entry, index) => ({
@@ -49,12 +66,18 @@ export function toTeams(entries: LeagueEntry[]) {
     .sort((a, b) => b.winProbability - a.winProbability)
 }
 
-export function toLeague(config: LeagueManifest, entries: LeagueEntry[]): League {
+export function toLeague(
+  config: LeagueManifest,
+  entries: LeagueEntry[],
+  standings?: StandingRow[] | null,
+): League {
+  const teams = standings ? mergeStandings(toTeams(entries), standings) : toTeams(entries)
+
   return {
     id: config.id,
     title: config.title,
     fullTitle: config.fullTitle,
-    teams: toTeams(entries),
+    teams,
     sport: config.sport,
     icon: sportIcons[config.sport],
     progress: getTournamentProgress(config.startDate, config.endDate, config.endDateTo),
@@ -79,6 +102,9 @@ export async function loadLeagueById(id: string): Promise<League | null> {
   if (!config) {
     return null
   }
-  const entries = await fetchJsonWithRetry<LeagueEntry[]>(config.file)
-  return toLeague(config, entries)
+  const [entries, standings] = await Promise.all([
+    fetchJsonWithRetry<LeagueEntry[]>(config.file),
+    fetchStandingsOptional(config.id),
+  ])
+  return toLeague(config, entries, standings)
 }
