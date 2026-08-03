@@ -43,11 +43,7 @@ function handlePreview(league: SelectedLeague) {
 
 <template>
   <div class="flex flex-1 flex-col">
-    <SportFilter
-      v-model="selectedSport"
-      v-model:search="searchQuery"
-      v-model:sort="sortMode"
-    />
+    <SportFilter v-model="selectedSport" v-model:search="searchQuery" v-model:sort="sortMode" />
     <main class="flex flex-1 flex-wrap items-start justify-start gap-4 px-4 py-4">
       <template v-if="isManifestLoading">
         <span class="sr-only">{{ $t('data.loading') }}</span>

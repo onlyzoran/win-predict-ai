@@ -10,11 +10,10 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
 import type { TeamProbability } from '@/types/league'
+import { aggregateTopTeams, TOP_TEAMS_COUNT } from '@/lib/teamProbability'
 import { formatPercent, formatSeason } from '@/lib/utils'
 
 const { t } = useI18n()
-
-const TOP_TEAMS_COUNT = 5
 
 const props = withDefaults(
   defineProps<{
@@ -85,23 +84,12 @@ function handlePinClick() {
 }
 
 const visibleTeams = computed<TeamProbability[]>(() => {
-  const topTeams = props.teams.slice(0, TOP_TEAMS_COUNT)
-  const restTeams = props.teams.slice(TOP_TEAMS_COUNT)
+  const restCount = Math.max(0, props.teams.length - TOP_TEAMS_COUNT)
 
-  if (restTeams.length === 0) {
-    return topTeams
-  }
-
-  const restProbability = restTeams.reduce((sum, restTeam) => sum + restTeam.winProbability, 0)
-
-  return [
-    ...topTeams,
-    {
-      id: 'rest',
-      name: t('team.others', { count: restTeams.length }),
-      winProbability: restProbability,
-    },
-  ]
+  return aggregateTopTeams(props.teams, {
+    topN: TOP_TEAMS_COUNT,
+    othersLabel: t('team.others', { count: restCount }),
+  })
 })
 </script>
 

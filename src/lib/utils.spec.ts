@@ -86,4 +86,3 @@ describe('formatSeason', () => {
     expect(formatSeason('2027-04-08', '2027-04-11', { short: true })).toBe('27')
   })
 })
-

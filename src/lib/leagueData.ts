@@ -1,9 +1,4 @@
-import type {
-  League,
-  LeagueEntry,
-  LeagueManifest,
-  LeagueSlot,
-} from '@/types/league'
+import type { League, LeagueEntry, LeagueManifest, LeagueSlot } from '@/types/league'
 import { sportIcons } from '@/lib/sportIcons'
 import { getTournamentProgress } from '@/lib/utils'
 
