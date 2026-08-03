@@ -38,11 +38,7 @@ export function formatDate(date: string, locale: string) {
   })
 }
 
-export function formatSeason(
-  startDate: string,
-  endDate: string,
-  options?: { short?: boolean },
-) {
+export function formatSeason(startDate: string, endDate: string, options?: { short?: boolean }) {
   if (!startDate || !endDate) {
     return ''
   }
@@ -54,8 +50,7 @@ export function formatSeason(
     return ''
   }
 
-  const formatYear = (year: number) =>
-    options?.short ? String(year).slice(-2) : String(year)
+  const formatYear = (year: number) => (options?.short ? String(year).slice(-2) : String(year))
 
   if (startYear === endYear) {
     return formatYear(startYear)

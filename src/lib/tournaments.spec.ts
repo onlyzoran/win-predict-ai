@@ -99,9 +99,11 @@ describe('sortSlotsWithPinned', () => {
   ]
 
   it('keeps pinned tournaments first while sorting within groups', () => {
-    expect(
-      sortSlotsWithPinned(slots, ['c'], 'popular', 'en').map((s) => s.id),
-    ).toEqual(['c', 'a', 'b'])
+    expect(sortSlotsWithPinned(slots, ['c'], 'popular', 'en').map((s) => s.id)).toEqual([
+      'c',
+      'a',
+      'b',
+    ])
   })
 
   it('sorts by name', () => {
