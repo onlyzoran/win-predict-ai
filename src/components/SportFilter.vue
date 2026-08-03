@@ -72,7 +72,7 @@ function onSortChange(value: string | number | bigint | Record<string, unknown> 
         </Button>
       </div>
 
-      <div class="flex shrink-0 items-center gap-2">
+      <div class="hidden shrink-0 items-center gap-2 md:flex">
         <DropdownMenu :modal="false">
           <DropdownMenuTrigger as-child>
             <Button
@@ -99,15 +99,40 @@ function onSortChange(value: string | number | bigint | Record<string, unknown> 
         </DropdownMenu>
 
         <TournamentSearch
-          class="hidden w-48 shrink-0 md:block md:w-56"
+          class="w-48 shrink-0 md:w-56"
           :model-value="search"
           @update:model-value="emit('update:search', $event)"
         />
       </div>
     </div>
 
-    <div class="border-t px-4 py-2 md:hidden">
+    <div class="flex items-center gap-2 border-t px-4 py-2 md:hidden">
+      <DropdownMenu :modal="false">
+        <DropdownMenuTrigger as-child>
+          <Button
+            variant="ghost"
+            size="sm"
+            class="shrink-0 cursor-pointer"
+            :aria-label="t('sort.label')"
+          >
+            <IconArrowsSort class="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuRadioGroup :model-value="sort" @update:model-value="onSortChange">
+            <DropdownMenuRadioItem
+              v-for="option in sortOptions"
+              :key="option.id"
+              :value="option.id"
+            >
+              {{ option.label }}
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       <TournamentSearch
+        class="min-w-0 flex-1"
         :model-value="search"
         @update:model-value="emit('update:search', $event)"
       />
