@@ -7,6 +7,10 @@
     "details": "Détails",
     "others": "Autres ({count})",
     "season": "Saison",
+    "daysUntilStart": "dans {n} jour | dans {n} jours",
+    "daysUntilEnd": "il reste {n} jour | il reste {n} jours",
+    "started": "Commencé",
+    "ended": "Terminé",
     "back": "Retour",
     "notFound": "Tournoi introuvable"
   },

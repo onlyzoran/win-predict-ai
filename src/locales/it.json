@@ -7,6 +7,10 @@
     "details": "Dettagli",
     "others": "Altri ({count})",
     "season": "Stagione",
+    "daysUntilStart": "tra {n} giorno | tra {n} giorni",
+    "daysUntilEnd": "manca {n} giorno | mancano {n} giorni",
+    "started": "Iniziato",
+    "ended": "Terminato",
     "back": "Indietro",
     "notFound": "Torneo non trovato"
   },

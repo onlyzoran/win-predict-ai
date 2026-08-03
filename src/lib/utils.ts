@@ -26,6 +26,24 @@ export function getTournamentProgress(startDate: string, endDate: string, endDat
   return ((now - start) / (end - start)) * 100
 }
 
+const MS_PER_DAY = 24 * 60 * 60 * 1000
+
+export function getDaysUntil(date: string): number | null {
+  if (!date) {
+    return null
+  }
+
+  const target = new Date(date)
+  if (Number.isNaN(target.getTime())) {
+    return null
+  }
+
+  const targetDay = Math.floor(target.getTime() / MS_PER_DAY)
+  const nowDay = Math.floor(Date.now() / MS_PER_DAY)
+
+  return Math.max(0, targetDay - nowDay)
+}
+
 export function formatDate(date: string, locale: string) {
   if (!date) {
     return ''
