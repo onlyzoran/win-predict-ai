@@ -44,7 +44,8 @@
     "hockey": "Хоккей",
     "baseball": "Бейсбол",
     "golf": "Гольф",
-    "politics": "Политика"
+    "politics": "Политика",
+    "motorsport": "Мотоспорт"
   },
   "data": {
     "loading": "Загрузка прогнозов…",

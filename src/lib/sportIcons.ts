@@ -4,6 +4,7 @@ import {
   IconBallBaseball,
   IconBallBasketball,
   IconBallFootball,
+  IconCar,
   IconFlag,
   IconGolf,
 } from '@tabler/icons-vue'
@@ -16,6 +17,7 @@ export const sportIcons: Record<Sport, Component> = {
   americanFootball: IconBallAmericanFootball,
   hockey: IconHockey,
   baseball: IconBallBaseball,
+  motorsport: IconCar,
   golf: IconGolf,
   politics: IconFlag,
 }
