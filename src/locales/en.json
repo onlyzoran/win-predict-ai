@@ -22,7 +22,8 @@
     "gp": "GP",
     "record": "W–L",
     "pct": "PCT",
-    "winChance": "Win %"
+    "winChance": "Win %",
+    "rankMovement": "Standings movement"
   },
   "theme": {
     "switchToLight": "Switch to light mode",

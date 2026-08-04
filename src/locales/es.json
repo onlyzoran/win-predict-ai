@@ -22,7 +22,8 @@
     "gp": "JJ",
     "record": "G–P",
     "pct": "PCT",
-    "winChance": "Prob."
+    "winChance": "Prob.",
+    "rankMovement": "Movimiento en la tabla"
   },
   "theme": {
     "switchToLight": "Cambiar a modo claro",

@@ -1,6 +1,7 @@
 import type {
   League,
   LeagueEntry,
+  LeagueHistoryDays,
   LeagueHistorySnapshot,
   LeagueManifest,
   LeagueSlot,
@@ -54,6 +55,23 @@ export async function fetchStandingsOptional(leagueId: string): Promise<Standing
   } catch {
     return null
   }
+}
+
+export async function fetchHistoryDaysOptional(
+  leagueId: string,
+): Promise<LeagueHistoryDays | null> {
+  try {
+    return await fetchJson<LeagueHistoryDays>(`history/${leagueId}/days.json`)
+  } catch {
+    return null
+  }
+}
+
+export async function fetchHistorySnapshot(
+  leagueId: string,
+  date: string,
+): Promise<LeagueHistorySnapshot> {
+  return fetchJson<LeagueHistorySnapshot>(`history/${leagueId}/${date}.json`)
 }
 
 export function toTeams(entries: LeagueEntry[]) {
