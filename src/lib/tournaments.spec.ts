@@ -42,7 +42,7 @@ describe('filterSlots', () => {
         endDate: '2026-06-01',
       },
     }),
-    slot({ id: 'pending', sport: 'hockey', league: null }),
+    slot({ id: 'pending', sport: 'hockey', sortTitle: 'Future Cup', league: null }),
   ]
 
   it('returns all slots when sport is all and search is empty', () => {
@@ -55,6 +55,10 @@ describe('filterSlots', () => {
 
   it('filters by tournament title', () => {
     expect(filterSlots(slots, 'all', 'premier').map((s) => s.id)).toEqual(['epl'])
+  })
+
+  it('filters unloaded tournaments by manifest title fallback', () => {
+    expect(filterSlots(slots, 'all', 'future').map((s) => s.id)).toEqual(['pending'])
   })
 
   it('filters by team name', () => {

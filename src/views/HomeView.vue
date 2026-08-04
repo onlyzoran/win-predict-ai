@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useStorage } from '@vueuse/core'
+import { computed, ref, watch } from 'vue'
+import { useIntersectionObserver, useStorage } from '@vueuse/core'
 import SportFilter from '@/components/SportFilter.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleton.vue'
@@ -15,12 +15,24 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { locale } from '@/i18n'
 import { filterSlots, sortSlotsWithPinned } from '@/lib/tournaments'
 
-const { slots, isManifestLoading, loadError, failedCount, isRetrying, retryFailed } = useLeagues()
+const {
+  slots,
+  isManifestLoading,
+  loadError,
+  initialBatchSize,
+  isLoadingMore,
+  failedCount,
+  isRetrying,
+  loadNextBatch,
+  retryFailed,
+} = useLeagues()
 const { pinnedTournaments, handlePin } = usePinnedTournaments()
 
 const selectedSport = ref<Sport | 'all'>('all')
 const searchQuery = ref('')
 const sortMode = useStorage<SortMode>('tournamentSort', 'popular')
+const visibleCount = ref(initialBatchSize)
+const loadMoreTrigger = ref<HTMLElement | null>(null)
 
 const filteredSlots = computed(() =>
   filterSlots(slots.value, selectedSport.value, searchQuery.value),
@@ -30,10 +42,56 @@ const sortedSlots = computed(() =>
   sortSlotsWithPinned(filteredSlots.value, pinnedTournaments.value, sortMode.value, locale.value),
 )
 
-const hasPendingSlots = computed(() => sortedSlots.value.some((slot) => !slot.league))
+const visibleSlots = computed(() => sortedSlots.value.slice(0, visibleCount.value))
+const hasPendingSlots = computed(() => visibleSlots.value.some((slot) => !slot.league))
+const hasMore = computed(() => sortedSlots.value.length > visibleCount.value)
 
 const isPreviewOpen = ref(false)
 const selectedLeague = ref<SelectedLeague | null>(null)
+
+watch(
+  () => visibleSlots.value.map((slot) => slot.id),
+  async (ids) => {
+    if (isManifestLoading.value || loadError.value || ids.length === 0) {
+      return
+    }
+
+    await loadNextBatch(ids)
+  },
+  { immediate: true },
+)
+
+watch([selectedSport, sortMode], () => {
+  visibleCount.value = initialBatchSize
+})
+
+watch(searchQuery, async (query) => {
+  visibleCount.value = initialBatchSize
+
+  if (!query.trim() || isManifestLoading.value || loadError.value) {
+    return
+  }
+
+  await loadNextBatch(slots.value.map((slot) => slot.id))
+})
+
+useIntersectionObserver(
+  loadMoreTrigger,
+  ([entry]) => {
+    if (
+      entry?.isIntersecting &&
+      hasMore.value &&
+      !isManifestLoading.value &&
+      !loadError.value &&
+      !isLoadingMore.value
+    ) {
+      visibleCount.value += initialBatchSize
+    }
+  },
+  {
+    rootMargin: '200px 0px',
+  },
+)
 
 function handlePreview(league: SelectedLeague) {
   selectedLeague.value = league
@@ -71,12 +129,12 @@ function handlePreview(league: SelectedLeague) {
           </Button>
         </div>
         <p
-          v-if="sortedSlots.length === 0"
+          v-if="visibleSlots.length === 0"
           class="w-full py-8 text-center text-sm text-muted-foreground"
         >
           {{ $t('search.empty') }}
         </p>
-        <template v-for="slot in sortedSlots" :key="slot.id">
+        <template v-for="slot in visibleSlots" :key="slot.id">
           <TeamProbabilityList
             v-if="slot.league"
             :id="slot.league.id"
@@ -93,6 +151,12 @@ function handlePreview(league: SelectedLeague) {
           />
           <TeamProbabilityListSkeleton v-else />
         </template>
+        <div
+          v-if="hasMore"
+          ref="loadMoreTrigger"
+          class="h-px w-full"
+          aria-hidden="true"
+        />
       </template>
     </main>
 
