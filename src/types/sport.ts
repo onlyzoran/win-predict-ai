@@ -4,5 +4,6 @@ export type Sport =
   | 'americanFootball'
   | 'hockey'
   | 'baseball'
+  | 'motorsport'
   | 'golf'
   | 'politics'
