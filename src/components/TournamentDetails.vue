@@ -2,7 +2,7 @@
 import type { Component } from 'vue'
 import { computed, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IconBallFootball } from '@tabler/icons-vue'
+import { IconBallFootball } from '@onlyzoran/win-predict-ai-icons'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'

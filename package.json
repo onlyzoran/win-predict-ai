@@ -16,6 +16,7 @@
     "format": "oxfmt src/"
   },
   "dependencies": {
+    "@onlyzoran/win-predict-ai-icons": "^0.2.0",
     "@tabler/icons-vue": "^3.46.0",
     "@tailwindcss/vite": "^4.3.3",
     "@unovis/ts": "^1.6.7",
