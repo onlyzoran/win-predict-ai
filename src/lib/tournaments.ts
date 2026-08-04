@@ -36,12 +36,13 @@ export function filterSlots<T extends FilterableSlot>(
       return true
     }
 
-    if (!slot.league) {
-      return false
+    const title = slot.league?.title ?? slot.sortTitle
+    if (title?.toLowerCase().includes(query)) {
+      return true
     }
 
-    if (slot.league.title.toLowerCase().includes(query)) {
-      return true
+    if (!slot.league) {
+      return false
     }
 
     return slot.league.teams.some((team) => team.name.toLowerCase().includes(query))
