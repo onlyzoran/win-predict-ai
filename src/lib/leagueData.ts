@@ -110,6 +110,8 @@ export function toSlot(config: LeagueManifest): LeagueSlot {
     id: config.id,
     sport: config.sport,
     popularPriority: config.popularPriority,
+    sortTitle: config.title,
+    sortEndDate: config.endDateTo || config.endDate,
     league: null,
   }
 }

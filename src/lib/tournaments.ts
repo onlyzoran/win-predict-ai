@@ -15,6 +15,8 @@ export interface FilterableSlot {
   id: string
   sport: Sport
   popularPriority: number
+  sortTitle?: string
+  sortEndDate?: string
   league: FilterableLeague | null
 }
 
@@ -53,17 +55,21 @@ export function compareSlots(
   locale: string,
 ) {
   if (sortMode === 'name') {
-    if (!a.league && !b.league) return 0
-    if (!a.league) return 1
-    if (!b.league) return -1
-    return a.league.title.localeCompare(b.league.title, locale)
+    const aTitle = a.league?.title ?? a.sortTitle
+    const bTitle = b.league?.title ?? b.sortTitle
+    if (!aTitle && !bTitle) return 0
+    if (!aTitle) return 1
+    if (!bTitle) return -1
+    return aTitle.localeCompare(bTitle, locale)
   }
 
   if (sortMode === 'endingSoon') {
-    if (!a.league && !b.league) return 0
-    if (!a.league) return 1
-    if (!b.league) return -1
-    return a.league.endDate.localeCompare(b.league.endDate)
+    const aEndDate = a.league?.endDate ?? a.sortEndDate
+    const bEndDate = b.league?.endDate ?? b.sortEndDate
+    if (!aEndDate && !bEndDate) return 0
+    if (!aEndDate) return 1
+    if (!bEndDate) return -1
+    return aEndDate.localeCompare(bEndDate)
   }
 
   return a.popularPriority - b.popularPriority

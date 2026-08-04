@@ -11,6 +11,8 @@ function slot(partial: Partial<FilterableSlot> & Pick<FilterableSlot, 'id'>): Fi
   return {
     sport: 'football',
     popularPriority: 1,
+    sortTitle: 'Premier League',
+    sortEndDate: '2026-05-01',
     league: {
       title: 'Premier League',
       teams: [{ name: 'Arsenal' }, { name: 'Chelsea' }],
@@ -120,11 +122,34 @@ describe('sortSlotsWithPinned', () => {
 })
 
 describe('compareSlots', () => {
-  it('puts unloaded leagues after loaded ones for name and endingSoon', () => {
-    const loaded = slot({ id: 'loaded' })
-    const pending = slot({ id: 'pending', league: null })
+  it('sorts unloaded leagues by manifest title and end date fallback', () => {
+    const alphaPending = slot({
+      id: 'alpha',
+      sortTitle: 'Alpha Cup',
+      sortEndDate: '2026-07-01',
+      league: null,
+    })
+    const bravoPending = slot({
+      id: 'bravo',
+      sortTitle: 'Bravo Cup',
+      sortEndDate: '2026-08-01',
+      league: null,
+    })
 
-    expect(compareSlots(pending, loaded, 'name', 'en')).toBe(1)
-    expect(compareSlots(loaded, pending, 'endingSoon', 'en')).toBe(-1)
+    expect(compareSlots(alphaPending, bravoPending, 'name', 'en')).toBeLessThan(0)
+    expect(compareSlots(alphaPending, bravoPending, 'endingSoon', 'en')).toBeLessThan(0)
+  })
+
+  it('uses loaded league data when it becomes available', () => {
+    const loaded = slot({ id: 'loaded', league: { title: 'Loaded Cup', teams: [], endDate: '2026-06-01' } })
+    const pending = slot({
+      id: 'pending',
+      sortTitle: 'Zeta Cup',
+      sortEndDate: '2026-09-01',
+      league: null,
+    })
+
+    expect(compareSlots(loaded, pending, 'name', 'en')).toBeLessThan(0)
+    expect(compareSlots(loaded, pending, 'endingSoon', 'en')).toBeLessThan(0)
   })
 })
