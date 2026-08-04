@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { IconMoon, IconSun } from '@tabler/icons-vue'
 import { RouterLink } from 'vue-router'
 import { useColorMode } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'
@@ -60,40 +61,25 @@ function onLocaleChange(value: string | number | bigint | Record<string, unknown
       </DropdownMenu>
       <button
         @click="toggleTheme"
-        class="rounded-md p-2 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+        class="relative inline-flex h-7 w-14 shrink-0 items-center rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        :class="
+          isDark
+            ? 'border-zinc-700 bg-zinc-800 text-zinc-100'
+            : 'border-zinc-300 bg-zinc-100 text-zinc-500'
+        "
         :aria-label="isDark ? t('theme.switchToLight') : t('theme.switchToDark')"
       >
-        <svg
-          v-if="isDark"
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+        <span
+          class="pointer-events-none absolute top-1/2 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-full transition-[left,right,background-color,color,box-shadow] duration-200"
+          :class="
+            isDark
+              ? 'right-0.5 left-auto bg-zinc-950 text-white shadow-[0_2px_10px_rgba(0,0,0,0.35)]'
+              : 'left-0.5 right-auto bg-white text-zinc-500 shadow-[0_2px_8px_rgba(15,23,42,0.18)]'
+          "
         >
-          <circle cx="12" cy="12" r="4" />
-          <path
-            d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-          />
-        </svg>
-        <svg
-          v-else
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-        </svg>
+          <IconMoon v-if="isDark" class="size-3.5" stroke-width="2" />
+          <IconSun v-else class="size-3.5" stroke-width="2" />
+        </span>
       </button>
       <span class="mx-1 h-5 w-px bg-border" aria-hidden="true" />
       <a
