@@ -124,4 +124,40 @@ describe('TournamentDetails', () => {
     expect(text).toContain('.622')
     expect(text).toContain('18%')
   })
+
+  it('hides date countdown labels and extra standings columns in compact mode', () => {
+    const wrapper = mountDetails({
+      compact: true,
+      title: 'MLB',
+      teams: [
+        {
+          id: '1',
+          name: 'Milwaukee Brewers',
+          winProbability: 18,
+          standings: {
+            group: 'National League',
+            playoffSeed: 1,
+            played: 111,
+            wins: 69,
+            losses: 42,
+            winPercent: 0.6216216,
+          },
+        },
+      ],
+    })
+    const text = wrapper.text()
+
+    expect(text).not.toContain('(in 20 days)')
+    expect(text).not.toContain('(302 days left)')
+    expect(text).toContain('Team')
+    expect(text).toContain('W–L')
+    expect(text).toContain('Win %')
+    expect(text).not.toContain('Conf')
+    expect(text).not.toContain('Pos')
+    expect(text).not.toContain('GP')
+    expect(text).not.toContain('PCT')
+    expect(text).toContain('69–42')
+    expect(text).toContain('18%')
+    expect(text).not.toContain('.622')
+  })
 })

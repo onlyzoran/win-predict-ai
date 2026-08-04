@@ -27,6 +27,7 @@ const props = withDefaults(
     endDate?: string
     icon?: Component
     showChart?: boolean
+    compact?: boolean
   }>(),
   {
     fullTitle: undefined,
@@ -35,6 +36,7 @@ const props = withDefaults(
     endDate: '',
     icon: () => IconBallFootball,
     showChart: false,
+    compact: false,
   },
 )
 
@@ -78,11 +80,13 @@ const startCountdownLabel = computed(() => {
       <div class="flex items-center justify-between text-xs text-muted-foreground">
         <span>
           {{ formatDate(startDate, locale) }}
-          <template v-if="startCountdownLabel !== null"> ({{ startCountdownLabel }})</template>
+          <template v-if="!compact && startCountdownLabel !== null">
+            ({{ startCountdownLabel }})
+          </template>
         </span>
         <span>
           {{ formatDate(endDate, locale) }}
-          <template v-if="daysUntilEnd !== null">
+          <template v-if="!compact && daysUntilEnd !== null">
             ({{ daysUntilEnd === 0 ? t('team.ended') : t('team.daysUntilEnd', daysUntilEnd) }})
           </template>
         </span>
@@ -98,30 +102,37 @@ const startCountdownLabel = computed(() => {
       "
     >
       <div v-if="showStandings" class="min-w-0 overflow-x-auto">
-        <table class="w-full table-fixed border-collapse text-sm md:min-w-[34rem]">
+        <table
+          class="w-full table-fixed border-collapse text-sm"
+          :class="compact ? undefined : 'md:min-w-[34rem]'"
+        >
           <colgroup>
             <col />
-            <col class="hidden w-11 md:table-column" />
-            <col class="hidden w-9 md:table-column" />
-            <col class="hidden w-10 md:table-column" />
+            <template v-if="!compact">
+              <col class="hidden w-11 md:table-column" />
+              <col class="hidden w-9 md:table-column" />
+              <col class="hidden w-10 md:table-column" />
+            </template>
             <col class="w-16 md:w-14" />
-            <col class="hidden w-11 md:table-column" />
+            <col v-if="!compact" class="hidden w-11 md:table-column" />
             <col class="w-16 md:w-14" />
           </colgroup>
           <thead>
             <tr class="text-xs font-medium text-muted-foreground">
               <th class="pb-2 pr-3 text-left font-medium">{{ t('standings.team') }}</th>
-              <th class="hidden pb-2 text-center font-medium md:table-cell">
-                {{ t('standings.conf') }}
-              </th>
-              <th class="hidden pb-2 text-center font-medium md:table-cell">
-                {{ t('standings.pos') }}
-              </th>
-              <th class="hidden pb-2 text-center font-medium md:table-cell">
-                {{ t('standings.gp') }}
-              </th>
+              <template v-if="!compact">
+                <th class="hidden pb-2 text-center font-medium md:table-cell">
+                  {{ t('standings.conf') }}
+                </th>
+                <th class="hidden pb-2 text-center font-medium md:table-cell">
+                  {{ t('standings.pos') }}
+                </th>
+                <th class="hidden pb-2 text-center font-medium md:table-cell">
+                  {{ t('standings.gp') }}
+                </th>
+              </template>
               <th class="pb-2 text-center font-medium">{{ t('standings.record') }}</th>
-              <th class="hidden pb-2 text-center font-medium md:table-cell">
+              <th v-if="!compact" class="hidden pb-2 text-center font-medium md:table-cell">
                 {{ t('standings.pct') }}
               </th>
               <th class="pb-2 text-center font-medium">{{ t('standings.winChance') }}</th>
@@ -135,22 +146,27 @@ const startCountdownLabel = computed(() => {
               :class="index < teams.length - 1 ? 'border-b' : undefined"
             >
               <td class="truncate py-2 pr-3 font-medium">{{ team.name }}</td>
-              <td class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell">
-                {{ team.standings ? abbreviateGroup(team.standings.group) : '—' }}
-              </td>
-              <td class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell">
-                {{ team.standings?.playoffSeed || '—' }}
-              </td>
-              <td class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell">
-                {{ team.standings?.played ?? '—' }}
-              </td>
+              <template v-if="!compact">
+                <td class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell">
+                  {{ team.standings ? abbreviateGroup(team.standings.group) : '—' }}
+                </td>
+                <td class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell">
+                  {{ team.standings?.playoffSeed || '—' }}
+                </td>
+                <td class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell">
+                  {{ team.standings?.played ?? '—' }}
+                </td>
+              </template>
               <td class="py-2 text-center tabular-nums text-muted-foreground">
                 <template v-if="team.standings">
                   {{ formatRecord(team.standings.wins, team.standings.losses) }}
                 </template>
                 <template v-else>—</template>
               </td>
-              <td class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell">
+              <td
+                v-if="!compact"
+                class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell"
+              >
                 {{ team.standings ? formatWinPercent(team.standings.winPercent) : '—' }}
               </td>
               <td class="py-2">

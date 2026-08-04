@@ -112,6 +112,7 @@ function handlePreview(league: SelectedLeague) {
             :start-date="selectedLeague.startDate"
             :end-date="selectedLeague.endDate"
             :icon="selectedLeague.icon"
+            compact
           />
         </div>
       </SheetContent>
