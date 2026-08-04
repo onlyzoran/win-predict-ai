@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { computed } from 'vue'
-import { IconArrowsSort } from '@tabler/icons-vue'
+import { IconArrowsSort } from '@onlyzoran/win-predict-ai-icons'
 import { useI18n } from 'vue-i18n'
 import TournamentSearch from '@/components/TournamentSearch.vue'
 import { Button } from '@/components/ui/button'

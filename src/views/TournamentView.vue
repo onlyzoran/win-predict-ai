@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { IconArrowLeft } from '@tabler/icons-vue'
+import { IconArrowLeft } from '@onlyzoran/win-predict-ai-icons'
 import TournamentDetails from '@/components/TournamentDetails.vue'
 import { Button } from '@/components/ui/button'
 import { useLeague } from '@/composables/useLeague'

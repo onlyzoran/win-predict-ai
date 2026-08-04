@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DropdownMenuRadioItemEmits, DropdownMenuRadioItemProps } from 'reka-ui'
 import type { HTMLAttributes } from 'vue'
-import { IconCircleFilled } from '@tabler/icons-vue'
+import { IconCircleFilled } from '@onlyzoran/win-predict-ai-icons'
 import { reactiveOmit } from '@vueuse/core'
 import { DropdownMenuItemIndicator, DropdownMenuRadioItem, useForwardPropsEmits } from 'reka-ui'
 import { cn } from '@/lib/utils'

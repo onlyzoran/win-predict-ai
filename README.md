@@ -43,7 +43,7 @@ VITE_DATA_BASE_URL=http://localhost:4173/data
 
 Node `^22.18.0` or `>=24.12.0`.
 
-Sport icons come from [`@onlyzoran/win-predict-ai-icons`](https://github.com/onlyzoran/win-predict-ai-icons) (GitHub Packages). Even though the package is public, npm needs a GitHub PAT with `read:packages`:
+Icons come from [`@onlyzoran/win-predict-ai-icons`](https://github.com/onlyzoran/win-predict-ai-icons) (GitHub Packages). Even though the package is public, npm needs a GitHub PAT with `read:packages`:
 
 ```sh
 export NODE_AUTH_TOKEN=ghp_xxxxxxxx

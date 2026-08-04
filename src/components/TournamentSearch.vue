@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from 'vue'
-import { IconSearch, IconX } from '@tabler/icons-vue'
+import { IconSearch, IconX } from '@onlyzoran/win-predict-ai-icons'
 import { useI18n } from 'vue-i18n'
 import { cn } from '@/lib/utils'
 
