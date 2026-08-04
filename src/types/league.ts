@@ -39,6 +39,14 @@ export interface LeagueHistorySnapshot {
   standings: StandingRow[]
 }
 
+export interface LeagueHistoryDays {
+  leagueId: string
+  count: number
+  first: string
+  last: string
+  days: string[]
+}
+
 export interface TeamStandings {
   group: string
   playoffSeed?: number

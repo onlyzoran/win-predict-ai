@@ -22,7 +22,8 @@
     "gp": "Sp",
     "record": "S–N",
     "pct": "PCT",
-    "winChance": "Chance"
+    "winChance": "Chance",
+    "rankMovement": "Tabellenbewegung"
   },
   "theme": {
     "switchToLight": "Zum hellen Modus wechseln",

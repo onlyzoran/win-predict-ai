@@ -20,19 +20,22 @@ function goBack() {
 </script>
 
 <template>
-  <main class="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6 pt-20">
-    <Button variant="ghost" size="sm" class="mb-4 w-fit cursor-pointer gap-1.5" @click="goBack">
-      <IconArrowLeft class="size-4" />
-      {{ t('team.back') }}
-    </Button>
+  <main class="mx-auto flex w-full flex-1 flex-col px-4 py-6 pt-20">
+    <div class="mx-auto w-full max-w-5xl">
+      <Button variant="ghost" size="sm" class="mb-4 w-fit cursor-pointer gap-1.5" @click="goBack">
+        <IconArrowLeft class="size-4" />
+        {{ t('team.back') }}
+      </Button>
 
-    <p v-if="isLoading" class="text-sm text-muted-foreground">{{ t('data.loading') }}</p>
-    <p v-else-if="loadError" class="text-sm text-destructive">
-      {{ t('data.error') }}: {{ loadError }}
-    </p>
-    <p v-else-if="notFound" class="text-sm text-muted-foreground">{{ t('team.notFound') }}</p>
+      <p v-if="isLoading" class="text-sm text-muted-foreground">{{ t('data.loading') }}</p>
+      <p v-else-if="loadError" class="text-sm text-destructive">
+        {{ t('data.error') }}: {{ loadError }}
+      </p>
+      <p v-else-if="notFound" class="text-sm text-muted-foreground">{{ t('team.notFound') }}</p>
+    </div>
+
     <TournamentDetails
-      v-else-if="league"
+      v-if="league && !isLoading && !loadError && !notFound"
       :title="league.title"
       :full-title="league.fullTitle"
       :teams="league.teams"
@@ -40,6 +43,7 @@ function goBack() {
       :start-date="league.startDate"
       :end-date="league.endDate"
       :icon="league.icon"
+      :league-id="league.id"
       show-chart
     />
   </main>

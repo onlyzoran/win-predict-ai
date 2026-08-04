@@ -22,7 +22,8 @@
     "gp": "И",
     "record": "В–П",
     "pct": "PCT",
-    "winChance": "Шанс"
+    "winChance": "Шанс",
+    "rankMovement": "Движение в таблице"
   },
   "theme": {
     "switchToLight": "Переключить на светлую тему",
