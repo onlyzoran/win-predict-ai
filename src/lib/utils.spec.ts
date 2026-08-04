@@ -1,5 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { formatDate, formatPercent, formatSeason, getDaysSince, getDaysUntil, getTournamentProgress } from './utils'
+import {
+  formatDate,
+  formatPercent,
+  formatSeason,
+  getDaysSince,
+  getDaysUntil,
+  getTournamentProgress,
+} from './utils'
 
 describe('getTournamentProgress', () => {
   beforeEach(() => {

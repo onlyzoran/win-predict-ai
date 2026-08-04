@@ -22,7 +22,8 @@
     "gp": "MJ",
     "record": "V–D",
     "pct": "PCT",
-    "winChance": "Chance"
+    "winChance": "Chance",
+    "rankMovement": "Évolution du classement"
   },
   "theme": {
     "switchToLight": "Passer en mode clair",
