@@ -107,7 +107,8 @@ function onLocaleChange(value: string | number | bigint | Record<string, unknown
         href="https://onlyzoran.github.io/win-predict-ai-admin"
         target="_blank"
         rel="noreferrer"
-        class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        class="inline-flex items-center gap-1.5 rounded-md p-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:px-2 sm:py-1.5"
+        :aria-label="t('auth.login')"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -119,12 +120,13 @@ function onLocaleChange(value: string | number | bigint | Record<string, unknown
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
+          aria-hidden="true"
         >
           <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
           <polyline points="10 17 15 12 10 7" />
           <line x1="15" x2="3" y1="12" y2="12" />
         </svg>
-        <span>{{ t('auth.login') }}</span>
+        <span class="hidden sm:inline">{{ t('auth.login') }}</span>
       </a>
     </div>
   </header>
