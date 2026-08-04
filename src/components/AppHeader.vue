@@ -95,6 +95,30 @@ function onLocaleChange(value: string | number | bigint | Record<string, unknown
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
         </svg>
       </button>
+      <span class="mx-1 h-5 w-px bg-border" aria-hidden="true" />
+      <a
+        href="https://onlyzoran.github.io/win-predict-ai-admin"
+        target="_blank"
+        rel="noreferrer"
+        class="inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          <polyline points="10 17 15 12 10 7" />
+          <line x1="15" x2="3" y1="12" y2="12" />
+        </svg>
+        <span>{{ t('auth.login') }}</span>
+      </a>
     </div>
   </header>
 </template>

@@ -32,6 +32,9 @@
   "language": {
     "label": "Language"
   },
+  "auth": {
+    "login": "Log in"
+  },
   "pin": {
     "add": "Pin tournament",
     "remove": "Unpin tournament"

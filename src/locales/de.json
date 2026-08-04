@@ -32,6 +32,9 @@
   "language": {
     "label": "Sprache"
   },
+  "auth": {
+    "login": "Anmelden"
+  },
   "pin": {
     "add": "Turnier anheften",
     "remove": "Turnier lösen"
