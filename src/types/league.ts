@@ -80,6 +80,8 @@ export interface LeagueSlot {
   id: string
   sport: Sport
   popularPriority: number
+  sortTitle: string
+  sortEndDate: string
   league: League | null
 }
 
