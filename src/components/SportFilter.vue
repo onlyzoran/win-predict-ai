@@ -66,7 +66,7 @@ function onSortChange(value: string | number | bigint | Record<string, unknown> 
           @click="emit('update:modelValue', sport.id)"
         >
           <component :is="sport.icon" v-if="sport.icon" class="size-4" />
-          <span :class="sport.icon ? 'hidden min-[1250px]:inline' : undefined">{{
+          <span :class="sport.icon ? 'hidden min-[1300px]:inline' : undefined">{{
             sport.label
           }}</span>
         </Button>
