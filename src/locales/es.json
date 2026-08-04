@@ -32,6 +32,9 @@
   "language": {
     "label": "Idioma"
   },
+  "auth": {
+    "login": "Iniciar sesión"
+  },
   "pin": {
     "add": "Fijar torneo",
     "remove": "Desfijar torneo"

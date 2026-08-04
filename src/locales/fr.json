@@ -32,6 +32,9 @@
   "language": {
     "label": "Langue"
   },
+  "auth": {
+    "login": "Se connecter"
+  },
   "pin": {
     "add": "Épingler le tournoi",
     "remove": "Désépingler le tournoi"

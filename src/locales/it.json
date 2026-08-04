@@ -32,6 +32,9 @@
   "language": {
     "label": "Lingua"
   },
+  "auth": {
+    "login": "Accedi"
+  },
   "pin": {
     "add": "Fissa torneo",
     "remove": "Rimuovi fissaggio"
