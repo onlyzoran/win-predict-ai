@@ -63,3 +63,24 @@ A project [`.npmrc`](.npmrc) points the `@onlyzoran` scope at `npm.pkg.github.co
 | `npm run format` | Format `src/` with Oxfmt |
 
 The app is configured with `base: '/win-predict-ai/'` for GitHub Pages deployment (see [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
+
+## Versioning and changelog
+
+Releases are automated with [semantic-release](https://semantic-release.gitbook.io/) on every push to `main`. Major stays at `0`; each merge bumps **minor** or **patch** and updates [`CHANGELOG.md`](CHANGELOG.md).
+
+Use [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Commit | Version bump |
+| --- | --- |
+| `feat: …` | minor (`0.x.0`) |
+| `fix: …`, `chore: …`, `refactor: …`, other types | patch (`0.0.x`) |
+| Breaking change (`BREAKING CHANGE:` / `feat!:`) | minor (while major is `0`) |
+
+Example: `feat: add standings chart` → `0.1.0`; `fix: correct date formatting` → `0.0.1`.
+
+The first release needs a baseline tag on `main` (once):
+
+```sh
+git tag v0.0.0
+git push origin v0.0.0
+```
