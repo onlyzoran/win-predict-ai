@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.34.5](https://github.com/onlyzoran/win-predict-ai/compare/v0.34.4...v0.34.5) (2026-08-05)
+
 All notable changes to this project will be documented in this file.
 
 ## [0.34.4](https://github.com/onlyzoran/win-predict-ai/compare/8b692ccc072b204811d8a34f28b56d8bc87fe81d...HEAD) (2026-08-05)
@@ -469,4 +471,3 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Chores
 
 * init ([2601d9b](https://github.com/onlyzoran/win-predict-ai/commit/2601d9b25fc1cf15bdddc2f50b1f0fa5aae24046))
-
