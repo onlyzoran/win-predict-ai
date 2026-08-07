@@ -25,6 +25,20 @@
     "winChance": "Chance",
     "rankMovement": "Movimento in classifica"
   },
+  "playoff": {
+    "title": "Proiezione playoff",
+    "subtitle": "Tabellone proiettato dalle probabilità di vincere la World Series",
+    "wildCard": "Wild Card",
+    "alds": "ALDS",
+    "nlds": "NLDS",
+    "alcs": "ALCS",
+    "nlcs": "NLCS",
+    "worldSeries": "World Series",
+    "winner": "Campione proiettato",
+    "americanLeague": "American League",
+    "nationalLeague": "National League",
+    "tbd": "TBD"
+  },
   "theme": {
     "switchToLight": "Passa alla modalità chiara",
     "switchToDark": "Passa alla modalità scura"

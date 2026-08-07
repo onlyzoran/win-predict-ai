@@ -266,4 +266,77 @@ describe('TournamentDetails', () => {
     expect(text).toContain('18%')
     expect(text).not.toContain('.622')
   })
+
+  it('renders playoff projection for MLB detail view with AL and NL teams', async () => {
+    const wrapper = mountDetails({
+      showChart: true,
+      title: 'MLB World Series',
+      teams: [
+        {
+          id: 'nyy',
+          name: 'New York Yankees',
+          winProbability: 12,
+          standings: {
+            group: 'American League',
+            wins: 64,
+            losses: 51,
+            winPercent: 0.557,
+          },
+        },
+        {
+          id: 'lad',
+          name: 'Los Angeles Dodgers',
+          winProbability: 31,
+          standings: {
+            group: 'National League',
+            wins: 69,
+            losses: 46,
+            winPercent: 0.6,
+          },
+        },
+      ],
+    })
+    await flushPromises()
+    const text = wrapper.text()
+
+    expect(text).toContain('Playoff projection')
+    expect(text).toContain('World Series')
+    expect(text).toContain('Projected champion')
+    expect(text).toContain('Los Angeles Dodgers')
+  })
+
+  it('does not render playoff projection in compact preview', async () => {
+    const wrapper = mountDetails({
+      compact: true,
+      showChart: true,
+      title: 'MLB World Series',
+      teams: [
+        {
+          id: 'nyy',
+          name: 'New York Yankees',
+          winProbability: 12,
+          standings: {
+            group: 'American League',
+            wins: 64,
+            losses: 51,
+            winPercent: 0.557,
+          },
+        },
+        {
+          id: 'lad',
+          name: 'Los Angeles Dodgers',
+          winProbability: 31,
+          standings: {
+            group: 'National League',
+            wins: 69,
+            losses: 46,
+            winPercent: 0.6,
+          },
+        },
+      ],
+    })
+    await flushPromises()
+
+    expect(wrapper.text()).not.toContain('Playoff projection')
+  })
 })

@@ -25,6 +25,20 @@
     "winChance": "Chance",
     "rankMovement": "Tabellenbewegung"
   },
+  "playoff": {
+    "title": "Playoff-Prognose",
+    "subtitle": "Bracket aus World-Series-Siegchancen abgeleitet",
+    "wildCard": "Wild Card",
+    "alds": "ALDS",
+    "nlds": "NLDS",
+    "alcs": "ALCS",
+    "nlcs": "NLCS",
+    "worldSeries": "World Series",
+    "winner": "Prognostizierter Champion",
+    "americanLeague": "American League",
+    "nationalLeague": "National League",
+    "tbd": "TBD"
+  },
   "theme": {
     "switchToLight": "Zum hellen Modus wechseln",
     "switchToDark": "Zum dunklen Modus wechseln"
