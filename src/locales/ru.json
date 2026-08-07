@@ -25,6 +25,20 @@
     "winChance": "Шанс",
     "rankMovement": "Движение в таблице"
   },
+  "playoff": {
+    "title": "Прогноз плей-офф",
+    "subtitle": "Сетка построена по шансам на победу в World Series",
+    "wildCard": "Wild Card",
+    "alds": "ALDS",
+    "nlds": "NLDS",
+    "alcs": "ALCS",
+    "nlcs": "NLCS",
+    "worldSeries": "World Series",
+    "winner": "Прогноз чемпиона",
+    "americanLeague": "American League",
+    "nationalLeague": "National League",
+    "tbd": "TBD"
+  },
   "theme": {
     "switchToLight": "Переключить на светлую тему",
     "switchToDark": "Переключить на тёмную тему"

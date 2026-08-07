@@ -21,7 +21,7 @@ function goBack() {
 
 <template>
   <main class="mx-auto flex w-full flex-1 flex-col px-4 py-6 pt-20">
-    <div class="mx-auto w-full max-w-5xl">
+    <div class="mx-auto w-full max-w-6xl">
       <Button variant="ghost" size="sm" class="mb-4 w-fit cursor-pointer gap-1.5" @click="goBack">
         <IconArrowLeft class="size-4" />
         {{ t('team.back') }}

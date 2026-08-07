@@ -6,11 +6,13 @@ import { IconBallFootball } from '@onlyzoran/win-predict-ai-icons'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
+import MlbPlayoffBracket from '@/components/MlbPlayoffBracket.vue'
 import StandingsRankChart from '@/components/StandingsRankChart.vue'
 import WinProbabilityPieChart from '@/components/WinProbabilityPieChart.vue'
 import { useLeagueHistoryRanks } from '@/composables/useLeagueHistoryRanks'
 import type { TeamProbability } from '@/types/league'
 import { locale } from '@/i18n'
+import { canBuildMlbBracket } from '@/lib/mlbPlayoffBracket'
 import { abbreviateGroup, formatRecord, formatWinPercent, hasWinsStandings } from '@/lib/standings'
 import { formatDate, formatPercent, formatSeason, getDaysSince, getDaysUntil } from '@/lib/utils'
 
@@ -51,6 +53,9 @@ const daysUntilStart = computed(() => getDaysUntil(startDate.value))
 const daysUntilEnd = computed(() => getDaysUntil(endDate.value))
 const daysSinceStart = computed(() => getDaysSince(startDate.value))
 const showStandings = computed(() => hasWinsStandings(teams.value))
+const showPlayoffBracket = computed(
+  () => !props.compact && props.showChart && canBuildMlbBracket(teams.value),
+)
 
 const startCountdownLabel = computed(() => {
   if (daysUntilStart.value === null) {
@@ -71,7 +76,7 @@ const startCountdownLabel = computed(() => {
 
 <template>
   <div class="w-full">
-    <div :class="showChart ? 'mx-auto w-full max-w-5xl' : undefined">
+    <div :class="showChart ? 'mx-auto w-full max-w-6xl' : undefined">
       <div class="space-y-2">
         <h2 class="flex items-center gap-2 text-lg font-semibold leading-none">
           <component :is="icon" class="size-4" />
@@ -207,6 +212,8 @@ const startCountdownLabel = computed(() => {
         <WinProbabilityPieChart v-if="showChart" :teams="teams" class="md:sticky md:top-20" />
       </div>
     </div>
+
+    <MlbPlayoffBracket v-if="showPlayoffBracket" :teams="teams" class="mt-8 w-full" />
 
     <StandingsRankChart v-if="rankSeries" :series="rankSeries" class="mt-8 w-full" />
   </div>

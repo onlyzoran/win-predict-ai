@@ -25,6 +25,20 @@
     "winChance": "Win %",
     "rankMovement": "Standings movement"
   },
+  "playoff": {
+    "title": "Playoff projection",
+    "subtitle": "Bracket projected from World Series win odds",
+    "wildCard": "Wild Card",
+    "alds": "ALDS",
+    "nlds": "NLDS",
+    "alcs": "ALCS",
+    "nlcs": "NLCS",
+    "worldSeries": "World Series",
+    "winner": "Projected champion",
+    "americanLeague": "American League",
+    "nationalLeague": "National League",
+    "tbd": "TBD"
+  },
   "theme": {
     "switchToLight": "Switch to light mode",
     "switchToDark": "Switch to dark mode"
