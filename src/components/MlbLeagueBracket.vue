@@ -4,13 +4,19 @@ import { useI18n } from 'vue-i18n'
 import MlbBracketMatchup from '@/components/MlbBracketMatchup.vue'
 import type { LeagueBracket } from '@/lib/mlbPlayoffBracket'
 
-const props = defineProps<{
-  bracket: LeagueBracket
-  /** Mirror column order for NL on wide desktop (CS ← DS ← WC) */
-  mirror?: boolean
-  /** Stretch columns across available width */
-  fluid?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    bracket: LeagueBracket
+    /** Mirror column order for NL on wide desktop (CS ← DS ← WC) */
+    mirror?: boolean
+    /** Vertical rounds (mobile) vs side-by-side columns (desktop) */
+    layout?: 'horizontal' | 'vertical'
+  }>(),
+  {
+    mirror: false,
+    layout: 'horizontal',
+  },
+)
 
 const { t } = useI18n()
 
@@ -21,7 +27,7 @@ const championshipLabel = computed(() =>
   props.bracket.league === 'al' ? t('playoff.alcs') : t('playoff.nlcs'),
 )
 
-const columns = computed(() => {
+const rounds = computed(() => {
   const cols = [
     {
       key: 'wc',
@@ -49,13 +55,32 @@ const columns = computed(() => {
     <h4 class="mb-3 text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground">
       {{ bracket.league === 'al' ? t('playoff.americanLeague') : t('playoff.nationalLeague') }}
     </h4>
-    <div class="flex gap-3 sm:gap-4" :class="fluid ? 'w-full' : 'w-max justify-center'">
-      <div
-        v-for="column in columns"
-        :key="column.key"
-        class="flex min-w-[9.5rem] flex-col"
-        :class="fluid ? 'min-w-0 flex-1' : 'w-[10.5rem] shrink-0'"
-      >
+
+    <!-- Mobile: rounds stacked full-width -->
+    <div v-if="layout === 'vertical'" class="space-y-5">
+      <div v-for="round in rounds" :key="round.key" class="space-y-2">
+        <p
+          class="text-center text-[11px] font-medium uppercase tracking-wide text-muted-foreground"
+        >
+          {{ round.label }}
+        </p>
+        <div
+          class="grid gap-2"
+          :class="round.matchups.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'"
+        >
+          <MlbBracketMatchup
+            v-for="matchup in round.matchups"
+            :key="matchup.id"
+            :matchup="matchup"
+            :tbd-label="t('playoff.tbd')"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop: side-by-side columns, fluid width -->
+    <div v-else class="flex w-full gap-3 sm:gap-4">
+      <div v-for="column in rounds" :key="column.key" class="flex min-w-0 flex-1 flex-col">
         <p
           class="mb-2 text-center text-[11px] font-medium uppercase tracking-wide text-muted-foreground"
         >

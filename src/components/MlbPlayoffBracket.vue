@@ -24,13 +24,11 @@ const bracket = computed(() => buildMlbPlayoffBracket(props.teams))
       <p class="text-sm text-muted-foreground">{{ t('playoff.subtitle') }}</p>
     </div>
 
-    <!-- Stacked until xl -->
+    <!-- Mobile / tablet: vertical league rounds, no horizontal scroll -->
     <div class="space-y-8 xl:hidden">
-      <div class="overflow-x-auto pb-1">
-        <MlbLeagueBracket :bracket="bracket.al" fluid class="min-w-[32rem]" />
-      </div>
+      <MlbLeagueBracket :bracket="bracket.al" layout="vertical" />
 
-      <div class="mx-auto w-full max-w-md rounded-lg border border-border bg-card px-4 py-5 shadow-sm">
+      <div class="w-full rounded-lg border border-border bg-card px-4 py-5 shadow-sm">
         <p
           class="mb-3 text-center text-xs font-semibold uppercase tracking-wide text-muted-foreground"
         >
@@ -50,14 +48,12 @@ const bracket = computed(() => buildMlbPlayoffBracket(props.teams))
         </div>
       </div>
 
-      <div class="overflow-x-auto pb-1">
-        <MlbLeagueBracket :bracket="bracket.nl" fluid class="min-w-[32rem]" />
-      </div>
+      <MlbLeagueBracket :bracket="bracket.nl" layout="vertical" />
     </div>
 
     <!-- Wide desktop: full-width mirrored AL | WS | NL -->
     <div class="hidden w-full items-stretch gap-4 xl:flex 2xl:gap-6">
-      <MlbLeagueBracket :bracket="bracket.al" fluid class="min-w-0 flex-[3]" />
+      <MlbLeagueBracket :bracket="bracket.al" class="min-w-0 flex-[3]" />
 
       <div
         class="flex w-[12rem] shrink-0 flex-col justify-center self-center rounded-lg border border-border bg-card px-3 py-5 shadow-sm 2xl:w-[14rem]"
@@ -81,7 +77,7 @@ const bracket = computed(() => buildMlbPlayoffBracket(props.teams))
         </div>
       </div>
 
-      <MlbLeagueBracket :bracket="bracket.nl" mirror fluid class="min-w-0 flex-[3]" />
+      <MlbLeagueBracket :bracket="bracket.nl" mirror class="min-w-0 flex-[3]" />
     </div>
   </section>
 </template>
