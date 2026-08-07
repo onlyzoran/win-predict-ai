@@ -15,6 +15,10 @@ const DATA_BASE_URL = (
   import.meta.env.VITE_DATA_BASE_URL ?? `${import.meta.env.BASE_URL}data`
 ).replace(/\/$/, '')
 
+const LEAGUES_URL = (
+  import.meta.env.VITE_LEAGUES_URL ?? `${DATA_BASE_URL}/leagues.json`
+).replace(/\/$/, '')
+
 const LEAGUE_FETCH_ATTEMPTS = 2
 const RETRY_DELAY_MS = 400
 
@@ -24,6 +28,16 @@ export async function fetchJson<T>(file: string): Promise<T> {
   })
   if (!res.ok) {
     throw new Error(`Failed to load ${file}: ${res.status}`)
+  }
+  return res.json() as Promise<T>
+}
+
+export async function fetchLeaguesManifest<T = LeagueManifest[]>(): Promise<T> {
+  const res = await fetch(LEAGUES_URL, {
+    headers: { Accept: 'application/json' },
+  })
+  if (!res.ok) {
+    throw new Error(`Failed to load leagues manifest: ${res.status}`)
   }
   return res.json() as Promise<T>
 }
@@ -117,7 +131,7 @@ export function toSlot(config: LeagueManifest): LeagueSlot {
 }
 
 export async function loadLeagueById(id: string): Promise<League | null> {
-  const configs = await fetchJson<LeagueManifest[]>('leagues.json')
+  const configs = await fetchLeaguesManifest<LeagueManifest[]>()
   const config = configs.find((entry) => entry.id === id)
   if (!config) {
     return null

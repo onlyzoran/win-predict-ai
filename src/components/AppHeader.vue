@@ -30,7 +30,7 @@ function onLocaleUpdate(code: string) {
     </template>
     <template #actions>
       <a
-        href="https://onlyzoran.github.io/win-predict-ai-admin"
+        href="http://202.71.15.138"
         target="_blank"
         rel="noreferrer"
         class="inline-flex items-center gap-1.5 rounded-md p-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:px-2 sm:py-1.5"

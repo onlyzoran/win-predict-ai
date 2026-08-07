@@ -1,7 +1,7 @@
 import { computed, onMounted, ref } from 'vue'
 import type { LeagueEntry, LeagueManifest, LeagueSlot } from '@/types/league'
 import {
-  fetchJson,
+  fetchLeaguesManifest,
   fetchJsonWithRetry,
   fetchStandingsOptional,
   toLeague,
@@ -91,7 +91,7 @@ export function useLeagues() {
 
   onMounted(async () => {
     try {
-      configs.value = await fetchJson<LeagueManifest[]>('leagues.json')
+      configs.value = await fetchLeaguesManifest<LeagueManifest[]>()
       slots.value = configs.value.map(toSlot)
       isManifestLoading.value = false
     } catch (error) {

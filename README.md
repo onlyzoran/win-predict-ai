@@ -1,41 +1,43 @@
 # Win Predict AI
 
-Vue 3 frontend that shows win probabilities for sports tournaments and other events. League data is **not** stored in this repo — it is loaded at runtime from a separate [data repository](https://github.com/onlyzoran/win-predict-ai-data) published on GitHub Pages.
+Vue 3 frontend that shows win probabilities for sports tournaments and other events.
 
-## Data repository
+## Data sources
 
-Predictions live in [`win-predict-ai-data`](https://github.com/onlyzoran/win-predict-ai-data) and are served from:
+1. **Tournament manifest** — from the admin API (`VITE_LEAGUES_URL`), backed by SQLite. Updates from the admin panel appear immediately (no GitHub Pages cache).
+2. **Prediction / history JSON** — from [`win-predict-ai-data`](https://github.com/onlyzoran/win-predict-ai-data) on GitHub Pages (`VITE_DATA_BASE_URL`).
+
+Default URLs:
 
 ```
-https://onlyzoran.github.io/win-predict-ai-data/data/
+VITE_LEAGUES_URL=http://202.71.15.138/api/leagues.json
+VITE_DATA_BASE_URL=https://onlyzoran.github.io/win-predict-ai-data/data
 ```
 
-On load the app fetches:
-
-1. **`leagues.json`** — manifest of leagues (id, title, sport, dates, path to the predictions file)
-2. **Per-league JSON** (e.g. `epl-26-27.json`) — array of `{ "team": string, "win_predict": number }`
-
-Update predictions by changing files in the data repo; this app picks them up without a redeploy (after the Pages CDN refreshes).
+On load the app fetches the manifest, then per-league files (e.g. `epl-26-27.json`) with `{ "team": string, "win_predict": number }`.
 
 ### Local / alternate data source
 
-If `VITE_DATA_BASE_URL` is unset, the app falls back to `{BASE_URL}data` (i.e. a `public/data` folder under the Vite base path). Point the env var at any origin that serves the same JSON layout.
+If `VITE_LEAGUES_URL` is unset, the manifest falls back to `{VITE_DATA_BASE_URL}/leagues.json`.  
+If `VITE_DATA_BASE_URL` is unset, prediction files fall back to `{BASE_URL}data`.
 
 ## Environment
 
 | Variable | Description |
 | --- | --- |
-| `VITE_DATA_BASE_URL` | Base URL for JSON data (no trailing slash). Defaults to `{BASE_URL}data` if omitted. |
+| `VITE_LEAGUES_URL` | Full URL of the tournament manifest JSON. |
+| `VITE_DATA_BASE_URL` | Base URL for prediction/history JSON (no trailing slash). |
 
 Committed defaults:
 
-- [`.env.development`](.env.development) — remote data repo (same as production)
-- [`.env.production`](.env.production) — remote data repo used for the GitHub Pages build
+- [`.env.development`](.env.development) — API manifest + Pages data
+- [`.env.production`](.env.production) — same for the GitHub Pages build
 
 Override locally with `.env.local` (gitignored), for example:
 
 ```sh
 # .env.local
+VITE_LEAGUES_URL=http://localhost:3000/api/leagues.json
 VITE_DATA_BASE_URL=http://localhost:4173/data
 ```
 
