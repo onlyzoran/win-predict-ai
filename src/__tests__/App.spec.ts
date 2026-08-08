@@ -98,6 +98,7 @@ describe('App', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain('Win Predict AI')
+    expect(wrapper.text()).toMatch(/v\d+\.\d+\.\d+/)
   })
 
   it('loads leagues and renders tournament cards', async () => {
