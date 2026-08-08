@@ -33,19 +33,53 @@ apt install -y nodejs
 
 …or build locally and upload only `dist/`.
 
-## Build and publish
+## Auto-deploy from `main` (GitHub Actions)
 
-On the VPS (or locally, then sync `dist/`):
+Workflow: [`.github/workflows/deploy-vps.yml`](../.github/workflows/deploy-vps.yml).
+
+On every push to `main` (and via **Actions → Deploy to VPS → Run workflow**) CI builds the app and `rsync`s `dist/` to the VPS.
+
+### One-time server setup
+
+1. Create a deploy key on your machine (or on the VPS):
+
+```sh
+ssh-keygen -t ed25519 -C "github-actions-win-predict-ai" -f ./deploy_key -N ""
+```
+
+2. Put the **public** key on the VPS (`~/.ssh/authorized_keys` for the deploy user). Ensure that user can write the web root:
+
+```sh
+# on VPS, as root
+mkdir -p /var/www/win-predict-ai/dist
+# if deploy user is not root:
+# chown -R deployuser:deployuser /var/www/win-predict-ai
+```
+
+3. In the GitHub repo: **Settings → Secrets and variables → Actions → New repository secret**. Add:
+
+| Secret | Example |
+| --- | --- |
+| `VPS_HOST` | `202.71.15.138` |
+| `VPS_USER` | `root` (or your deploy user) |
+| `VPS_PATH` | `/var/www/win-predict-ai/dist` |
+| `VPS_SSH_KEY` | full private key (`-----BEGIN OPENSSH PRIVATE KEY-----` …) |
+
+4. Push to `main` (or run the workflow manually) and check **Actions → Deploy to VPS**.
+
+The legacy **Deploy to GitHub Pages** workflow can stay Disabled; it is unrelated to VPS deploy.
+
+## Manual build and publish
+
+Fallback if Actions is unavailable. On your machine (or on the VPS):
 
 ```sh
 export NODE_AUTH_TOKEN=ghp_xxxxxxxx   # PAT with read:packages
 npm ci
 npm run build                          # output in dist/
 sudo mkdir -p /var/www/win-predict-ai
-sudo rsync -a --delete dist/ /var/www/win-predict-ai/dist/
+rsync -avz --delete dist/ root@202.71.15.138:/var/www/win-predict-ai/dist/
 ```
-
-(`cp -r dist/. /var/www/win-predict-ai/dist/` works too.)
 
 ## Nginx
 
@@ -77,5 +111,5 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ## Notes
 
-- GitHub Pages workflow (`.github/workflows/deploy.yml`) can stay enabled or be disabled later; it does not affect the VPS deploy. Do not remove it unless intentional.
+- Prefer auto-deploy via `deploy-vps.yml`. Keep the Pages workflow (`.github/workflows/deploy.yml`) Disabled unless you intentionally revive Pages hosting.
 - Vite `base` must remain `/win-predict-ai/` so asset URLs match the Nginx path.

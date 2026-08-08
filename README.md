@@ -66,7 +66,7 @@ A project [`.npmrc`](.npmrc) points the `@onlyzoran` scope at `npm.pkg.github.co
 | `npm run lint` | ESLint + Oxlint |
 | `npm run format` | Format `src/` with Oxfmt |
 
-The app uses `base: '/win-predict-ai/'`. Primary hosting is the VPS (see [deploy/README.md](deploy/README.md)). The GitHub Pages workflow ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) can remain as a secondary/legacy path.
+The app uses `base: '/win-predict-ai/'`. Primary hosting is the VPS; pushes to `main` auto-deploy via [`.github/workflows/deploy-vps.yml`](.github/workflows/deploy-vps.yml) (setup in [deploy/README.md](deploy/README.md)).
 
 ## Versioning and changelog
 
