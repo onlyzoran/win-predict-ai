@@ -73,8 +73,6 @@ mkdir -p /var/www/win-predict-ai/dist
 
 4. Push to `main` (or run the workflow manually) and check **Actions → Release and deploy**.
 
-The legacy **Deploy to GitHub Pages** workflow can stay Disabled; it is unrelated to VPS deploy.
-
 ## Manual build and publish
 
 Fallback if Actions is unavailable. On your machine (or on the VPS):
@@ -117,5 +115,5 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ## Notes
 
-- Prefer auto-deploy via `release.yml` (release + single deploy). Keep the Pages workflow (`.github/workflows/deploy.yml`) Disabled unless you intentionally revive Pages hosting.
+- Prefer auto-deploy via `release.yml` (release + single deploy). The old GitHub Pages workflow was removed; hosting is VPS-only.
 - Vite `base` must remain `/win-predict-ai/` so asset URLs match the Nginx path.
