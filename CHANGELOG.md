@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.35.1](https://github.com/onlyzoran/win-predict-ai/compare/v0.35.0...v0.35.1) (2026-08-08)
+
 ## [0.35.0](https://github.com/onlyzoran/win-predict-ai/compare/v0.34.9...v0.35.0) (2026-08-08)
 
 ## [0.34.9](https://github.com/onlyzoran/win-predict-ai/compare/v0.34.8...v0.34.9) (2026-08-08)
