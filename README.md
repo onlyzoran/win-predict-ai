@@ -7,12 +7,14 @@ Vue 3 frontend that shows win probabilities for sports tournaments and other eve
 1. **Tournament manifest** — from the admin API (`VITE_LEAGUES_URL`), backed by SQLite. Updates from the admin panel appear immediately (no GitHub Pages cache).
 2. **Prediction / history JSON** — from [`win-predict-ai-data`](https://github.com/onlyzoran/win-predict-ai-data) on GitHub Pages (`VITE_DATA_BASE_URL`).
 
-Default URLs:
+Production (VPS, same origin as the API):
 
 ```
-VITE_LEAGUES_URL=http://202.71.15.138/api/leagues.json
+VITE_LEAGUES_URL=/api/leagues.json
 VITE_DATA_BASE_URL=https://onlyzoran.github.io/win-predict-ai-data/data
 ```
+
+`VITE_LEAGUES_URL` is root-relative so the browser requests `http://<host>/api/leagues.json` (same origin as the page), avoiding Mixed Content when the app is served over HTTP next to the API.
 
 On load the app fetches the manifest, then per-league files (e.g. `epl-26-27.json`) with `{ "team": string, "win_predict": number }`.
 
@@ -25,13 +27,13 @@ If `VITE_DATA_BASE_URL` is unset, prediction files fall back to `{BASE_URL}data`
 
 | Variable | Description |
 | --- | --- |
-| `VITE_LEAGUES_URL` | Full URL of the tournament manifest JSON. |
+| `VITE_LEAGUES_URL` | Manifest URL (absolute or root-relative, e.g. `/api/leagues.json`). |
 | `VITE_DATA_BASE_URL` | Base URL for prediction/history JSON (no trailing slash). |
 
 Committed defaults:
 
-- [`.env.development`](.env.development) — API manifest + Pages data
-- [`.env.production`](.env.production) — same for the GitHub Pages build
+- [`.env.development`](.env.development) — absolute API URL + Pages data (for local `npm run dev`)
+- [`.env.production`](.env.production) — same-origin `/api/leagues.json` + Pages data (VPS build)
 
 Override locally with `.env.local` (gitignored), for example:
 
@@ -64,7 +66,7 @@ A project [`.npmrc`](.npmrc) points the `@onlyzoran` scope at `npm.pkg.github.co
 | `npm run lint` | ESLint + Oxlint |
 | `npm run format` | Format `src/` with Oxfmt |
 
-The app is configured with `base: '/win-predict-ai/'` for GitHub Pages deployment (see [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)).
+The app uses `base: '/win-predict-ai/'`. Primary hosting is the VPS (see [deploy/README.md](deploy/README.md)). The GitHub Pages workflow ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)) can remain as a secondary/legacy path.
 
 ## Versioning and changelog
 
