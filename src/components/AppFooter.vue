@@ -19,7 +19,7 @@ const stackRows = [stack.slice(0, 4), stack.slice(4)] as const
 
 <template>
   <footer class="mt-auto border-t border-border/60 py-4">
-    <div class="container mx-auto px-4 text-xs text-muted-foreground">
+    <div class="w-full px-6 text-xs text-muted-foreground">
       <!-- Mobile: two balanced rows -->
       <div class="flex flex-col gap-0.5 sm:hidden">
         <ul
