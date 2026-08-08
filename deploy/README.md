@@ -35,9 +35,15 @@ apt install -y nodejs
 
 ## Auto-deploy from `main` (GitHub Actions)
 
-Workflow: [`.github/workflows/deploy-vps.yml`](../.github/workflows/deploy-vps.yml).
+Workflow: [`.github/workflows/release.yml`](../.github/workflows/release.yml) (**Release and deploy**).
 
-On every push to `main` (and via **Actions → Deploy to VPS → Run workflow**) CI builds the app and `rsync`s `dist/` to the VPS.
+On each push to `main` (except release commits marked `[skip ci]`):
+
+1. `semantic-release` bumps the version if needed (updates `package.json` in the job workspace)
+2. production build (footer version comes from that bumped `package.json`)
+3. `rsync` of `dist/` to the VPS
+
+One pipeline run → one deploy, footer matches the GitHub Release. Manual re-deploy without a new release: **Actions → Release and deploy → Run workflow** (skips semantic-release, builds current `main`).
 
 ### One-time server setup
 
@@ -65,7 +71,7 @@ mkdir -p /var/www/win-predict-ai/dist
 | `VPS_PATH` | `/var/www/win-predict-ai/dist` |
 | `VPS_SSH_KEY` | full private key (`-----BEGIN OPENSSH PRIVATE KEY-----` …) |
 
-4. Push to `main` (or run the workflow manually) and check **Actions → Deploy to VPS**.
+4. Push to `main` (or run the workflow manually) and check **Actions → Release and deploy**.
 
 The legacy **Deploy to GitHub Pages** workflow can stay Disabled; it is unrelated to VPS deploy.
 
@@ -111,5 +117,5 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ## Notes
 
-- Prefer auto-deploy via `deploy-vps.yml`. Keep the Pages workflow (`.github/workflows/deploy.yml`) Disabled unless you intentionally revive Pages hosting.
+- Prefer auto-deploy via `release.yml` (release + single deploy). Keep the Pages workflow (`.github/workflows/deploy.yml`) Disabled unless you intentionally revive Pages hosting.
 - Vite `base` must remain `/win-predict-ai/` so asset URLs match the Nginx path.
