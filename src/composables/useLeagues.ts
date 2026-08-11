@@ -1,9 +1,8 @@
 import { computed, onMounted, ref } from 'vue'
-import type { LeagueEntry, LeagueManifest, LeagueSlot } from '@/types/league'
+import type { LeagueManifest, LeagueSlot } from '@/types/league'
 import {
   fetchLeaguesManifest,
-  fetchJsonWithRetry,
-  fetchStandingsOptional,
+  loadLeaguePayload,
   toLeague,
   toSlot,
 } from '@/lib/leagueData'
@@ -24,10 +23,7 @@ export function useLeagues() {
   const failedCount = computed(() => failedConfigs.value.length)
 
   async function loadLeague(config: LeagueManifest) {
-    const [entries, standings] = await Promise.all([
-      fetchJsonWithRetry<LeagueEntry[]>(config.file),
-      fetchStandingsOptional(config.id),
-    ])
+    const { entries, standings } = await loadLeaguePayload(config)
     slots.value = slots.value.map((slot) =>
       slot.id === config.id ? { ...slot, league: toLeague(config, entries, standings) } : slot,
     )

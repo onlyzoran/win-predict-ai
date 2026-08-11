@@ -1,9 +1,13 @@
 import type { Component } from 'vue'
 import type { Sport } from '@/types/sport'
 
+export type TournamentLayout = 'legacy' | 'contests'
+
 export interface LeagueEntry {
   team: string
   win_predict: number
+  /** Stable id when loaded from contests layout. */
+  participantId?: string
 }
 
 export interface LeagueManifest {
@@ -11,7 +15,12 @@ export interface LeagueManifest {
   title: string
   fullTitle?: string
   sport: Sport
-  file: string
+  /** Legacy prediction JSON under data/, e.g. `ucl-26-27.json`. */
+  file?: string
+  /** `"contests"` for migrated contests; omit/legacy for file-based leagues. */
+  layout?: TournamentLayout
+  /** Folder under data/, e.g. `contests/rpl-26-27`. */
+  contestPath?: string
   startDate: string
   endDate: string
   endDateTo?: string
@@ -30,6 +39,7 @@ export interface StandingRow {
   draws?: number
   rank?: number
   sourceRank?: number
+  participantId?: string
 }
 
 export interface LeagueHistorySnapshot {
@@ -45,6 +55,74 @@ export interface LeagueHistoryDays {
   first: string
   last: string
   days: string[]
+}
+
+export interface ContestParticipant {
+  id: string
+  name: string
+  aliases?: string[]
+}
+
+export interface ContestParticipantsFile {
+  contestId: string
+  participants: ContestParticipant[]
+}
+
+export interface ContestPredictionItem {
+  participantId: string
+  probability: number
+}
+
+export interface ContestPredictionFile {
+  kind: 'prediction'
+  contestId: string
+  date: string
+  items: ContestPredictionItem[]
+}
+
+export interface ContestFactsRow {
+  participantId: string
+  played?: number
+  wins?: number
+  draws?: number
+  losses?: number
+  points?: number
+  winPercent?: number
+  playoffSeed?: number
+  group?: string
+  rank?: number
+  sourceRank?: number
+  goalsFor?: number
+  goalsAgainst?: number
+  goalDifference?: number
+}
+
+export interface ContestFactsFile {
+  kind: 'standings'
+  contestId: string
+  date: string
+  metric: string
+  rows: ContestFactsRow[]
+}
+
+export interface ContestFactsTour {
+  tour: number
+  status: string
+  slices: string[]
+  latestDate: string
+  latestFile: string
+}
+
+export interface ContestFactsIndex {
+  contestId: string
+  kind: 'facts'
+  factKind: string
+  grain?: 'day' | 'matchday'
+  count: number
+  first: string
+  last: string
+  days: string[]
+  tours?: ContestFactsTour[]
 }
 
 export interface TeamStandings {
@@ -74,6 +152,8 @@ export interface League {
   startDate: string
   endDate: string
   popularPriority: number
+  layout: TournamentLayout
+  contestPath?: string
 }
 
 export interface LeagueSlot {

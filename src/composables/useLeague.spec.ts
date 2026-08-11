@@ -122,6 +122,82 @@ describe('useLeague', () => {
 
     expect(isLoading.value).toBe(false)
     expect(loadError.value).toBeNull()
+    expect(league.value?.layout).toBe('legacy')
+    expect(league.value?.teams[0]?.standings).toEqual({
+      group: 'National League',
+      playoffSeed: 1,
+      played: 111,
+      wins: 69,
+      losses: 42,
+      winPercent: 0.6216216,
+    })
+  })
+
+  it('loads contests layout via predictions, facts, and participants', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async (input) => {
+        const url = String(input)
+        if (url.endsWith('leagues.json')) {
+          return jsonResponse([
+            {
+              id: 'mlb-world-series-26',
+              title: 'MLB World Series',
+              sport: 'baseball',
+              layout: 'contests',
+              contestPath: 'contests/mlb-world-series-26',
+              startDate: '2026-03-26',
+              endDate: '2026-11-01',
+              popularPriority: 130,
+            },
+          ])
+        }
+        if (url.endsWith('contests/mlb-world-series-26/predictions/latest.json')) {
+          return jsonResponse({
+            kind: 'prediction',
+            contestId: 'mlb-world-series-26',
+            date: '2026-08-11',
+            items: [{ participantId: 'milwaukee-brewers', probability: 18 }],
+          })
+        }
+        if (url.endsWith('contests/mlb-world-series-26/facts/latest.json')) {
+          return jsonResponse({
+            kind: 'standings',
+            contestId: 'mlb-world-series-26',
+            date: '2026-08-11',
+            metric: 'wins',
+            rows: [
+              {
+                participantId: 'milwaukee-brewers',
+                played: 111,
+                wins: 69,
+                losses: 42,
+                winPercent: 0.6216216,
+                playoffSeed: 1,
+                group: 'National League',
+              },
+            ],
+          })
+        }
+        if (url.endsWith('contests/mlb-world-series-26/participants.json')) {
+          return jsonResponse({
+            contestId: 'mlb-world-series-26',
+            participants: [{ id: 'milwaukee-brewers', name: 'Milwaukee Brewers' }],
+          })
+        }
+        return errorResponse(404)
+      }),
+    )
+
+    const { league, isLoading, loadError } = mountUseLeague('mlb-world-series-26')
+    await flushPromises()
+
+    expect(isLoading.value).toBe(false)
+    expect(loadError.value).toBeNull()
+    expect(league.value?.layout).toBe('contests')
+    expect(league.value?.contestPath).toBe('contests/mlb-world-series-26')
+    expect(league.value?.teams[0]?.id).toBe('milwaukee-brewers')
+    expect(league.value?.teams[0]?.name).toBe('Milwaukee Brewers')
     expect(league.value?.teams[0]?.standings).toEqual({
       group: 'National League',
       playoffSeed: 1,

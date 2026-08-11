@@ -49,9 +49,14 @@ export function mergeStandings(
   standings: StandingRow[],
 ): TeamProbability[] {
   const byName = new Map(standings.map((row) => [row.team, row]))
+  const byParticipantId = new Map(
+    standings
+      .filter((row) => row.participantId)
+      .map((row) => [row.participantId!, row]),
+  )
 
   return teams.map((team) => {
-    const row = byName.get(team.name)
+    const row = byParticipantId.get(team.id) ?? byName.get(team.name)
     if (!row) {
       return team
     }

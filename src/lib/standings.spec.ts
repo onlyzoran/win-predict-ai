@@ -66,6 +66,26 @@ describe('mergeStandings', () => {
     expect(merged[1]?.standings).toBeUndefined()
   })
 
+  it('prefers participantId when present', () => {
+    const merged = mergeStandings(
+      [{ id: 'milwaukee-brewers', name: 'Brewers Alias', winProbability: 18 }],
+      [
+        {
+          participantId: 'milwaukee-brewers',
+          team: 'Milwaukee Brewers',
+          played: 111,
+          wins: 69,
+          losses: 42,
+          winPercent: 0.6216216,
+          playoffSeed: 1,
+          group: 'National League',
+        },
+      ],
+    )
+
+    expect(merged[0]?.standings?.group).toBe('National League')
+  })
+
   it('ignores points-only rows without winPercent', () => {
     const merged = mergeStandings(teams, [
       {

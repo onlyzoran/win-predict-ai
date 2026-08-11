@@ -44,6 +44,8 @@ function goBack() {
       :end-date="league.endDate"
       :icon="league.icon"
       :league-id="league.id"
+      :layout="league.layout"
+      :contest-path="league.contestPath"
       show-chart
     />
   </main>

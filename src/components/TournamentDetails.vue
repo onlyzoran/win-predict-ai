@@ -10,7 +10,7 @@ import MlbPlayoffBracket from '@/components/MlbPlayoffBracket.vue'
 import StandingsRankChart from '@/components/StandingsRankChart.vue'
 import WinProbabilityPieChart from '@/components/WinProbabilityPieChart.vue'
 import { useLeagueHistoryRanks } from '@/composables/useLeagueHistoryRanks'
-import type { TeamProbability } from '@/types/league'
+import type { TeamProbability, TournamentLayout } from '@/types/league'
 import { locale } from '@/i18n'
 import { canBuildMlbBracket } from '@/lib/mlbPlayoffBracket'
 import { abbreviateGroup, formatRecord, formatWinPercent, hasWinsStandings } from '@/lib/standings'
@@ -28,6 +28,8 @@ const props = withDefaults(
     showChart?: boolean
     compact?: boolean
     leagueId?: string
+    layout?: TournamentLayout
+    contestPath?: string
   }>(),
   {
     fullTitle: undefined,
@@ -38,16 +40,24 @@ const props = withDefaults(
     showChart: false,
     compact: false,
     leagueId: undefined,
+    layout: 'legacy',
+    contestPath: undefined,
   },
 )
 
 const { startDate, endDate, teams } = toRefs(props)
 const { t } = useI18n()
 
-const historyLeagueId = computed(() =>
-  props.showChart && !props.compact ? props.leagueId : undefined,
+const historySource = computed(() =>
+  props.showChart && !props.compact && props.leagueId
+    ? {
+        id: props.leagueId,
+        layout: props.layout,
+        contestPath: props.contestPath,
+      }
+    : undefined,
 )
-const { series: rankSeries } = useLeagueHistoryRanks(historyLeagueId)
+const { series: rankSeries } = useLeagueHistoryRanks(historySource)
 
 const daysUntilStart = computed(() => getDaysUntil(startDate.value))
 const daysUntilEnd = computed(() => getDaysUntil(endDate.value))

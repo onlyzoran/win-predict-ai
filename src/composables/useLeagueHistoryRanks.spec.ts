@@ -1,7 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, ref, type MaybeRefOrGetter } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
-import { useLeagueHistoryRanks } from './useLeagueHistoryRanks'
+import {
+  useLeagueHistoryRanks,
+  type LeagueHistorySource,
+} from './useLeagueHistoryRanks'
 
 function jsonResponse(data: unknown) {
   return {
@@ -18,13 +21,13 @@ function errorResponse(status = 404) {
   }
 }
 
-function mountComposable(id: MaybeRefOrGetter<string | undefined>) {
+function mountComposable(source: MaybeRefOrGetter<LeagueHistorySource | undefined>) {
   let api!: ReturnType<typeof useLeagueHistoryRanks>
 
   mount(
     defineComponent({
       setup() {
-        api = useLeagueHistoryRanks(id)
+        api = useLeagueHistoryRanks(source)
         return () => h('div')
       },
     }),
@@ -56,7 +59,7 @@ describe('useLeagueHistoryRanks', () => {
       }),
     )
 
-    const { series, isLoading, error } = mountComposable('epl')
+    const { series, isLoading, error } = mountComposable({ id: 'epl' })
     await flushPromises()
 
     expect(isLoading.value).toBe(false)
@@ -70,7 +73,7 @@ describe('useLeagueHistoryRanks', () => {
       vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async () => errorResponse(404)),
     )
 
-    const { series, isLoading } = mountComposable('unknown')
+    const { series, isLoading } = mountComposable({ id: 'unknown' })
     await flushPromises()
 
     expect(isLoading.value).toBe(false)
@@ -117,13 +120,80 @@ describe('useLeagueHistoryRanks', () => {
       }),
     )
 
-    const { series, isLoading, error } = mountComposable('mlb')
+    const { series, isLoading, error } = mountComposable({ id: 'mlb' })
     await flushPromises()
 
     expect(isLoading.value).toBe(false)
     expect(error.value).toBeNull()
     expect(series.value?.points).toHaveLength(2)
     expect(series.value?.teams.map((t) => t.name)).toEqual(['Dodgers', 'Yankees'])
+  })
+
+  it('loads contests facts index and matchday standings paths', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async (input) => {
+        const url = String(input)
+        if (url.endsWith('contests/rpl-26-27/facts/index.json')) {
+          return jsonResponse({
+            contestId: 'rpl-26-27',
+            kind: 'facts',
+            factKind: 'standings',
+            grain: 'matchday',
+            count: 2,
+            first: '2026-08-09',
+            last: '2026-08-11',
+            days: ['2026-08-09', '2026-08-11'],
+            tours: [
+              {
+                tour: 3,
+                status: 'final',
+                slices: ['2026-08-09', '2026-08-11'],
+                latestDate: '2026-08-11',
+                latestFile: 'standings/tour-03/latest.json',
+              },
+            ],
+          })
+        }
+        if (url.endsWith('contests/rpl-26-27/participants.json')) {
+          return jsonResponse({
+            contestId: 'rpl-26-27',
+            participants: [{ id: 'zenit-st-petersburg', name: 'Zenit St Petersburg' }],
+          })
+        }
+        if (url.endsWith('contests/rpl-26-27/facts/standings/tour-03/2026-08-09.json')) {
+          return jsonResponse({
+            kind: 'standings',
+            contestId: 'rpl-26-27',
+            date: '2026-08-09',
+            metric: 'points',
+            rows: [{ participantId: 'zenit-st-petersburg', rank: 2 }],
+          })
+        }
+        if (url.endsWith('contests/rpl-26-27/facts/standings/tour-03/2026-08-11.json')) {
+          return jsonResponse({
+            kind: 'standings',
+            contestId: 'rpl-26-27',
+            date: '2026-08-11',
+            metric: 'points',
+            rows: [{ participantId: 'zenit-st-petersburg', rank: 1 }],
+          })
+        }
+        return errorResponse()
+      }),
+    )
+
+    const { series, isLoading, error } = mountComposable({
+      id: 'rpl-26-27',
+      layout: 'contests',
+      contestPath: 'contests/rpl-26-27',
+    })
+    await flushPromises()
+
+    expect(isLoading.value).toBe(false)
+    expect(error.value).toBeNull()
+    expect(series.value?.points).toHaveLength(2)
+    expect(series.value?.teams.map((t) => t.name)).toEqual(['Zenit St Petersburg'])
   })
 
   it('skips loading when league id is undefined', async () => {
