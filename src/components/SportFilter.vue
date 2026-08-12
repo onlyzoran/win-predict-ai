@@ -12,11 +12,13 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { sportIcons } from '@/lib/sportIcons'
+import { useSports } from '@/composables/useSports'
+import { getSportIcon } from '@/lib/sportIcons'
 import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
 
-const { t } = useI18n()
+const { t, te } = useI18n()
+const { sports: catalog } = useSports()
 
 defineProps<{
   modelValue: Sport | 'all'
@@ -30,12 +32,17 @@ const emit = defineEmits<{
   'update:sort': [value: SortMode]
 }>()
 
+function sportLabel(slug: string, apiLabel: string): string {
+  const key = `sports.${slug}`
+  return te(key) ? t(key) : apiLabel
+}
+
 const sports = computed<Array<{ id: Sport | 'all'; label: string; icon?: Component }>>(() => [
   { id: 'all', label: t('sports.all') },
-  ...(Object.keys(sportIcons) as Sport[]).map((id) => ({
-    id,
-    label: t(`sports.${id}`),
-    icon: sportIcons[id],
+  ...catalog.value.map((item) => ({
+    id: item.slug,
+    label: sportLabel(item.slug, item.label),
+    icon: getSportIcon(item.iconKey),
   })),
 ])
 

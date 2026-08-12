@@ -12,7 +12,7 @@ import type {
   StandingRow,
   TournamentLayout,
 } from '@/types/league'
-import { sportIcons } from '@/lib/sportIcons'
+import { getSportIcon, sportIcons } from '@/lib/sportIcons'
 import {
   factsIndexToHistoryDays,
   factsToHistorySnapshot,
@@ -227,7 +227,7 @@ export function toLeague(
     fullTitle: config.fullTitle,
     teams,
     sport: config.sport,
-    icon: sportIcons[config.sport],
+    icon: getSportIcon(config.sport) ?? sportIcons.football,
     progress: getTournamentProgress(config.startDate, config.endDate, config.endDateTo),
     startDate: config.startDate,
     endDate: config.endDateTo || config.endDate,
