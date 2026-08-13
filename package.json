@@ -17,7 +17,7 @@
     "release": "semantic-release"
   },
   "dependencies": {
-    "@onlyzoran/win-predict-ai-icons": "^0.4.0",
+    "@onlyzoran/win-predict-ai-icons": "^0.13.0",
     "@onlyzoran/win-predict-ai-ui": "^0.1.0",
     "@tabler/icons-vue": "^3.46.0",
     "@tailwindcss/vite": "^4.3.3",
