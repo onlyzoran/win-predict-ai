@@ -1,0 +1,76 @@
+/*
+ * Win Predict AI — runtime theme tokens (источник правды для production).
+ * Синхронизировано с win-predict-ai-ui/.storybook/preview.css (issue #12).
+ *
+ * Design Read: спортивный терминал прогнозов — спокойный, точный, вечерний;
+ * не zinc-SaaS и не кислотный dark.
+ * Акцент: teal ~195° — «live»-данные и доверие к цифрам без gambling-клише.
+ */
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0.978 0.006 235);
+  --foreground: oklch(0.24 0.025 235);
+  --card: oklch(0.995 0.004 235);
+  --card-foreground: oklch(0.24 0.025 235);
+  --popover: oklch(0.995 0.004 235);
+  --popover-foreground: oklch(0.24 0.025 235);
+  --primary: oklch(0.48 0.13 195);
+  --primary-foreground: oklch(0.98 0.01 195);
+  --secondary: oklch(0.935 0.014 235);
+  --secondary-foreground: oklch(0.28 0.025 235);
+  --muted: oklch(0.945 0.012 235);
+  --muted-foreground: oklch(0.46 0.022 235);
+  --accent: oklch(0.925 0.018 235);
+  --accent-foreground: oklch(0.28 0.025 235);
+  --destructive: oklch(0.55 0.22 25);
+  --border: oklch(0.885 0.016 235);
+  --input: oklch(0.905 0.014 235);
+  --ring: oklch(0.48 0.13 195);
+  --chart-1: oklch(0.52 0.14 195);
+  --chart-2: oklch(0.62 0.16 55);
+  --chart-3: oklch(0.55 0.18 285);
+  --chart-4: oklch(0.58 0.17 25);
+  --chart-5: oklch(0.52 0.14 145);
+  --sidebar: oklch(0.965 0.008 235);
+  --sidebar-foreground: oklch(0.24 0.025 235);
+  --sidebar-primary: oklch(0.48 0.13 195);
+  --sidebar-primary-foreground: oklch(0.98 0.01 195);
+  --sidebar-accent: oklch(0.925 0.018 235);
+  --sidebar-accent-foreground: oklch(0.28 0.025 235);
+  --sidebar-border: oklch(0.885 0.016 235);
+  --sidebar-ring: oklch(0.48 0.13 195);
+}
+
+.dark {
+  --background: oklch(0.17 0.022 235);
+  --foreground: oklch(0.92 0.012 235);
+  --card: oklch(0.22 0.026 235);
+  --card-foreground: oklch(0.92 0.012 235);
+  --popover: oklch(0.24 0.028 235);
+  --popover-foreground: oklch(0.92 0.012 235);
+  --primary: oklch(0.72 0.11 195);
+  --primary-foreground: oklch(0.18 0.03 195);
+  --secondary: oklch(0.28 0.026 235);
+  --secondary-foreground: oklch(0.92 0.012 235);
+  --muted: oklch(0.26 0.024 235);
+  --muted-foreground: oklch(0.68 0.022 235);
+  --accent: oklch(0.3 0.028 235);
+  --accent-foreground: oklch(0.92 0.012 235);
+  --destructive: oklch(0.65 0.19 22);
+  --border: oklch(0.35 0.025 235 / 55%);
+  --input: oklch(0.3 0.024 235);
+  --ring: oklch(0.72 0.11 195);
+  --chart-1: oklch(0.72 0.12 195);
+  --chart-2: oklch(0.78 0.14 55);
+  --chart-3: oklch(0.7 0.16 285);
+  --chart-4: oklch(0.72 0.15 25);
+  --chart-5: oklch(0.72 0.13 145);
+  --sidebar: oklch(0.19 0.024 235);
+  --sidebar-foreground: oklch(0.92 0.012 235);
+  --sidebar-primary: oklch(0.72 0.11 195);
+  --sidebar-primary-foreground: oklch(0.18 0.03 195);
+  --sidebar-accent: oklch(0.28 0.026 235);
+  --sidebar-accent-foreground: oklch(0.92 0.012 235);
+  --sidebar-border: oklch(0.35 0.025 235 / 55%);
+  --sidebar-ring: oklch(0.72 0.11 195);
+}
