@@ -3,6 +3,11 @@
     "title": "Win Predict AI",
     "version": "v{version}"
   },
+  "tournament": {
+    "tabs": {
+      "overview": "Panoramica"
+    }
+  },
   "team": {
     "preview": "Anteprima",
     "details": "Dettagli",

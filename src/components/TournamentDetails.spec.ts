@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import { i18n } from '@/i18n'
+import { tabStubs } from '@/test/tabStubs'
 import TournamentDetails from './TournamentDetails.vue'
 
 const teams = [
@@ -68,6 +69,7 @@ function mountDetails(props: Record<string, unknown> = {}) {
     global: {
       plugins: [i18n],
       stubs: {
+        ...tabStubs,
         WinProbabilityPieChart: PieStub,
         StandingsRankChart: RankChartStub,
       },
@@ -338,5 +340,99 @@ describe('TournamentDetails', () => {
     await flushPromises()
 
     expect(wrapper.text()).not.toContain('Playoff projection')
+  })
+
+  it('renders tabs on detail view when showChart is enabled', async () => {
+    const wrapper = mountDetails({ showChart: true })
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="tabs"]').exists()).toBe(true)
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(true)
+  })
+
+  it('does not render tabs in compact preview', async () => {
+    const wrapper = mountDetails({ compact: true, showChart: true })
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="tabs"]').exists()).toBe(false)
+  })
+
+  it('shows rank and playoff tabs when data is available', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async (input) => {
+        const url = String(input)
+        if (url.endsWith('history/mlb/days.json')) {
+          return jsonResponse({
+            leagueId: 'mlb',
+            count: 2,
+            first: '2026-03-25',
+            last: '2026-03-26',
+            days: ['2026-03-25', '2026-03-26'],
+          })
+        }
+        if (url.endsWith('history/mlb/2026-03-25.json')) {
+          return jsonResponse({
+            leagueId: 'mlb',
+            date: '2026-03-25',
+            metric: 'wins',
+            standings: [
+              { team: 'Yankees', group: 'AL', rank: 1 },
+              { team: 'Dodgers', group: 'NL', rank: 2 },
+            ],
+          })
+        }
+        if (url.endsWith('history/mlb/2026-03-26.json')) {
+          return jsonResponse({
+            leagueId: 'mlb',
+            date: '2026-03-26',
+            metric: 'wins',
+            standings: [
+              { team: 'Dodgers', group: 'NL', rank: 1 },
+              { team: 'Yankees', group: 'AL', rank: 2 },
+            ],
+          })
+        }
+        return errorResponse()
+      }),
+    )
+
+    const wrapper = mountDetails({
+      showChart: true,
+      leagueId: 'mlb',
+      title: 'MLB World Series',
+      teams: [
+        {
+          id: 'nyy',
+          name: 'New York Yankees',
+          winProbability: 12,
+          standings: {
+            group: 'American League',
+            wins: 64,
+            losses: 51,
+            winPercent: 0.557,
+          },
+        },
+        {
+          id: 'lad',
+          name: 'Los Angeles Dodgers',
+          winProbability: 31,
+          standings: {
+            group: 'National League',
+            wins: 69,
+            losses: 46,
+            winPercent: 0.6,
+          },
+        },
+      ],
+    })
+    await flushPromises()
+
+    const tabValues = wrapper.findAll('[role="tab"]').map((tab) => tab.attributes('data-value'))
+    expect(tabValues).toEqual(['overview', 'rank', 'playoff'])
+    expect(wrapper.find('[data-tab="rank"] [data-testid="standings-rank-chart"]').exists()).toBe(
+      true,
+    )
+    expect(wrapper.find('[data-tab="playoff"]').text()).toContain('Playoff projection')
   })
 })

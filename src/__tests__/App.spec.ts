@@ -5,6 +5,7 @@ import App from '../App.vue'
 import HomeView from '@/views/HomeView.vue'
 import TournamentView from '@/views/TournamentView.vue'
 import { i18n } from '@/i18n'
+import { tabStubs } from '@/test/tabStubs'
 
 const manifest = [
   {
@@ -78,6 +79,7 @@ async function mountApp(initialPath = '/') {
   return mount(App, {
     global: {
       plugins: [i18n, router],
+      stubs: tabStubs,
     },
   })
 }
