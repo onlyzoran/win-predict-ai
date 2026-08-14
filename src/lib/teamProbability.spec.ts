@@ -44,9 +44,9 @@ describe('aggregateTopTeams', () => {
 })
 
 describe('getTeamChartColor', () => {
-  it('returns chart colors for top teams only', () => {
-    expect(getTeamChartColor(0)).toBe('oklch(0.82 0.14 160)')
-    expect(getTeamChartColor(4)).toBe('oklch(0.42 0.10 160)')
+  it('returns semantic chart token vars for top teams only', () => {
+    expect(getTeamChartColor(0)).toBe('var(--chart-1)')
+    expect(getTeamChartColor(4)).toBe('var(--chart-5)')
     expect(getTeamChartColor(5)).toBeUndefined()
   })
 })

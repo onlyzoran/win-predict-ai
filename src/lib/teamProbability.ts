@@ -2,16 +2,15 @@ import type { TeamProbability } from '@/types/league'
 
 export const TOP_TEAMS_COUNT = 5
 
-// Monochrome green ramp, matching shadcn pie (green theme)
 export const CHART_COLORS = [
-  'oklch(0.82 0.14 160)',
-  'oklch(0.72 0.15 160)',
-  'oklch(0.62 0.14 160)',
-  'oklch(0.52 0.12 160)',
-  'oklch(0.42 0.10 160)',
+  'var(--chart-1)',
+  'var(--chart-2)',
+  'var(--chart-3)',
+  'var(--chart-4)',
+  'var(--chart-5)',
 ] as const
 
-export const OTHERS_CHART_COLOR = 'oklch(0.34 0.07 160)'
+export const OTHERS_CHART_COLOR = 'var(--muted-foreground)'
 
 export function getTeamChartColor(index: number, topN = TOP_TEAMS_COUNT): string | undefined {
   if (index < 0 || index >= topN) {
