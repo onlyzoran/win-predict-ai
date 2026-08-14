@@ -78,6 +78,11 @@ async function mountApp(initialPath = '/') {
   return mount(App, {
     global: {
       plugins: [i18n, router],
+      stubs: {
+        AppHeader: {
+          template: '<header>Win Predict AI</header>',
+        },
+      },
     },
   })
 }

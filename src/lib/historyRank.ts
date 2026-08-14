@@ -46,10 +46,16 @@ export function sampleHistoryDates(days: string[], maxPoints = MAX_HISTORY_POINT
   return sampled
 }
 
-export function teamRankColor(index: number, total: number): string {
-  const count = Math.max(total, 1)
-  const hue = ((index * 360) / count) % 360
-  return `oklch(0.55 0.14 ${hue})`
+const CHART_TOKEN_VARS = [
+  'var(--chart-1)',
+  'var(--chart-2)',
+  'var(--chart-3)',
+  'var(--chart-4)',
+  'var(--chart-5)',
+] as const
+
+export function teamRankColor(index: number, _total?: number): string {
+  return CHART_TOKEN_VARS[index % CHART_TOKEN_VARS.length]!
 }
 
 function toTimestamp(date: string): number {
