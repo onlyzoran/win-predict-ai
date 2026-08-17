@@ -3,7 +3,7 @@
 @import 'tailwindcss';
 @source "../../node_modules/@onlyzoran/win-predict-ai-ui/dist";
 @import 'tw-animate-css';
-@import './theme-tokens.css';
+@import '@onlyzoran/win-predict-ai-ui/themes';
 
 @custom-variant dark (&:is(.dark *));
 
