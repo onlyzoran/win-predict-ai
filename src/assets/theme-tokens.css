@@ -1,6 +1,12 @@
 /*
  * Win Predict AI — runtime theme tokens (источник правды для production).
- * Синхронизировано с win-predict-ai-ui/.storybook/preview.css (issue #12).
+ *
+ * Почему локальный файл, а не import из @onlyzoran/win-predict-ai-ui:
+ * - npm-пакет UI публикует только dist/ (компоненты); theme CSS в exports нет.
+ * - Палитры живут в win-predict-ai-ui/.storybook/preview.css — только Storybook,
+ *   см. DESIGN.md («не публиковать и не импортировать в runtime apps»).
+ * - Каждое приложение (app, admin) держит свою копию значений; при смене палитры
+ *   в UI PR синхронизировать hex/oklch сюда вручную (1:1 с preview.css).
  *
  * data-palette="zinc" — нейтральный zinc/shadcn (achromatic primary, без tint).
  * data-palette="slate-teal" — холодный slate (~235°) + teal-акцент (~195°).
