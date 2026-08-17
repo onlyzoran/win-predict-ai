@@ -45,6 +45,9 @@ function selectDarkPalette(palette: ColorPalette) {
         <p class="mt-1 text-sm text-muted-foreground">
           {{ t('appearance.subtitle') }}
         </p>
+        <p class="mt-2 text-sm text-muted-foreground">
+          {{ t('appearance.defaultsNote') }}
+        </p>
       </div>
     </div>
 

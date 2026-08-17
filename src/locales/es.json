@@ -49,6 +49,7 @@
     "shortLabel": "Apariencia",
     "title": "Apariencia",
     "subtitle": "Elige un esquema de color para el modo claro y otro para el oscuro.",
+    "defaultsNote": "Predeterminado para usuarios nuevos: Slate + Teal en ambos modos; claro/oscuro sigue la configuración del sistema hasta que lo cambies en la cabecera.",
     "back": "Volver al inicio",
     "lightMode": "Esquema para modo claro",
     "lightModeHint": "Se aplica cuando el modo claro está activo.",

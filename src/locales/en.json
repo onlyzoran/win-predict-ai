@@ -49,6 +49,7 @@
     "shortLabel": "Appearance",
     "title": "Appearance",
     "subtitle": "Choose a color scheme for light and dark mode independently.",
+    "defaultsNote": "Defaults for new users: Slate + Teal in both modes; light/dark follows your system setting until you change it in the header.",
     "back": "Back to home",
     "lightMode": "Light mode scheme",
     "lightModeHint": "Applied when the app is in light mode.",

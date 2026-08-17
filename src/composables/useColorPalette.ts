@@ -10,6 +10,10 @@ export interface PalettePreferences {
 
 export const COLOR_PALETTES: readonly ColorPalette[] = ['zinc', 'slate-teal'] as const
 
+/** Light/dark mode before the user toggles ThemeToggle (`vueuse-color-scheme`). */
+export const DEFAULT_COLOR_SCHEME = 'auto' as const
+
+/** Color palettes before the user opens /settings/appearance. */
 export const DEFAULT_PALETTE_PREFERENCES: PalettePreferences = {
   light: 'slate-teal',
   dark: 'slate-teal',
