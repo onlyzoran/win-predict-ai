@@ -44,6 +44,27 @@
     "switchToLight": "Passer en mode clair",
     "switchToDark": "Passer en mode sombre"
   },
+  "appearance": {
+    "openSettings": "Paramètres d'apparence",
+    "shortLabel": "Apparence",
+    "title": "Apparence",
+    "subtitle": "Choisissez un schéma de couleurs pour les modes clair et sombre.",
+    "back": "Retour à l'accueil",
+    "lightMode": "Schéma pour le mode clair",
+    "lightModeHint": "Appliqué lorsque le mode clair est actif.",
+    "darkMode": "Schéma pour le mode sombre",
+    "darkModeHint": "Appliqué lorsque le mode sombre est actif.",
+    "palettes": {
+      "zinc": {
+        "name": "Zinc",
+        "description": "Palette shadcn neutre sans teinte colorée."
+      },
+      "slate-teal": {
+        "name": "Slate + Teal",
+        "description": "Surfaces slate froides avec accent teal pour les données et actions."
+      }
+    }
+  },
   "language": {
     "label": "Langue"
   },

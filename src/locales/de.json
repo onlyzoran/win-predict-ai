@@ -44,6 +44,27 @@
     "switchToLight": "Zum hellen Modus wechseln",
     "switchToDark": "Zum dunklen Modus wechseln"
   },
+  "appearance": {
+    "openSettings": "Darstellungseinstellungen",
+    "shortLabel": "Darstellung",
+    "title": "Darstellung",
+    "subtitle": "Wählen Sie für den hellen und dunklen Modus jeweils eine Farbschema.",
+    "back": "Zur Startseite",
+    "lightMode": "Farbschema für den hellen Modus",
+    "lightModeHint": "Wird im hellen Modus angewendet.",
+    "darkMode": "Farbschema für den dunklen Modus",
+    "darkModeHint": "Wird im dunklen Modus angewendet.",
+    "palettes": {
+      "zinc": {
+        "name": "Zinc",
+        "description": "Neutrale shadcn-Palette ohne Farbstich."
+      },
+      "slate-teal": {
+        "name": "Slate + Teal",
+        "description": "Kühle Slate-Flächen mit Teal-Akzent für Daten und Aktionen."
+      }
+    }
+  },
   "language": {
     "label": "Sprache"
   },

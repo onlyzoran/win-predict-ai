@@ -29,6 +29,12 @@
           var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
           var isDark = preference === 'dark' || (preference !== 'light' && prefersDark)
           document.documentElement.classList.toggle('dark', isDark)
+
+          var paletteRaw = localStorage.getItem('color-palette-preferences')
+          var palettePrefs = paletteRaw ? JSON.parse(paletteRaw) : null
+          var lightPalette = palettePrefs && palettePrefs.light === 'zinc' ? 'zinc' : 'slate-teal'
+          var darkPalette = palettePrefs && palettePrefs.dark === 'zinc' ? 'zinc' : 'slate-teal'
+          document.documentElement.setAttribute('data-palette', isDark ? darkPalette : lightPalette)
         } catch (_) {}
       })()
     </script>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { AppHeaderShell } from '@onlyzoran/win-predict-ai-ui'
 import { IconLogin } from '@onlyzoran/win-predict-ai-icons'
+import { IconPalette } from '@tabler/icons-vue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { locale, localeLabels, locales, setLocale, type Locale } from '@/i18n'
@@ -29,6 +30,14 @@ function onLocaleUpdate(code: string) {
       </RouterLink>
     </template>
     <template #actions>
+      <RouterLink
+        to="/settings/appearance"
+        class="inline-flex items-center gap-1.5 rounded-md p-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:px-2 sm:py-1.5"
+        :aria-label="t('appearance.openSettings')"
+      >
+        <IconPalette :size="16" aria-hidden="true" />
+        <span class="hidden sm:inline">{{ t('appearance.shortLabel') }}</span>
+      </RouterLink>
       <a
         href="http://202.71.15.138"
         target="_blank"
