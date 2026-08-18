@@ -73,6 +73,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Warm ivory surfaces with clay terracotta accent — Claude+ mood for the terminal."
+      },
+      "pastel": {
+        "name": "Pastel",
+        "description": "Soft lavender neutrals with periwinkle accent; green and yellow reserved for match outcomes."
       }
     }
   },

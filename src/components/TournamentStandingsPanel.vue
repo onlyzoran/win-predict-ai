@@ -84,14 +84,23 @@ const showStandings = computed(() => hasWinsStandings(props.teams))
               <td class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell">
                 {{ team.standings?.playoffSeed || '—' }}
               </td>
-              <td class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell">
-                {{ team.standings?.played ?? '—' }}
+              <td class="hidden py-2 text-center md:table-cell">
+                <span
+                  v-if="team.standings?.played != null"
+                  class="inline-flex min-w-10 items-center justify-center rounded-md bg-outcome-intermediate px-1.5 py-0.5 tabular-nums text-xs font-semibold text-outcome-intermediate-foreground"
+                >
+                  {{ team.standings.played }}
+                </span>
+                <template v-else>—</template>
               </td>
             </template>
-            <td class="py-2 text-center tabular-nums text-muted-foreground">
-              <template v-if="team.standings">
+            <td class="py-2 text-center">
+              <span
+                v-if="team.standings"
+                class="inline-flex min-w-14 items-center justify-center rounded-md bg-outcome-final px-2 py-0.5 tabular-nums text-xs font-semibold text-outcome-final-foreground"
+              >
                 {{ formatRecord(team.standings.wins, team.standings.losses) }}
-              </template>
+              </span>
               <template v-else>—</template>
             </td>
             <td

@@ -73,6 +73,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Тёплые ivory-поверхности с clay terracotta — настроение Claude+ для терминала."
+      },
+      "pastel": {
+        "name": "Pastel",
+        "description": "Мягкие лавандовые нейтрали с periwinkle-акцентом; зелёный и жёлтый — для итогов матчей."
       }
     }
   },
