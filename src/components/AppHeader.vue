@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { LocaleSwitcher, ThemeToggle } from '@onlyzoran/win-predict-ai-ui'
-import { IconBrandGithub, IconLogin } from '@onlyzoran/win-predict-ai-icons'
-import { IconPalette } from '@tabler/icons-vue'
+import { IconBrandGithub, IconLogin, IconPalette } from '@onlyzoran/win-predict-ai-icons'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { locale, localeLabels, locales, setLocale, type Locale } from '@/i18n'

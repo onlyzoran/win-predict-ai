@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { IconArrowLeft } from '@onlyzoran/win-predict-ai-icons'
-import { IconPalette } from '@tabler/icons-vue'
+import { IconArrowLeft, IconPalette } from '@onlyzoran/win-predict-ai-icons'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import {
