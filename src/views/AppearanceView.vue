@@ -55,7 +55,7 @@ function selectDarkPalette(palette: ColorPalette) {
       <section>
         <h2 class="mb-1 text-sm font-medium text-foreground">{{ t('appearance.lightMode') }}</h2>
         <p class="mb-4 text-sm text-muted-foreground">{{ t('appearance.lightModeHint') }}</p>
-        <div class="grid gap-3 sm:grid-cols-2">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <button
             v-for="palette in COLOR_PALETTES"
             :key="`light-${palette}`"
@@ -105,7 +105,7 @@ function selectDarkPalette(palette: ColorPalette) {
       <section>
         <h2 class="mb-1 text-sm font-medium text-foreground">{{ t('appearance.darkMode') }}</h2>
         <p class="mb-4 text-sm text-muted-foreground">{{ t('appearance.darkModeHint') }}</p>
-        <div class="grid gap-3 sm:grid-cols-2">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <button
             v-for="palette in COLOR_PALETTES"
             :key="`dark-${palette}`"

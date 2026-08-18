@@ -63,6 +63,10 @@
       "slate-teal": {
         "name": "Slate + Teal",
         "description": "Холодные slate-поверхности с teal-акцентом для данных и действий."
+      },
+      "claude-plus": {
+        "name": "Claude+",
+        "description": "Тёплые ivory-поверхности с clay terracotta — настроение Claude+ для терминала."
       }
     }
   },

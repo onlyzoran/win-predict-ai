@@ -32,8 +32,17 @@
 
           var paletteRaw = localStorage.getItem('color-palette-preferences')
           var palettePrefs = paletteRaw ? JSON.parse(paletteRaw) : null
-          var lightPalette = palettePrefs && palettePrefs.light === 'zinc' ? 'zinc' : 'slate-teal'
-          var darkPalette = palettePrefs && palettePrefs.dark === 'zinc' ? 'zinc' : 'slate-teal'
+          var supportedPalettes = ['zinc', 'slate-teal', 'claude-plus']
+          var defaultPalette = 'slate-teal'
+          function resolvePalette(value) {
+            return supportedPalettes.indexOf(value) !== -1 ? value : defaultPalette
+          }
+          var lightPalette = palettePrefs
+            ? resolvePalette(palettePrefs.light)
+            : defaultPalette
+          var darkPalette = palettePrefs
+            ? resolvePalette(palettePrefs.dark)
+            : defaultPalette
           document.documentElement.setAttribute('data-palette', isDark ? darkPalette : lightPalette)
         } catch (_) {}
       })()
