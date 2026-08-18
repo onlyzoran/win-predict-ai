@@ -2,8 +2,12 @@
 import type { Component } from 'vue'
 import { computed, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IconBallFootball } from '@onlyzoran/win-predict-ai-icons'
-import { IconChartSankey, IconReplace, IconTable } from '@tabler/icons-vue'
+import {
+  IconBallFootball,
+  IconChartSankey,
+  IconReplace,
+  IconTable,
+} from '@onlyzoran/win-predict-ai-icons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@onlyzoran/win-predict-ai-ui'
 import { Progress } from '@/components/ui/progress'
 import MlbPlayoffBracket from '@/components/MlbPlayoffBracket.vue'
