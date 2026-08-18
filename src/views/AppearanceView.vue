@@ -23,7 +23,7 @@ function selectDarkPalette(palette: ColorPalette) {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-2xl px-4 py-8 pt-20 sm:px-6">
+  <div class="mx-auto w-full max-w-2xl px-4 py-8 pt-20 sm:px-6 lg:max-w-4xl">
     <RouterLink
       to="/"
       class="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -55,19 +55,19 @@ function selectDarkPalette(palette: ColorPalette) {
       <section>
         <h2 class="mb-1 text-sm font-medium text-foreground">{{ t('appearance.lightMode') }}</h2>
         <p class="mb-4 text-sm text-muted-foreground">{{ t('appearance.lightModeHint') }}</p>
-        <div class="grid gap-3 sm:grid-cols-2">
+        <div class="grid items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <button
             v-for="palette in COLOR_PALETTES"
             :key="`light-${palette}`"
             type="button"
-            class="text-left"
+            class="h-full w-full text-left"
             :aria-pressed="palettePreferences.light === palette"
             @click="selectLightPalette(palette)"
           >
             <Card
               :class="
                 cn(
-                  'transition-colors hover:border-ring/50',
+                  'h-full transition-colors hover:border-ring/50',
                   palettePreferences.light === palette && 'border-primary ring-2 ring-ring/30',
                 )
               "
@@ -76,7 +76,7 @@ function selectDarkPalette(palette: ColorPalette) {
                 <CardTitle class="text-base">{{ t(`appearance.palettes.${palette}.name`) }}</CardTitle>
                 <CardDescription>{{ t(`appearance.palettes.${palette}.description`) }}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent class="mt-auto">
                 <div
                   :data-palette="palette"
                   class="overflow-hidden rounded-lg border"
@@ -105,19 +105,19 @@ function selectDarkPalette(palette: ColorPalette) {
       <section>
         <h2 class="mb-1 text-sm font-medium text-foreground">{{ t('appearance.darkMode') }}</h2>
         <p class="mb-4 text-sm text-muted-foreground">{{ t('appearance.darkModeHint') }}</p>
-        <div class="grid gap-3 sm:grid-cols-2">
+        <div class="grid items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <button
             v-for="palette in COLOR_PALETTES"
             :key="`dark-${palette}`"
             type="button"
-            class="text-left"
+            class="h-full w-full text-left"
             :aria-pressed="palettePreferences.dark === palette"
             @click="selectDarkPalette(palette)"
           >
             <Card
               :class="
                 cn(
-                  'transition-colors hover:border-ring/50',
+                  'h-full transition-colors hover:border-ring/50',
                   palettePreferences.dark === palette && 'border-primary ring-2 ring-ring/30',
                 )
               "
@@ -126,7 +126,7 @@ function selectDarkPalette(palette: ColorPalette) {
                 <CardTitle class="text-base">{{ t(`appearance.palettes.${palette}.name`) }}</CardTitle>
                 <CardDescription>{{ t(`appearance.palettes.${palette}.description`) }}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent class="mt-auto">
                 <div
                   :data-palette="palette"
                   class="dark overflow-hidden rounded-lg border"

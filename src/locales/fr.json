@@ -63,6 +63,10 @@
       "slate-teal": {
         "name": "Slate + Teal",
         "description": "Surfaces slate froides avec accent teal pour les données et actions."
+      },
+      "claude-plus": {
+        "name": "Claude+",
+        "description": "Surfaces ivoire chaudes avec accent terracotta clay — ambiance Claude+ pour le terminal."
       }
     }
   },
