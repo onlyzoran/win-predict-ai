@@ -84,6 +84,19 @@ function handlePinClick() {
 }
 
 const visibleTeams = computed<TeamProbability[]>(() => {
+  const othersRow = props.teams.find((team) => team.id === 'others')
+  if (othersRow) {
+    const topTeams = props.teams.filter((team) => team.id !== 'others')
+    const othersCount = othersRow.othersCount ?? 0
+    return [
+      ...topTeams,
+      {
+        ...othersRow,
+        name: t('team.others', { count: othersCount }),
+      },
+    ]
+  }
+
   const restCount = Math.max(0, props.teams.length - TOP_TEAMS_COUNT)
 
   return aggregateTopTeams(props.teams, {

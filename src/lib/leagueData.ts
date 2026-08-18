@@ -2,6 +2,7 @@ import type {
   ContestFactsFile,
   ContestFactsIndex,
   ContestParticipantsFile,
+  ContestPredictionCardFile,
   ContestPredictionFile,
   League,
   LeagueEntry,
@@ -10,6 +11,7 @@ import type {
   LeagueManifest,
   LeagueSlot,
   StandingRow,
+  TeamProbability,
   TournamentLayout,
 } from '@/types/league'
 import { getSportIcon, sportIcons } from '@/lib/sportIcons'
@@ -17,6 +19,7 @@ import {
   factsIndexToHistoryDays,
   factsToHistorySnapshot,
   factsToStandingRows,
+  predictionCardToTeams,
   predictionToEntries,
   resolveContestStandingsRelativePath,
 } from '@/lib/contestData'
@@ -136,6 +139,28 @@ export async function loadContestLeaguePayload(contestPath: string): Promise<{
   }
 }
 
+export function resolveContestCardPath(contestPath: string): string {
+  return `${normalizeContestPath(contestPath)}/predictions/card.json`
+}
+
+export async function loadContestCardPayload(contestPath: string): Promise<TeamProbability[]> {
+  const card = await fetchJsonWithRetry<ContestPredictionCardFile>(resolveContestCardPath(contestPath))
+  return predictionCardToTeams(card)
+}
+
+export async function loadLeagueCardPayload(config: LeagueManifest): Promise<TeamProbability[]> {
+  if (isContestsLayout(config)) {
+    return loadContestCardPayload(config.contestPath!)
+  }
+
+  if (!config.file) {
+    throw new Error(`Legacy league "${config.id}" is missing file`)
+  }
+
+  const entries = await fetchJsonWithRetry<LeagueEntry[]>(config.file)
+  return toTeams(entries)
+}
+
 export async function loadLegacyLeaguePayload(config: LeagueManifest): Promise<{
   entries: LeagueEntry[]
   standings: StandingRow[] | null
@@ -219,6 +244,25 @@ export function toLeague(
   standings?: StandingRow[] | null,
 ): League {
   const teams = standings ? mergeStandings(toTeams(entries), standings) : toTeams(entries)
+  const layout = resolveLayout(config)
+
+  return {
+    id: config.id,
+    title: config.title,
+    fullTitle: config.fullTitle,
+    teams,
+    sport: config.sport,
+    icon: getSportIcon(config.sport) ?? sportIcons.football,
+    progress: getTournamentProgress(config.startDate, config.endDate, config.endDateTo),
+    startDate: config.startDate,
+    endDate: config.endDateTo || config.endDate,
+    popularPriority: config.popularPriority,
+    layout,
+    contestPath: layout === 'contests' ? config.contestPath : undefined,
+  }
+}
+
+export function toLeagueFromCardTeams(config: LeagueManifest, teams: TeamProbability[]): League {
   const layout = resolveLayout(config)
 
   return {

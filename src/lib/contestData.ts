@@ -3,11 +3,13 @@ import type {
   ContestFactsIndex,
   ContestParticipant,
   ContestParticipantsFile,
+  ContestPredictionCardFile,
   ContestPredictionFile,
   LeagueEntry,
   LeagueHistoryDays,
   LeagueHistorySnapshot,
   StandingRow,
+  TeamProbability,
 } from '@/types/league'
 
 export function buildParticipantNameMap(
@@ -32,6 +34,15 @@ export function predictionToEntries(
     participantId: item.participantId,
     team: resolveParticipantName(item.participantId, names),
     win_predict: item.probability,
+  }))
+}
+
+export function predictionCardToTeams(card: ContestPredictionCardFile): TeamProbability[] {
+  return card.items.map((item) => ({
+    id: item.participantId,
+    name: item.name,
+    winProbability: item.probability,
+    ...(item.othersCount !== undefined ? { othersCount: item.othersCount } : {}),
   }))
 }
 
