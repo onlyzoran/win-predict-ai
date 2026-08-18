@@ -2,12 +2,8 @@
 import type { Component } from 'vue'
 import { computed, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
-import {
-  IconArrowsSort,
-  IconBallBaseball,
-  IconBallFootball,
-  IconCircleFilled,
-} from '@onlyzoran/win-predict-ai-icons'
+import { IconBallFootball } from '@onlyzoran/win-predict-ai-icons'
+import { IconChartSankey, IconReplace, IconTable } from '@tabler/icons-vue'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@onlyzoran/win-predict-ai-ui'
 import { Progress } from '@/components/ui/progress'
 import MlbPlayoffBracket from '@/components/MlbPlayoffBracket.vue'
@@ -127,15 +123,15 @@ const startCountdownLabel = computed(() => {
       <section class="flex justify-center px-4">
         <TabsList class="w-fit max-w-full" :aria-label="t('tournament.tabs.sections')">
           <TabsTrigger value="standings" variant="with-icon">
-            <IconCircleFilled aria-hidden="true" class="size-4" />
+            <IconTable aria-hidden="true" />
             {{ t('standings.title') }}
           </TabsTrigger>
           <TabsTrigger v-if="showRankMovementTab" value="movement" variant="with-icon">
-            <IconArrowsSort aria-hidden="true" />
+            <IconChartSankey aria-hidden="true" />
             {{ t('standings.rankMovement') }}
           </TabsTrigger>
           <TabsTrigger v-if="showPlayoffBracket" value="playoff" variant="with-icon">
-            <IconBallBaseball aria-hidden="true" />
+            <IconReplace aria-hidden="true" />
             {{ t('playoff.title') }}
           </TabsTrigger>
         </TabsList>
