@@ -86,6 +86,18 @@
     "add": "Fissa torneo",
     "remove": "Rimuovi fissaggio"
   },
+  "editMode": {
+    "label": "Modifica schede",
+    "enter": "Attiva modalità modifica",
+    "exit": "Esci dalla modalità modifica"
+  },
+  "hide": {
+    "action": "Nascondi torneo"
+  },
+  "hidden": {
+    "panel": "Tornei nascosti",
+    "restore": "Mostra torneo"
+  },
   "sports": {
     "all": "Tutti",
     "football": "Calcio",

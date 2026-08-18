@@ -75,12 +75,27 @@ describe('TeamProbabilityList', () => {
     expect(wrapper.text()).toContain('Team E')
   })
 
-  it('emits pin with id and current pinned state', async () => {
-    const wrapper = await mountList({ pinned: false })
+  it('does not show pin or hide controls outside edit mode', async () => {
+    const wrapper = await mountList({ pinned: false, editMode: false })
+
+    expect(wrapper.find('button[aria-label="Pin tournament"]').exists()).toBe(false)
+    expect(wrapper.find('button[aria-label="Hide tournament"]').exists()).toBe(false)
+  })
+
+  it('emits pin with id and current pinned state in edit mode', async () => {
+    const wrapper = await mountList({ pinned: false, editMode: true })
 
     await wrapper.get('button[aria-label="Pin tournament"]').trigger('click')
 
     expect(wrapper.emitted('pin')).toEqual([['epl', false]])
+  })
+
+  it('emits hide with id in edit mode', async () => {
+    const wrapper = await mountList({ editMode: true })
+
+    await wrapper.get('button[aria-label="Hide tournament"]').trigger('click')
+
+    expect(wrapper.emitted('hide')).toEqual([['epl']])
   })
 
   it('emits preview with league payload', async () => {
