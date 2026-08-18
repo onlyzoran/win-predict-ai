@@ -5,9 +5,9 @@ import SportFilter from '@/components/SportFilter.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleton.vue'
 import TournamentDetails from '@/components/TournamentDetails.vue'
+import { useLeaguePreview } from '@/composables/useLeaguePreview'
 import { useLeagues } from '@/composables/useLeagues'
 import { usePinnedTournaments } from '@/composables/usePinnedTournaments'
-import type { SelectedLeague } from '@/types/league'
 import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
 import { Button } from '@/components/ui/button'
@@ -27,6 +27,7 @@ const {
   retryFailed,
 } = useLeagues()
 const { pinnedTournaments, handlePin } = usePinnedTournaments()
+const { isPreviewOpen, previewLeague, isPreviewLoading, openPreview } = useLeaguePreview()
 
 const selectedSport = ref<Sport | 'all'>('all')
 const searchQuery = ref('')
@@ -45,9 +46,6 @@ const sortedSlots = computed(() =>
 const visibleSlots = computed(() => sortedSlots.value.slice(0, visibleCount.value))
 const hasPendingSlots = computed(() => visibleSlots.value.some((slot) => !slot.league))
 const hasMore = computed(() => sortedSlots.value.length > visibleCount.value)
-
-const isPreviewOpen = ref(false)
-const selectedLeague = ref<SelectedLeague | null>(null)
 
 watch(
   () => visibleSlots.value.map((slot) => slot.id),
@@ -93,10 +91,6 @@ useIntersectionObserver(
   },
 )
 
-function handlePreview(league: SelectedLeague) {
-  selectedLeague.value = league
-  isPreviewOpen.value = true
-}
 </script>
 
 <template>
@@ -147,7 +141,7 @@ function handlePreview(league: SelectedLeague) {
             :icon="slot.league.icon"
             :pinned="pinnedTournaments.includes(slot.league.id)"
             @pin="handlePin"
-            @preview="handlePreview"
+            @preview="openPreview"
           />
           <TeamProbabilityListSkeleton v-else />
         </template>
@@ -164,18 +158,22 @@ function handlePreview(league: SelectedLeague) {
       <SheetContent>
         <SheetHeader class="sr-only">
           <SheetTitle>
-            {{ selectedLeague?.fullTitle || selectedLeague?.title }}
+            {{ previewLeague?.fullTitle || previewLeague?.title }}
           </SheetTitle>
         </SheetHeader>
-        <div v-if="selectedLeague" class="overflow-y-auto p-4">
+        <div v-if="previewLeague" class="overflow-y-auto p-4">
+          <p v-if="isPreviewLoading" class="text-sm text-muted-foreground">
+            {{ $t('data.loading') }}
+          </p>
           <TournamentDetails
-            :title="selectedLeague.title"
-            :full-title="selectedLeague.fullTitle"
-            :teams="selectedLeague.teams"
-            :progress="selectedLeague.progress"
-            :start-date="selectedLeague.startDate"
-            :end-date="selectedLeague.endDate"
-            :icon="selectedLeague.icon"
+            v-else
+            :title="previewLeague.title"
+            :full-title="previewLeague.fullTitle"
+            :teams="previewLeague.teams"
+            :progress="previewLeague.progress"
+            :start-date="previewLeague.startDate"
+            :end-date="previewLeague.endDate"
+            :icon="previewLeague.icon"
             compact
           />
         </div>
