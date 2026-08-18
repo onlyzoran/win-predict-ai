@@ -70,6 +70,18 @@ function mountDetails(props: Record<string, unknown> = {}) {
       stubs: {
         WinProbabilityPieChart: PieStub,
         StandingsRankChart: RankChartStub,
+        Tabs: {
+          template: '<div class="tabs-stub"><slot /></div>',
+        },
+        TabsList: {
+          template: '<div data-slot="tabs-list" role="tablist"><slot /></div>',
+        },
+        TabsTrigger: {
+          template: '<button type="button" role="tab"><slot /></button>',
+        },
+        TabsContent: {
+          template: '<div role="tabpanel"><slot /></div>',
+        },
       },
     },
   })
@@ -106,14 +118,31 @@ describe('TournamentDetails', () => {
     expect(wrapper.text()).toContain('Team F')
   })
 
+  it('renders detail tabs when showChart is true and compact is false', async () => {
+    const wrapper = mountDetails({ showChart: true })
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Standings')
+    expect(wrapper.find('[data-slot="tabs-list"]').exists()).toBe(true)
+  })
+
+  it('does not render detail tabs in compact preview', async () => {
+    const wrapper = mountDetails({ compact: true, showChart: true })
+    await flushPromises()
+
+    expect(wrapper.find('[data-slot="tabs-list"]').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Standings movement')
+  })
+
   it('does not render rank chart when history is unavailable', async () => {
     const wrapper = mountDetails({ showChart: true, leagueId: 'mlb' })
     await flushPromises()
 
     expect(wrapper.find('[data-testid="standings-rank-chart"]').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Standings movement')
   })
 
-  it('renders rank chart when multi-day history is available', async () => {
+  it('renders rank chart on the movement tab when multi-day history is available', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async (input) => {
@@ -156,6 +185,7 @@ describe('TournamentDetails', () => {
     const wrapper = mountDetails({ showChart: true, leagueId: 'mlb' })
     await flushPromises()
 
+    expect(wrapper.text()).toContain('Standings movement')
     expect(wrapper.find('[data-testid="standings-rank-chart"]').exists()).toBe(true)
   })
 
@@ -267,7 +297,7 @@ describe('TournamentDetails', () => {
     expect(text).not.toContain('.622')
   })
 
-  it('renders playoff projection for MLB detail view with AL and NL teams', async () => {
+  it('renders playoff projection on its tab for MLB detail view with AL and NL teams', async () => {
     const wrapper = mountDetails({
       showChart: true,
       title: 'MLB World Series',
@@ -297,12 +327,11 @@ describe('TournamentDetails', () => {
       ],
     })
     await flushPromises()
-    const text = wrapper.text()
 
-    expect(text).toContain('Playoff projection')
-    expect(text).toContain('World Series')
-    expect(text).toContain('Projected champion')
-    expect(text).toContain('Los Angeles Dodgers')
+    expect(wrapper.text()).toContain('Playoff projection')
+    expect(wrapper.text()).toContain('World Series')
+    expect(wrapper.text()).toContain('Projected champion')
+    expect(wrapper.text()).toContain('Los Angeles Dodgers')
   })
 
   it('does not render playoff projection in compact preview', async () => {

@@ -16,7 +16,13 @@
     "back": "Back",
     "notFound": "Tournament not found"
   },
+  "tournament": {
+    "tabs": {
+      "sections": "League detail sections"
+    }
+  },
   "standings": {
+    "title": "Standings",
     "team": "Team",
     "conf": "Conf",
     "pos": "Pos",
