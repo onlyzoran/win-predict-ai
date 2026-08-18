@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.39.6](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.5...v0.39.6) (2026-08-18)
+
+## [0.39.5](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.4...v0.39.5) (2026-08-18)
+
+## [0.39.4](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.3...v0.39.4) (2026-08-18)
+
+## [0.39.3](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.2...v0.39.3) (2026-08-18)
+
+## [0.39.2](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.1...v0.39.2) (2026-08-18)
+
 ## [0.39.1](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.0...v0.39.1) (2026-08-18)
 
 ## [0.39.0](https://github.com/onlyzoran/win-predict-ai/compare/v0.38.0...v0.39.0) (2026-08-18)
