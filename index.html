@@ -32,7 +32,7 @@
 
           var paletteRaw = localStorage.getItem('color-palette-preferences')
           var palettePrefs = paletteRaw ? JSON.parse(paletteRaw) : null
-          var supportedPalettes = ['zinc', 'slate-teal', 'claude-plus']
+          var supportedPalettes = ['zinc', 'slate-teal', 'claude-plus', 'pastel']
           var defaultPalette = 'slate-teal'
           function resolvePalette(value) {
             return supportedPalettes.indexOf(value) !== -1 ? value : defaultPalette

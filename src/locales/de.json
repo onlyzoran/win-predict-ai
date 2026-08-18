@@ -73,6 +73,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Warme Ivory-Oberflächen mit Clay-Terrakotta — Claude+-Stimmung fürs Terminal."
+      },
+      "pastel": {
+        "name": "Pastel",
+        "description": "Sanfte Lavendel-Neutrals mit Periwinkle-Akzent; Grün und Gelb für Spielergebnisse."
       }
     }
   },

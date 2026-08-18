@@ -73,6 +73,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Superfici avorio calde con accento terracotta clay — mood Claude+ per il terminale."
+      },
+      "pastel": {
+        "name": "Pastel",
+        "description": "Neutri lavanda morbidi con accento pervinca; verde e giallo per i risultati delle partite."
       }
     }
   },

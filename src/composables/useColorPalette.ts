@@ -1,14 +1,19 @@
 import { useColorMode, useStorage } from '@vueuse/core'
 import { computed, watch } from 'vue'
 
-export type ColorPalette = 'zinc' | 'slate-teal' | 'claude-plus'
+export type ColorPalette = 'zinc' | 'slate-teal' | 'claude-plus' | 'pastel'
 
 export interface PalettePreferences {
   light: ColorPalette
   dark: ColorPalette
 }
 
-export const COLOR_PALETTES: readonly ColorPalette[] = ['zinc', 'slate-teal', 'claude-plus'] as const
+export const COLOR_PALETTES: readonly ColorPalette[] = [
+  'zinc',
+  'slate-teal',
+  'claude-plus',
+  'pastel',
+] as const
 
 /** Light/dark mode before the user toggles ThemeToggle (`vueuse-color-scheme`). */
 export const DEFAULT_COLOR_SCHEME = 'auto' as const
@@ -30,7 +35,8 @@ function isColorPalette(value: unknown): value is ColorPalette {
   return (
     value === 'zinc' ||
     value === 'slate-teal' ||
-    value === 'claude-plus'
+    value === 'claude-plus' ||
+    value === 'pastel'
   )
 }
 
