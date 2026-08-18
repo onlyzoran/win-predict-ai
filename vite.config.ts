@@ -12,7 +12,7 @@ const { version } = JSON.parse(
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/win-predict-ai/',
+  base: process.env.VITE_BASE_PATH ?? '/win-predict-ai/',
   define: {
     __APP_VERSION__: JSON.stringify(version),
   },
