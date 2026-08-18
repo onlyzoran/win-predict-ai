@@ -23,7 +23,7 @@ function selectDarkPalette(palette: ColorPalette) {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-2xl px-4 py-8 pt-20 sm:px-6">
+  <div class="mx-auto w-full max-w-2xl px-4 py-8 pt-20 sm:px-6 lg:max-w-4xl">
     <RouterLink
       to="/"
       class="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
