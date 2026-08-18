@@ -4,9 +4,9 @@ import { computed, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
 import {
   IconArrowsSort,
+  IconBallBaseball,
   IconBallFootball,
-  IconFlag,
-  IconGripVertical,
+  IconCircleFilled,
 } from '@onlyzoran/win-predict-ai-icons'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@onlyzoran/win-predict-ai-ui'
 import { Progress } from '@/components/ui/progress'
@@ -118,10 +118,16 @@ const startCountdownLabel = computed(() => {
         </div>
       </div>
 
-      <Tabs v-if="useTabbedLayout" default-value="standings" class="mt-6 w-full">
-        <TabsList :aria-label="t('tournament.tabs.sections')">
+      <div v-if="!useTabbedLayout" class="mt-6">
+        <TournamentStandingsPanel :teams="teams" :compact="compact" :show-chart="showChart" />
+      </div>
+    </div>
+
+    <Tabs v-if="useTabbedLayout" default-value="standings" class="mt-6 w-full">
+      <section class="flex justify-center px-4">
+        <TabsList class="w-fit max-w-full" :aria-label="t('tournament.tabs.sections')">
           <TabsTrigger value="standings" variant="with-icon">
-            <IconGripVertical aria-hidden="true" />
+            <IconCircleFilled aria-hidden="true" class="size-4" />
             {{ t('standings.title') }}
           </TabsTrigger>
           <TabsTrigger v-if="showRankMovementTab" value="movement" variant="with-icon">
@@ -129,27 +135,27 @@ const startCountdownLabel = computed(() => {
             {{ t('standings.rankMovement') }}
           </TabsTrigger>
           <TabsTrigger v-if="showPlayoffBracket" value="playoff" variant="with-icon">
-            <IconFlag aria-hidden="true" />
+            <IconBallBaseball aria-hidden="true" />
             {{ t('playoff.title') }}
           </TabsTrigger>
         </TabsList>
+      </section>
 
-        <TabsContent value="standings" class="space-y-4">
+      <TabsContent value="standings" class="mt-4 space-y-4 px-4">
+        <div class="mx-auto w-full max-w-6xl">
           <TournamentStandingsPanel :teams="teams" :show-chart="showChart" />
-        </TabsContent>
+        </div>
+      </TabsContent>
 
-        <TabsContent v-if="showRankMovementTab" value="movement">
-          <StandingsRankChart :series="rankSeries!" class="w-full" />
-        </TabsContent>
+      <TabsContent v-if="showRankMovementTab" value="movement" class="mt-4 w-full">
+        <StandingsRankChart :series="rankSeries!" class="w-full" />
+      </TabsContent>
 
-        <TabsContent v-if="showPlayoffBracket" value="playoff">
+      <TabsContent v-if="showPlayoffBracket" value="playoff" class="mt-4 w-full px-4">
+        <div class="mx-auto w-full max-w-6xl">
           <MlbPlayoffBracket :teams="teams" class="w-full" />
-        </TabsContent>
-      </Tabs>
-
-      <div v-else class="mt-6">
-        <TournamentStandingsPanel :teams="teams" :compact="compact" :show-chart="showChart" />
-      </div>
-    </div>
+        </div>
+      </TabsContent>
+    </Tabs>
   </div>
 </template>
