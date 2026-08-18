@@ -44,6 +44,28 @@
     "switchToLight": "Switch to light mode",
     "switchToDark": "Switch to dark mode"
   },
+  "appearance": {
+    "openSettings": "Appearance settings",
+    "shortLabel": "Appearance",
+    "title": "Appearance",
+    "subtitle": "Choose a color scheme for light and dark mode independently.",
+    "defaultsNote": "Defaults for new users: Slate + Teal in both modes; light/dark follows your system setting until you change it in the header.",
+    "back": "Back to home",
+    "lightMode": "Light mode scheme",
+    "lightModeHint": "Applied when the app is in light mode.",
+    "darkMode": "Dark mode scheme",
+    "darkModeHint": "Applied when the app is in dark mode.",
+    "palettes": {
+      "zinc": {
+        "name": "Zinc",
+        "description": "Neutral shadcn palette without color tint."
+      },
+      "slate-teal": {
+        "name": "Slate + Teal",
+        "description": "Cool slate surfaces with a teal accent for data and actions."
+      }
+    }
+  },
   "language": {
     "label": "Language"
   },

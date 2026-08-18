@@ -44,6 +44,28 @@
     "switchToLight": "Passa alla modalità chiara",
     "switchToDark": "Passa alla modalità scura"
   },
+  "appearance": {
+    "openSettings": "Impostazioni aspetto",
+    "shortLabel": "Aspetto",
+    "title": "Aspetto",
+    "subtitle": "Scegli uno schema colore per la modalità chiara e uno per la scura.",
+    "defaultsNote": "Predefinito per i nuovi utenti: Slate + Teal in entrambe le modalità; chiaro/scuro segue l'impostazione di sistema finché non lo cambi nell'intestazione.",
+    "back": "Torna alla home",
+    "lightMode": "Schema per modalità chiara",
+    "lightModeHint": "Applicato quando la modalità chiara è attiva.",
+    "darkMode": "Schema per modalità scura",
+    "darkModeHint": "Applicato quando la modalità scura è attiva.",
+    "palettes": {
+      "zinc": {
+        "name": "Zinc",
+        "description": "Palette shadcn neutra senza tinta cromatica."
+      },
+      "slate-teal": {
+        "name": "Slate + Teal",
+        "description": "Superfici slate fredde con accento teal per dati e azioni."
+      }
+    }
+  },
   "language": {
     "label": "Lingua"
   },
