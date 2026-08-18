@@ -16,7 +16,13 @@
     "back": "Retour",
     "notFound": "Tournoi introuvable"
   },
+  "tournament": {
+    "tabs": {
+      "sections": "Sections du tournoi"
+    }
+  },
   "standings": {
+    "title": "Classement",
     "team": "Équipe",
     "conf": "Conf",
     "pos": "Pos",

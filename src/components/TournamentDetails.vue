@@ -2,19 +2,22 @@
 import type { Component } from 'vue'
 import { computed, toRefs } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { IconBallFootball } from '@onlyzoran/win-predict-ai-icons'
-import { Badge } from '@/components/ui/badge'
+import {
+  IconArrowsSort,
+  IconBallFootball,
+  IconFlag,
+  IconGripVertical,
+} from '@onlyzoran/win-predict-ai-icons'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@onlyzoran/win-predict-ai-ui'
 import { Progress } from '@/components/ui/progress'
-import { Separator } from '@/components/ui/separator'
 import MlbPlayoffBracket from '@/components/MlbPlayoffBracket.vue'
 import StandingsRankChart from '@/components/StandingsRankChart.vue'
-import WinProbabilityPieChart from '@/components/WinProbabilityPieChart.vue'
+import TournamentStandingsPanel from '@/components/TournamentStandingsPanel.vue'
 import { useLeagueHistoryRanks } from '@/composables/useLeagueHistoryRanks'
 import type { TeamProbability, TournamentLayout } from '@/types/league'
 import { locale } from '@/i18n'
 import { canBuildMlbBracket } from '@/lib/mlbPlayoffBracket'
-import { abbreviateGroup, formatRecord, formatWinPercent, hasWinsStandings } from '@/lib/standings'
-import { formatDate, formatPercent, formatSeason, getDaysSince, getDaysUntil } from '@/lib/utils'
+import { formatDate, formatSeason, getDaysSince, getDaysUntil } from '@/lib/utils'
 
 const props = withDefaults(
   defineProps<{
@@ -48,6 +51,8 @@ const props = withDefaults(
 const { startDate, endDate, teams } = toRefs(props)
 const { t } = useI18n()
 
+const useTabbedLayout = computed(() => props.showChart && !props.compact)
+
 const historySource = computed(() =>
   props.showChart && !props.compact && props.leagueId
     ? {
@@ -62,10 +67,10 @@ const { series: rankSeries } = useLeagueHistoryRanks(historySource)
 const daysUntilStart = computed(() => getDaysUntil(startDate.value))
 const daysUntilEnd = computed(() => getDaysUntil(endDate.value))
 const daysSinceStart = computed(() => getDaysSince(startDate.value))
-const showStandings = computed(() => hasWinsStandings(teams.value))
 const showPlayoffBracket = computed(
   () => !props.compact && props.showChart && canBuildMlbBracket(teams.value),
 )
+const showRankMovementTab = computed(() => Boolean(rankSeries.value))
 
 const startCountdownLabel = computed(() => {
   if (daysUntilStart.value === null) {
@@ -113,118 +118,38 @@ const startCountdownLabel = computed(() => {
         </div>
       </div>
 
-      <div
-        class="mt-6"
-        :class="
-          showChart
-            ? 'grid items-start gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,240px)] lg:grid-cols-[minmax(0,1fr)_minmax(0,280px)]'
-            : undefined
-        "
-      >
-        <div v-if="showStandings" class="min-w-0 overflow-x-auto">
-          <table
-            class="w-full table-fixed border-collapse text-sm"
-            :class="compact ? undefined : 'md:min-w-[34rem]'"
-          >
-            <colgroup>
-              <col />
-              <template v-if="!compact">
-                <col class="hidden w-11 md:table-column" />
-                <col class="hidden w-9 md:table-column" />
-                <col class="hidden w-10 md:table-column" />
-              </template>
-              <col class="w-16 md:w-14" />
-              <col v-if="!compact" class="hidden w-11 md:table-column" />
-              <col class="w-16 md:w-14" />
-            </colgroup>
-            <thead>
-              <tr class="text-xs font-medium text-muted-foreground">
-                <th class="pb-2 pr-3 text-left font-medium">{{ t('standings.team') }}</th>
-                <template v-if="!compact">
-                  <th class="hidden pb-2 text-center font-medium md:table-cell">
-                    {{ t('standings.conf') }}
-                  </th>
-                  <th class="hidden pb-2 text-center font-medium md:table-cell">
-                    {{ t('standings.pos') }}
-                  </th>
-                  <th class="hidden pb-2 text-center font-medium md:table-cell">
-                    {{ t('standings.gp') }}
-                  </th>
-                </template>
-                <th class="pb-2 text-center font-medium">{{ t('standings.record') }}</th>
-                <th v-if="!compact" class="hidden pb-2 text-center font-medium md:table-cell">
-                  {{ t('standings.pct') }}
-                </th>
-                <th class="pb-2 text-center font-medium">{{ t('standings.winChance') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(team, index) in teams"
-                :key="team.id"
-                class="border-border"
-                :class="index < teams.length - 1 ? 'border-b' : undefined"
-              >
-                <td class="truncate py-2 pr-3 font-medium">{{ team.name }}</td>
-                <template v-if="!compact">
-                  <td
-                    class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell"
-                  >
-                    {{ team.standings ? abbreviateGroup(team.standings.group) : '—' }}
-                  </td>
-                  <td
-                    class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell"
-                  >
-                    {{ team.standings?.playoffSeed || '—' }}
-                  </td>
-                  <td
-                    class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell"
-                  >
-                    {{ team.standings?.played ?? '—' }}
-                  </td>
-                </template>
-                <td class="py-2 text-center tabular-nums text-muted-foreground">
-                  <template v-if="team.standings">
-                    {{ formatRecord(team.standings.wins, team.standings.losses) }}
-                  </template>
-                  <template v-else>—</template>
-                </td>
-                <td
-                  v-if="!compact"
-                  class="hidden py-2 text-center tabular-nums text-muted-foreground md:table-cell"
-                >
-                  {{ team.standings ? formatWinPercent(team.standings.winPercent) : '—' }}
-                </td>
-                <td class="py-2">
-                  <div class="flex justify-center">
-                    <Badge variant="secondary" class="shrink-0">
-                      {{ formatPercent(team.winProbability) }}
-                    </Badge>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <Tabs v-if="useTabbedLayout" default-value="standings" class="mt-6 w-full">
+        <TabsList :aria-label="t('tournament.tabs.sections')">
+          <TabsTrigger value="standings" variant="with-icon">
+            <IconGripVertical aria-hidden="true" />
+            {{ t('standings.title') }}
+          </TabsTrigger>
+          <TabsTrigger v-if="showRankMovementTab" value="movement" variant="with-icon">
+            <IconArrowsSort aria-hidden="true" />
+            {{ t('standings.rankMovement') }}
+          </TabsTrigger>
+          <TabsTrigger v-if="showPlayoffBracket" value="playoff" variant="with-icon">
+            <IconFlag aria-hidden="true" />
+            {{ t('playoff.title') }}
+          </TabsTrigger>
+        </TabsList>
 
-        <div v-else>
-          <div v-for="(team, index) in teams" :key="team.id">
-            <div class="flex items-center justify-between gap-3 py-2">
-              <span class="truncate font-medium">{{ team.name }}</span>
-              <Badge variant="secondary" class="shrink-0">
-                {{ formatPercent(team.winProbability) }}
-              </Badge>
-            </div>
-            <Separator v-if="index < teams.length - 1" />
-          </div>
-        </div>
+        <TabsContent value="standings" class="space-y-4">
+          <TournamentStandingsPanel :teams="teams" :show-chart="showChart" />
+        </TabsContent>
 
-        <WinProbabilityPieChart v-if="showChart" :teams="teams" class="md:sticky md:top-20" />
+        <TabsContent v-if="showRankMovementTab" value="movement">
+          <StandingsRankChart :series="rankSeries!" class="w-full" />
+        </TabsContent>
+
+        <TabsContent v-if="showPlayoffBracket" value="playoff">
+          <MlbPlayoffBracket :teams="teams" class="w-full" />
+        </TabsContent>
+      </Tabs>
+
+      <div v-else class="mt-6">
+        <TournamentStandingsPanel :teams="teams" :compact="compact" :show-chart="showChart" />
       </div>
     </div>
-
-    <MlbPlayoffBracket v-if="showPlayoffBracket" :teams="teams" class="mt-8 w-full" />
-
-    <StandingsRankChart v-if="rankSeries" :series="rankSeries" class="mt-8 w-full" />
   </div>
 </template>
