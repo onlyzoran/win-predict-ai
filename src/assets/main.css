@@ -4,7 +4,7 @@
 @source "../../node_modules/@onlyzoran/win-predict-ai-ui/dist";
 @import 'tw-animate-css';
 @import '@onlyzoran/win-predict-ai-ui/themes';
-@import '@onlyzoran/win-predict-ai-ui/themes/claude-plus.css';
+@import '../../node_modules/@onlyzoran/win-predict-ai-ui/src/themes/claude-plus.css';
 
 @custom-variant dark (&:is(.dark *));
 
