@@ -2,8 +2,8 @@ import { computed, onMounted, ref } from 'vue'
 import type { LeagueManifest, LeagueSlot } from '@/types/league'
 import {
   fetchLeaguesManifest,
-  loadLeaguePayload,
-  toLeague,
+  loadLeagueCardPayload,
+  toLeagueFromCardTeams,
   toSlot,
 } from '@/lib/leagueData'
 
@@ -23,9 +23,9 @@ export function useLeagues() {
   const failedCount = computed(() => failedConfigs.value.length)
 
   async function loadLeague(config: LeagueManifest) {
-    const { entries, standings } = await loadLeaguePayload(config)
+    const teams = await loadLeagueCardPayload(config)
     slots.value = slots.value.map((slot) =>
-      slot.id === config.id ? { ...slot, league: toLeague(config, entries, standings) } : slot,
+      slot.id === config.id ? { ...slot, league: toLeagueFromCardTeams(config, teams) } : slot,
     )
   }
 

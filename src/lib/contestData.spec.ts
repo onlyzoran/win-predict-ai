@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   factsIndexToHistoryDays,
   factsToStandingRows,
+  predictionCardToTeams,
   predictionToEntries,
   resolveContestStandingsRelativePath,
 } from './contestData'
@@ -9,6 +10,7 @@ import type {
   ContestFactsFile,
   ContestFactsIndex,
   ContestParticipantsFile,
+  ContestPredictionCardFile,
   ContestPredictionFile,
 } from '@/types/league'
 
@@ -142,5 +144,41 @@ describe('contestData adapters', () => {
         '2026-03-25',
       ),
     ).toBe('standings/2026-03-25.json')
+  })
+
+  it('maps prediction card items to team probabilities with others metadata', () => {
+    const card: ContestPredictionCardFile = {
+      kind: 'predictionCard',
+      contestId: 'mlb-world-series-26',
+      date: '2026-08-18',
+      topN: 5,
+      items: [
+        {
+          participantId: 'los-angeles-dodgers',
+          name: 'Los Angeles Dodgers',
+          probability: 7.89,
+        },
+        {
+          participantId: 'others',
+          name: 'Others',
+          probability: 73.6,
+          othersCount: 25,
+        },
+      ],
+    }
+
+    expect(predictionCardToTeams(card)).toEqual([
+      {
+        id: 'los-angeles-dodgers',
+        name: 'Los Angeles Dodgers',
+        winProbability: 7.89,
+      },
+      {
+        id: 'others',
+        name: 'Others',
+        winProbability: 73.6,
+        othersCount: 25,
+      },
+    ])
   })
 })

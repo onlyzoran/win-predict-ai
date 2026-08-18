@@ -80,6 +80,26 @@ export interface ContestPredictionFile {
   items: ContestPredictionItem[]
 }
 
+export interface ContestPredictionCardItem {
+  participantId: string
+  name: string
+  probability: number
+  othersCount?: number
+}
+
+export interface ContestPredictionCardFile {
+  kind: 'predictionCard'
+  contestId: string
+  date: string
+  generatedAt?: string
+  basedOnFactsDate?: string
+  basedOnTour?: number | null
+  target?: string
+  unit?: string
+  topN?: number
+  items: ContestPredictionCardItem[]
+}
+
 export interface ContestFactsRow {
   participantId: string
   played?: number
@@ -139,6 +159,8 @@ export interface TeamProbability {
   name: string
   winProbability: number
   standings?: TeamStandings
+  /** Set on pre-aggregated card "others" rows from predictionCard snapshots. */
+  othersCount?: number
 }
 
 export interface League {
