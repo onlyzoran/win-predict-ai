@@ -4,7 +4,7 @@ import type { Component } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { IconBallFootball, IconPin, IconPinnedOff } from '@onlyzoran/win-predict-ai-icons'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@onlyzoran/win-predict-ai-ui'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -109,7 +109,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
 <template>
   <Card class="w-full p-0 sm:max-w-xs sm:min-w-3xs">
     <CardHeader class="px-4 pt-4">
-      <div class="flex justify-between">
+      <div class="flex min-h-8 items-center justify-between">
         <CardTitle class="flex items-center gap-2">
           <component :is="icon" class="size-4" />
           {{ displayTitle }}
