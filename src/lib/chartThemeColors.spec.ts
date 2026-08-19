@@ -136,10 +136,9 @@ describe('chartThemeColors', () => {
     })
   })
 
-  describe.each([
-    ['slate-teal-dark', 'slate-teal'],
-    ['claude-plus-dark', 'claude-plus'],
-  ] as const)('dark Others color %s', (themeKey) => {
+  describe.each(['slate-teal-dark', 'claude-plus-dark'] as const)(
+    'dark Others color %s',
+    (themeKey) => {
     it('uses muted surface instead of light muted-foreground', () => {
       applyThemeVars(themeKey)
       document.documentElement.classList.add('dark')
