@@ -1,10 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, ref, type MaybeRefOrGetter } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import {
   useLeagueHistoryRanks,
   type LeagueHistorySource,
 } from './useLeagueHistoryRanks'
+import { createTestQueryClient } from '@/test/query'
 
 function jsonResponse(data: unknown) {
   return {
@@ -23,6 +25,7 @@ function errorResponse(status = 404) {
 
 function mountComposable(source: MaybeRefOrGetter<LeagueHistorySource | undefined>) {
   let api!: ReturnType<typeof useLeagueHistoryRanks>
+  const queryClient = createTestQueryClient()
 
   mount(
     defineComponent({
@@ -31,6 +34,11 @@ function mountComposable(source: MaybeRefOrGetter<LeagueHistorySource | undefine
         return () => h('div')
       },
     }),
+    {
+      global: {
+        plugins: [[VueQueryPlugin, { queryClient }]],
+      },
+    },
   )
 
   return api
