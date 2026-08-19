@@ -161,21 +161,21 @@ const RETRY_DELAY_MS = 400
 | Механизм | Когда срабатывает | Зачем |
 | --- | --- | --- |
 | `staleTime` | Истёк TTL свежести для query key | Разная «живучесть» manifest vs dated snapshot |
-| `refetchOnMount` | Комponent смонтирован, данные stale | Возврат home ↔ tournament подтягивает новое без полного спиннера |
+| `refetchOnMount` | Component смонтирован, данные stale | Возврат home ↔ tournament подтягивает новое без полного спиннера |
 | `refetchOnWindowFocus` | Пользователь вернулся на вкладку, данные stale | После правки в admin / деплоя JSON данные подтянутся при фокусе |
 | `refetchOnReconnect` | Сеть восстановилась | Актуализация после offline |
 | `refetchInterval` | Опционально, для «живых» contest | Только если product захочет polling во время тура |
 | `queryClient.invalidateQueries()` | Явный вызов (кнопка «Обновить», post-mutation) | Принудительный refetch без ожидания TTL |
 
-**Предлагаемые `staleTime` по типу данных** (стартовые значения, уточняются с product):
+**Предлагаемые `staleTime` по типу данных** (согласованы с расписанием backend — см. следующую секцию):
 
 | Query key | Источник | `staleTime` | Обоснование |
 | --- | --- | --- | --- |
 | `['manifest']` | `leagues.json` (API) | **30–60 s** | Меняется при действиях в admin; короткий TTL + refetch on focus |
-| `['league', id]` | legacy/contest payload | **2–5 min** | Прогнозы обновляются пайплайном, не каждую секунду |
-| `['contest-prediction', path]` | `predictions/latest.json` | **1–2 min** | Актуальнее legacy; при необходимости — `refetchInterval` в дни тура |
+| `['league', id]` | legacy/contest payload | **2–4 h** | Contest-прогнозы — раз в сутки; legacy — реже; кэш для UX, не polling |
+| `['contest-prediction', path]` | `predictions/latest.json` | **2–4 h** | Backend: ~1 push/сутки (21:00 UTC); короткий TTL не нужен |
 | `['sports']` | sports catalog | **15–30 min** | Редко меняется |
-| `['history-days', id]` | `days.json` / facts index | **5 min** | Индекс растёт, snapshots — immutable |
+| `['history-days', id]` | `days.json` / facts index | **2–4 h** | Индекс растёт каждые 8 h (standings); snapshots — immutable |
 | `['history-snapshot', id, date]` | dated JSON | **∞** (или 24 h) | Файл с датой в пути не меняется; refetch только при invalidate |
 
 **Что видит пользователь**
@@ -193,7 +193,43 @@ Persist plugin **не отменяет** устаревание: при стар
 
 - Push/real-time (WebSocket) — не нужен для текущей модели «статический JSON + manifest API».
 - Мгновенное отражение правки admin **без** refetch — нужен либо короткий `staleTime` для manifest, либо invalidate с admin-side hook (вне scope SPA).
-- Contest «live» во время матча — только через осознанный `refetchInterval` или ручное обновление; иначе достаточно 1–2 min stale + focus.
+- Contest «live» во время матча — **не соответствует текущему пайплайну** (см. расписание ниже): `refetchInterval` имеет смысл только если backend начнёт обновлять чаще раза в сутки.
+
+#### Расписание обновления backend (`win-predict-ai-data`)
+
+SPA читает JSON с GitHub Pages (`VITE_DATA_BASE_URL`); manifest — с admin API (`VITE_LEAGUES_URL`). Обновление файлов в data-репо **не push/real-time** — batch-пайплайн:
+
+| Что обновляется | Механизм | Расписание (UTC) | Затронутые пути в SPA |
+| --- | --- | --- | --- |
+| Standings / facts snapshots | GitHub Action [`snapshot-standings.yml`](https://github.com/onlyzoran/win-predict-ai-data/blob/main/.github/workflows/snapshot-standings.yml) | **Каждые 8 h** — `0 */8 * * *` (00:00, 08:00, 16:00) | `history/{id}/*.json`, `contests/*/facts/standings/*`, `facts/latest.json`, `facts/index.json`, `days.json` |
+| Contest predictions (14 лиг) | Cursor cloud agent `win-predict-all-refresh` | **~1×/сутки** — push после standings или cron fallback **21:00 UTC** (`0 21 * * *`); список: `data/contests/prediction-refresh.json` | `predictions/latest.json`, `predictions/card.json`, dated `predictions/YYYY-MM-DD.json` |
+| Legacy league JSON | Тот же snapshot для history; прогнозы — вне ежедневного agent для contest-лиг | History: каждые 8 h; `{league}.json` — вручную / отдельно | `data/{league}.json`, `history/{id}/` |
+| Manifest `leagues.json` (fallback) | Коммит в data / синхронизация с admin | По событию | Только если `VITE_LEAGUES_URL` не задан |
+| Manifest (admin API) | SQLite, панель admin | **Сразу** при сохранении | `VITE_LEAGUES_URL` → `/api/leagues.json` |
+| Sports catalog | Admin API | Редко, по событию | `VITE_SPORTS_URL` |
+
+**Задержка доставки:** после push в `main` data-репо GitHub Pages пересобирается (~1–5 min). Клиентский refetch подхватит новое только после деплоя Pages + истечения `staleTime` или триггера focus/mount.
+
+#### Согласованность варианта B с расписанием
+
+**Вывод: план реализации (stale-while-revalidate + dedup) соответствует batch-модели backend; стартовые `staleTime` из первой версии аудита (1–2 min для predictions) — **не соответствовали** фактической частоте обновлений и пересмотрены выше.**
+
+| Аспект | Backend-реальность | Как ведёт себя вариант B | Вердикт |
+| --- | --- | --- | --- |
+| Частота predictions | ~1×/сутки (21 UTC) + возможный push после standings | `staleTime` 2–4 h + `refetchOnWindowFocus` — без лишнего polling каждые 1–2 min | ✅ согласовано после правки TTL |
+| Standings / history index | Каждые 8 h | `staleTime` 2–4 h на index; dated snapshots — ∞ | ✅ index обновится при следующем refetch после deploy |
+| Manifest admin | Мгновенно | `staleTime` 30–60 s | ✅ |
+| Долгая вкладка без focus | Новые данные после 21 UTC / 8 h cron | После `staleTime` (2–4 h) данные stale → refetch при mount или focus; иначе — кнопка «Обновить» | ⚠️ tab open > staleTime без focus — edge case; focus-refetch закрывает типичный сценарий |
+| `refetchInterval` polling | Нет sub-hour обновлений | **Не включать** по умолчанию — не даст более свежих данных, только лишний трафик | ✅ |
+| Service Worker cache-first (вариант C) | Batch + Pages delay | Риск показа вчерашнего `latest.json` дольше, чем при Query + focus refetch | ⚠️ C менее согласован с cron, чем B |
+
+**Практическая политика для реализации B:**
+
+1. **`latest.json` / league payload:** `staleTime: 2–4 h`, `refetchOnWindowFocus: true`, `refetchOnMount: true` (refetch только если stale).
+2. **После известного окна деплоя (≈21:30 UTC):** опционально `refetchOnReconnect` или ручной invalidate — не обязательно, focus покрывает большинство случаев.
+3. **Dated snapshots:** `staleTime: Infinity` — файл с датой в URL не перезаписывается cron'ом.
+4. **Manifest API:** короткий TTL (30–60 s) — не зависит от data-cron.
+5. **Не полагаться на `refetchInterval`** до смены пайплайна на более частые обновления.
 
 ```ts
 // Пример политики для manifest (иллюстрация, не код PR)
@@ -244,7 +280,7 @@ useQuery({
 - [ ] Кэш sports catalog (shared, один fetch на сессию)
 - [ ] Кэш history: `days.json` + snapshots по `(source, date)`
 - [ ] Единая политика retry (3× с backoff?) или делегирование Query
-- [ ] `staleTime`: manifest 30–60 s, static JSON 5–15 min (уточнить с product)
+- [ ] `staleTime`: manifest 30–60 s; `latest.json`/payload 2–4 h (согласовано с daily/8h cron data); dated snapshots ∞
 - [ ] Тесты: dedup, stale hit, navigation без лишних fetch (mock `fetch`)
 - [ ] Документировать ожидания от `Cache-Control` на API
 
