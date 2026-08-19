@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import {
   IconBallFootball,
   IconChartSankey,
+  IconEyeOpen,
   IconReplace,
   IconTable,
 } from '@onlyzoran/win-predict-ai-icons'
@@ -12,8 +13,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@onlyzoran/win-predict
 import { Progress } from '@/components/ui/progress'
 import MlbPlayoffBracket from '@/components/MlbPlayoffBracket.vue'
 import StandingsRankChart from '@/components/StandingsRankChart.vue'
+import TournamentFactsPanel from '@/components/TournamentFactsPanel.vue'
 import TournamentStandingsPanel from '@/components/TournamentStandingsPanel.vue'
 import { useLeagueHistoryRanks } from '@/composables/useLeagueHistoryRanks'
+import { useTournamentFacts } from '@/composables/useTournamentFacts'
 import type { TeamProbability, TournamentLayout } from '@/types/league'
 import { locale } from '@/i18n'
 import { canBuildMlbBracket } from '@/lib/mlbPlayoffBracket'
@@ -63,6 +66,7 @@ const historySource = computed(() =>
     : undefined,
 )
 const { series: rankSeries } = useLeagueHistoryRanks(historySource)
+const { snapshot: factsSnapshot } = useTournamentFacts(historySource)
 
 const daysUntilStart = computed(() => getDaysUntil(startDate.value))
 const daysUntilEnd = computed(() => getDaysUntil(endDate.value))
@@ -71,6 +75,7 @@ const showPlayoffBracket = computed(
   () => !props.compact && props.showChart && canBuildMlbBracket(teams.value),
 )
 const showRankMovementTab = computed(() => Boolean(rankSeries.value))
+const showFactsTab = computed(() => Boolean(factsSnapshot.value?.rows.length))
 
 const startCountdownLabel = computed(() => {
   if (daysUntilStart.value === null) {
@@ -134,6 +139,10 @@ const startCountdownLabel = computed(() => {
             <IconChartSankey aria-hidden="true" />
             {{ t('standings.rankMovement') }}
           </TabsTrigger>
+          <TabsTrigger v-if="showFactsTab" value="facts" variant="with-icon">
+            <IconEyeOpen aria-hidden="true" />
+            {{ t('facts.title') }}
+          </TabsTrigger>
           <TabsTrigger v-if="showPlayoffBracket" value="playoff" variant="with-icon">
             <IconReplace aria-hidden="true" />
             {{ t('playoff.title') }}
@@ -143,7 +152,13 @@ const startCountdownLabel = computed(() => {
 
       <TabsContent value="standings" class="mt-4 space-y-4 px-4">
         <div class="mx-auto w-full max-w-6xl">
-          <TournamentStandingsPanel :teams="teams" :show-chart="showChart" />
+          <TournamentStandingsPanel :teams="teams" :show-chart="showChart" predictions-only />
+        </div>
+      </TabsContent>
+
+      <TabsContent v-if="showFactsTab" value="facts" class="mt-4 px-4">
+        <div class="mx-auto w-full max-w-6xl">
+          <TournamentFactsPanel :snapshot="factsSnapshot!" />
         </div>
       </TabsContent>
 
