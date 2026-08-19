@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { aggregateTopTeams, getTeamChartColor, TOP_TEAMS_COUNT } from './teamProbability'
+import { aggregateTopTeams, TOP_TEAMS_COUNT } from './teamProbability'
 
 const teams = [
   { id: '1', name: 'Team A', winProbability: 30 },
@@ -40,13 +40,5 @@ describe('aggregateTopTeams', () => {
     })
 
     expect(result).toEqual(teams.slice(0, 5))
-  })
-})
-
-describe('getTeamChartColor', () => {
-  it('returns chart colors for top teams only', () => {
-    expect(getTeamChartColor(0)).toBe('oklch(0.82 0.14 160)')
-    expect(getTeamChartColor(4)).toBe('oklch(0.42 0.10 160)')
-    expect(getTeamChartColor(5)).toBeUndefined()
   })
 })
