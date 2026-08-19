@@ -1,12 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
-import { VueQueryPlugin } from '@tanstack/vue-query'
 import App from '../App.vue'
 import HomeView from '@/views/HomeView.vue'
 import TournamentView from '@/views/TournamentView.vue'
 import { i18n } from '@/i18n'
-import { createTestQueryClient } from '@/test/query'
 
 const manifest = [
   {
@@ -77,11 +75,9 @@ async function mountApp(initialPath = '/') {
   await router.push(initialPath)
   await router.isReady()
 
-  const queryClient = createTestQueryClient()
-
   return mount(App, {
     global: {
-      plugins: [i18n, router, [VueQueryPlugin, { queryClient }]],
+      plugins: [i18n, router],
     },
   })
 }

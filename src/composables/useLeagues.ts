@@ -1,59 +1,39 @@
-import { computed, ref } from 'vue'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { computed, onMounted, ref } from 'vue'
 import type { LeagueManifest, LeagueSlot } from '@/types/league'
-import { fetchLeaguesManifest, toSlot } from '@/lib/leagueData'
-import { fetchLeagueCardTeams, toLeagueCard } from '@/lib/dataQueries'
-import { STALE_TIME } from '@/lib/queryClient'
-import { queryKeys } from '@/lib/queryKeys'
+import {
+  fetchLeaguesManifest,
+  loadLeagueCardPayload,
+  toLeagueFromCardTeams,
+  toSlot,
+} from '@/lib/leagueData'
 
 const INITIAL_BATCH_SIZE = 12
 
 export function useLeagues() {
-  const queryClient = useQueryClient()
-
-  const manifestQuery = useQuery({
-    queryKey: queryKeys.manifest,
-    queryFn: () => fetchLeaguesManifest<LeagueManifest[]>(),
-    staleTime: STALE_TIME.manifest,
-  })
-
-  const configs = computed(() => manifestQuery.data.value ?? [])
-  const isManifestLoading = computed(() => manifestQuery.isLoading.value)
-  const loadError = computed(() =>
-    manifestQuery.error.value instanceof Error ? manifestQuery.error.value.message : null,
-  )
-
-  const slotOverrides = ref<Map<string, LeagueSlot['league']>>(new Map())
-  const failedIds = ref<string[]>([])
+  const slots = ref<LeagueSlot[]>([])
+  const configs = ref<LeagueManifest[]>([])
+  const isManifestLoading = ref(true)
+  const loadError = ref<string | null>(null)
+  const failedConfigs = ref<LeagueManifest[]>([])
   const loadingIds = ref<string[]>([])
-  const isRetrying = ref(false)
-
-  const slots = computed<LeagueSlot[]>(() =>
-    configs.value.map((config) => {
-      const base = toSlot(config)
-      const league = slotOverrides.value.get(config.id)
-      return league ? { ...base, league } : base
-    }),
-  )
-
   const initialBatchSize = INITIAL_BATCH_SIZE
   const isLoadingMore = computed(() => loadingIds.value.length > 0)
-  const failedCount = computed(() => failedIds.value.length)
+  const isRetrying = ref(false)
+
+  const failedCount = computed(() => failedConfigs.value.length)
 
   async function loadLeague(config: LeagueManifest) {
-    const teams = await fetchLeagueCardTeams(queryClient, config)
-    slotOverrides.value = new Map(slotOverrides.value).set(
-      config.id,
-      toLeagueCard(config, teams),
+    const teams = await loadLeagueCardPayload(config)
+    slots.value = slots.value.map((slot) =>
+      slot.id === config.id ? { ...slot, league: toLeagueFromCardTeams(config, teams) } : slot,
     )
   }
 
   async function loadLeagues(configBatch: LeagueManifest[]) {
     const pending = configBatch.filter(
       (config) =>
-        !slotOverrides.value.has(config.id) &&
-        !loadingIds.value.includes(config.id) &&
-        !failedIds.value.includes(config.id),
+        !slots.value.some((slot) => slot.id === config.id && slot.league) &&
+        !loadingIds.value.includes(config.id),
     )
 
     if (pending.length === 0) {
@@ -66,7 +46,10 @@ export function useLeagues() {
       try {
         await loadLeague(config)
       } catch {
-        failedIds.value = [...failedIds.value.filter((id) => id !== config.id), config.id]
+        slots.value = slots.value.filter((slot) => slot.id !== config.id)
+        if (!failedConfigs.value.some((failedConfig) => failedConfig.id === config.id)) {
+          failedConfigs.value = [...failedConfigs.value, config]
+        }
       } finally {
         loadingIds.value = loadingIds.value.filter((loadingId) => loadingId !== config.id)
       }
@@ -86,16 +69,14 @@ export function useLeagues() {
   }
 
   async function retryFailed() {
-    if (isRetrying.value || failedIds.value.length === 0) {
+    if (isRetrying.value || failedConfigs.value.length === 0) {
       return
     }
 
     isRetrying.value = true
-    const toRetry = failedIds.value
-      .map((id) => configs.value.find((config) => config.id === id))
-      .filter((config): config is LeagueManifest => Boolean(config))
-
-    failedIds.value = []
+    const toRetry = failedConfigs.value
+    failedConfigs.value = []
+    slots.value = [...slots.value, ...toRetry.map(toSlot)]
 
     try {
       await loadLeagues(toRetry)
@@ -103,6 +84,17 @@ export function useLeagues() {
       isRetrying.value = false
     }
   }
+
+  onMounted(async () => {
+    try {
+      configs.value = await fetchLeaguesManifest<LeagueManifest[]>()
+      slots.value = configs.value.map(toSlot)
+      isManifestLoading.value = false
+    } catch (error) {
+      loadError.value = error instanceof Error ? error.message : 'Failed to load data'
+      isManifestLoading.value = false
+    }
+  })
 
   return {
     slots,

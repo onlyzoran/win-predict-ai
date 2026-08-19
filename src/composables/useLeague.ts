@@ -1,43 +1,42 @@
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
+import { onMounted, ref, watch, type MaybeRefOrGetter, toValue } from 'vue'
 import type { League } from '@/types/league'
-import { fetchLeague } from '@/lib/dataQueries'
-import { STALE_TIME } from '@/lib/queryClient'
-import { queryKeys } from '@/lib/queryKeys'
+import { loadLeagueById } from '@/lib/leagueData'
 
 export function useLeague(id: MaybeRefOrGetter<string>) {
-  const queryClient = useQueryClient()
-  const leagueId = computed(() => toValue(id))
+  const league = ref<League | null>(null)
+  const isLoading = ref(true)
+  const notFound = ref(false)
+  const loadError = ref<string | null>(null)
 
-  const query = useQuery({
-    queryKey: computed(() => queryKeys.league(leagueId.value)),
-    queryFn: () => fetchLeague(queryClient, leagueId.value),
-    staleTime: STALE_TIME.leaguePayload,
-    enabled: computed(() => Boolean(leagueId.value)),
-  })
+  async function load() {
+    const leagueId = toValue(id)
+    isLoading.value = true
+    notFound.value = false
+    loadError.value = null
+    league.value = null
 
-  const league = computed<League | null>(() => query.data.value ?? null)
-  const isLoading = computed(() => query.isLoading.value)
-  const notFound = computed(
-    () =>
-      Boolean(leagueId.value) &&
-      !isLoading.value &&
-      !query.isError.value &&
-      query.data.value === null,
-  )
-  const loadError = computed(() =>
-    query.error.value instanceof Error ? query.error.value.message : null,
-  )
-
-  async function reload() {
-    await query.refetch()
+    try {
+      const result = await loadLeagueById(leagueId)
+      if (!result) {
+        notFound.value = true
+      } else {
+        league.value = result
+      }
+    } catch (error) {
+      loadError.value = error instanceof Error ? error.message : 'Failed to load data'
+    } finally {
+      isLoading.value = false
+    }
   }
+
+  onMounted(load)
+  watch(() => toValue(id), load)
 
   return {
     league,
     isLoading,
     notFound,
     loadError,
-    reload,
+    reload: load,
   }
 }
