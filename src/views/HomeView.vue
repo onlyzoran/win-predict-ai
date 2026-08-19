@@ -7,13 +7,14 @@ import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleto
 import TournamentDetails from '@/components/TournamentDetails.vue'
 import { useLeaguePreview } from '@/composables/useLeaguePreview'
 import { useLeagues } from '@/composables/useLeagues'
+import { useHiddenTournaments } from '@/composables/useHiddenTournaments'
 import { usePinnedTournaments } from '@/composables/usePinnedTournaments'
 import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { locale } from '@/i18n'
-import { filterSlots, sortSlotsWithPinned } from '@/lib/tournaments'
+import { excludeHiddenSlots, filterSlots, slotIdsForLoading, sortSlotsWithPinned } from '@/lib/tournaments'
 
 const {
   slots,
@@ -27,20 +28,42 @@ const {
   retryFailed,
 } = useLeagues()
 const { pinnedTournaments, handlePin } = usePinnedTournaments()
+const { hiddenTournaments, handleHide, handleRestore } = useHiddenTournaments()
 const { isPreviewOpen, previewLeague, isPreviewLoading, openPreview } = useLeaguePreview()
 
 const selectedSport = ref<Sport | 'all'>('all')
 const searchQuery = ref('')
 const sortMode = useStorage<SortMode>('tournamentSort', 'popular')
+const editMode = ref(false)
 const visibleCount = ref(initialBatchSize)
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 
-const filteredSlots = computed(() =>
+const sportFilteredSlots = computed(() =>
   filterSlots(slots.value, selectedSport.value, searchQuery.value),
 )
 
+const displaySlots = computed(() =>
+  excludeHiddenSlots(sportFilteredSlots.value, hiddenTournaments.value),
+)
+
 const sortedSlots = computed(() =>
-  sortSlotsWithPinned(filteredSlots.value, pinnedTournaments.value, sortMode.value, locale.value),
+  sortSlotsWithPinned(displaySlots.value, pinnedTournaments.value, sortMode.value, locale.value),
+)
+
+const hiddenItems = computed(() =>
+  hiddenTournaments.value
+    .map((id) => {
+      const slot = slots.value.find((entry) => entry.id === id)
+      if (!slot) {
+        return null
+      }
+
+      return {
+        id,
+        title: slot.league?.title ?? slot.sortTitle ?? id,
+      }
+    })
+    .filter((item): item is { id: string; title: string } => item !== null),
 )
 
 const visibleSlots = computed(() => sortedSlots.value.slice(0, visibleCount.value))
@@ -70,7 +93,7 @@ watch(searchQuery, async (query) => {
     return
   }
 
-  await loadNextBatch(slots.value.map((slot) => slot.id))
+  await loadNextBatch(slotIdsForLoading(slots.value, hiddenTournaments.value))
 })
 
 useIntersectionObserver(
@@ -95,7 +118,14 @@ useIntersectionObserver(
 
 <template>
   <div class="flex flex-1 flex-col">
-    <SportFilter v-model="selectedSport" v-model:search="searchQuery" v-model:sort="sortMode" />
+    <SportFilter
+      v-model="selectedSport"
+      v-model:search="searchQuery"
+      v-model:sort="sortMode"
+      v-model:edit-mode="editMode"
+      :hidden-items="hiddenItems"
+      @restore="handleRestore"
+    />
     <main class="flex flex-1 flex-wrap items-start justify-start gap-4 px-4 py-4">
       <template v-if="isManifestLoading">
         <span class="sr-only">{{ $t('data.loading') }}</span>
@@ -140,7 +170,9 @@ useIntersectionObserver(
             :end-date="slot.league.endDate"
             :icon="slot.league.icon"
             :pinned="pinnedTournaments.includes(slot.league.id)"
+            :edit-mode="editMode"
             @pin="handlePin"
+            @hide="handleHide"
             @preview="openPreview"
           />
           <TeamProbabilityListSkeleton v-else />

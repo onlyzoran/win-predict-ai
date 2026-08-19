@@ -86,6 +86,18 @@
     "add": "Turnier anheften",
     "remove": "Turnier lösen"
   },
+  "editMode": {
+    "label": "Karten bearbeiten",
+    "enter": "Bearbeitungsmodus aktivieren",
+    "exit": "Bearbeitungsmodus beenden"
+  },
+  "hide": {
+    "action": "Turnier ausblenden"
+  },
+  "hidden": {
+    "panel": "Ausgeblendete Turniere",
+    "restore": "Turnier einblenden"
+  },
   "sports": {
     "all": "Alle",
     "football": "Fußball",
