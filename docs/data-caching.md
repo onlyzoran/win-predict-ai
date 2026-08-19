@@ -152,6 +152,60 @@ const RETRY_DELAY_MS = 400
 | UX | Лучший стандарт: loading/error/retry, dedup, фоновое обновление без мигания |
 | Риски | Размер бандла (+~12 kB gzip); команда должна знать паттерн queries |
 
+#### Как не показывать устаревшие данные (вариант B)
+
+Кэш в TanStack Query **не означает «заморозить навсегда»**. Данные считаются **свежими** внутри `staleTime`; после этого — **устаревшими** (`stale`), но остаются в памяти и показываются пользователю, пока идёт фоновый refetch. Это паттерн **stale-while-revalidate**: мгновенный UI из кэша + тихое обновление, если на сервере появилось новое.
+
+**Механизмы обновления**
+
+| Механизм | Когда срабатывает | Зачем |
+| --- | --- | --- |
+| `staleTime` | Истёк TTL свежести для query key | Разная «живучесть» manifest vs dated snapshot |
+| `refetchOnMount` | Комponent смонтирован, данные stale | Возврат home ↔ tournament подтягивает новое без полного спиннера |
+| `refetchOnWindowFocus` | Пользователь вернулся на вкладку, данные stale | После правки в admin / деплоя JSON данные подтянутся при фокусе |
+| `refetchOnReconnect` | Сеть восстановилась | Актуализация после offline |
+| `refetchInterval` | Опционально, для «живых» contest | Только если product захочет polling во время тура |
+| `queryClient.invalidateQueries()` | Явный вызов (кнопка «Обновить», post-mutation) | Принудительный refetch без ожидания TTL |
+
+**Предлагаемые `staleTime` по типу данных** (стартовые значения, уточняются с product):
+
+| Query key | Источник | `staleTime` | Обоснование |
+| --- | --- | --- | --- |
+| `['manifest']` | `leagues.json` (API) | **30–60 s** | Меняется при действиях в admin; короткий TTL + refetch on focus |
+| `['league', id]` | legacy/contest payload | **2–5 min** | Прогнозы обновляются пайплайном, не каждую секунду |
+| `['contest-prediction', path]` | `predictions/latest.json` | **1–2 min** | Актуальнее legacy; при необходимости — `refetchInterval` в дни тура |
+| `['sports']` | sports catalog | **15–30 min** | Редко меняется |
+| `['history-days', id]` | `days.json` / facts index | **5 min** | Индекс растёт, snapshots — immutable |
+| `['history-snapshot', id, date]` | dated JSON | **∞** (или 24 h) | Файл с датой в пути не меняется; refetch только при invalidate |
+
+**Что видит пользователь**
+
+1. **Первый заход** — обычная загрузка (`isLoading`), как сейчас.
+2. **Повторная навигация в сессии** — данные из кэша **сразу**; если stale, параллельно `isFetching` (можно показать тонкий индикатор «Обновление…», не блокируя таблицу).
+3. **Данные на сервере обновились** — при следующем триггере (mount/focus/TTL) UI **заменится** новым JSON; пользователь не застревает на вечно старом снимке, если вкладка хоть иногда получает refetch.
+4. **Критично свежее** — кнопка «Обновить» на турнире: `invalidateQueries(['league', id])` + `invalidateQueries(['contest-prediction', path])` → принудительный fetch.
+
+**Persist (localStorage / IndexedDB) — опционально**
+
+Persist plugin **не отменяет** устаревание: при старте приложения hydrated данные помечаются stale и refetch'атся по тем же правилам (`refetchOnMount` / focus). Без persist риск «вчерашний JSON после перезагрузки вкладки» отсутствует — кэш только in-memory на сессию.
+
+**Чего вариант B сам не решает**
+
+- Push/real-time (WebSocket) — не нужен для текущей модели «статический JSON + manifest API».
+- Мгновенное отражение правки admin **без** refetch — нужен либо короткий `staleTime` для manifest, либо invalidate с admin-side hook (вне scope SPA).
+- Contest «live» во время матча — только через осознанный `refetchInterval` или ручное обновление; иначе достаточно 1–2 min stale + focus.
+
+```ts
+// Пример политики для manifest (иллюстрация, не код PR)
+useQuery({
+  queryKey: ['manifest'],
+  queryFn: fetchLeaguesManifest,
+  staleTime: 60_000,
+  refetchOnWindowFocus: true,
+  refetchOnMount: 'always', // или true — refetch только если stale
+})
+```
+
 ### C. Service Worker (Workbox) + HTTP Cache-Control на origin
 
 **Суть:** SW кэширует GET к `VITE_DATA_BASE_URL` (cache-first для versioned JSON); API manifest — network-first с коротким TTL на сервере.

@@ -18,7 +18,7 @@ VITE_DATA_BASE_URL=https://onlyzoran.github.io/win-predict-ai-data/data
 
 On load the app fetches the manifest, then per-league files (e.g. `epl-26-27.json`) with `{ "team": string, "win_predict": number }`.
 
-**Caching:** client-side caching is minimal (in-memory Maps for contest participants/facts index only; no TTL or session persist for predictions/history). Manifest and league payloads are refetched on each navigation/mount. See [docs/data-caching.md](docs/data-caching.md) for a full audit and improvement options.
+**Caching:** client-side caching is minimal (in-memory Maps for contest participants/facts index only; no TTL or session persist for predictions/history). Manifest and league payloads are refetched on each navigation/mount. See [docs/data-caching.md](docs/data-caching.md) for a full audit and improvement options (recommended: TanStack Query with per-source `staleTime` and background refetch so cached data stays fast without going stale).
 
 ### Local / alternate data source
 
