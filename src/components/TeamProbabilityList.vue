@@ -109,7 +109,7 @@ const visibleTeams = computed<TeamProbability[]>(() => {
 <template>
   <Card class="w-full p-0 sm:max-w-xs sm:min-w-3xs">
     <CardHeader class="px-4 pt-4">
-      <div class="flex justify-between">
+      <div class="flex min-h-8 items-center justify-between">
         <CardTitle class="flex items-center gap-2">
           <component :is="icon" class="size-4" />
           {{ displayTitle }}

@@ -9,7 +9,7 @@ const ROW_COUNT = 6
 <template>
   <Card class="w-full sm:max-w-xs sm:min-w-3xs p-0" aria-hidden="true">
     <CardHeader class="px-4 pt-4">
-      <div class="flex justify-between">
+      <div class="flex min-h-8 items-center justify-between">
         <div class="flex items-center gap-2">
           <Skeleton class="size-4 rounded-sm" />
           <Skeleton class="h-5 w-32" />
