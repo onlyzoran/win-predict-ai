@@ -32,6 +32,34 @@
     "winChance": "Chance",
     "rankMovement": "Évolution du classement"
   },
+  "facts": {
+    "title": "Données réelles",
+    "asOf": "Au {date}",
+    "columns": {
+      "rank": "Pos",
+      "team": "Équipe",
+      "group": "Conf",
+      "played": "MJ",
+      "wins": "V",
+      "draws": "N",
+      "losses": "D",
+      "goalsFor": "BP",
+      "goalsAgainst": "BC",
+      "goalDifference": "Diff",
+      "points": "Pts",
+      "winPercent": "PCT"
+    },
+    "glossary": {
+      "GP": "Matchs joués",
+      "W": "Victoires",
+      "D": "Nuls",
+      "L": "Défaites",
+      "GF": "Buts pour",
+      "GA": "Buts contre",
+      "GD": "Différence de buts",
+      "Pts": "Points"
+    }
+  },
   "playoff": {
     "title": "Projection playoffs",
     "subtitle": "Tableau projeté à partir des chances de gagner la World Series",

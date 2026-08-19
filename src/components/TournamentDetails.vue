@@ -18,6 +18,7 @@ import TournamentStandingsPanel from '@/components/TournamentStandingsPanel.vue'
 import { useLeagueHistoryRanks } from '@/composables/useLeagueHistoryRanks'
 import { useTournamentFacts } from '@/composables/useTournamentFacts'
 import type { TeamProbability, TournamentLayout } from '@/types/league'
+import type { Sport } from '@/types/sport'
 import { locale } from '@/i18n'
 import { canBuildMlbBracket } from '@/lib/mlbPlayoffBracket'
 import { formatDate, formatSeason, getDaysSince, getDaysUntil } from '@/lib/utils'
@@ -36,6 +37,7 @@ const props = withDefaults(
     leagueId?: string
     layout?: TournamentLayout
     contestPath?: string
+    sport?: Sport
   }>(),
   {
     fullTitle: undefined,
@@ -48,6 +50,7 @@ const props = withDefaults(
     leagueId: undefined,
     layout: 'legacy',
     contestPath: undefined,
+    sport: undefined,
   },
 )
 
@@ -158,7 +161,7 @@ const startCountdownLabel = computed(() => {
 
       <TabsContent v-if="showFactsTab" value="facts" class="mt-4 px-4">
         <div class="mx-auto w-full max-w-6xl">
-          <TournamentFactsPanel :snapshot="factsSnapshot!" />
+          <TournamentFactsPanel :snapshot="factsSnapshot!" :sport="sport" />
         </div>
       </TabsContent>
 

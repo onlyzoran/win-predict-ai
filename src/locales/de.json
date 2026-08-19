@@ -32,6 +32,34 @@
     "winChance": "Chance",
     "rankMovement": "Tabellenbewegung"
   },
+  "facts": {
+    "title": "Istdaten",
+    "asOf": "Stand {date}",
+    "columns": {
+      "rank": "Platz",
+      "team": "Team",
+      "group": "Conf",
+      "played": "Sp",
+      "wins": "S",
+      "draws": "U",
+      "losses": "N",
+      "goalsFor": "TF",
+      "goalsAgainst": "TG",
+      "goalDifference": "Diff",
+      "points": "Pkt",
+      "winPercent": "PCT"
+    },
+    "glossary": {
+      "GP": "Gespielte Spiele",
+      "W": "Siege",
+      "D": "Unentschieden",
+      "L": "Niederlagen",
+      "GF": "Tore für",
+      "GA": "Tore gegen",
+      "GD": "Tordifferenz",
+      "Pts": "Punkte"
+    }
+  },
   "playoff": {
     "title": "Playoff-Prognose",
     "subtitle": "Bracket aus World-Series-Siegchancen abgeleitet",
