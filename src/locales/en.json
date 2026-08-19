@@ -32,6 +32,22 @@
     "winChance": "Win %",
     "rankMovement": "Standings movement"
   },
+  "facts": {
+    "title": "Actual data",
+    "asOf": "As of {date}",
+    "columns": {
+      "rank": "Pos",
+      "team": "Team",
+      "group": "Conf",
+      "played": "GP",
+      "wins": "W",
+      "draws": "D",
+      "losses": "L",
+      "goalDifference": "GD",
+      "points": "Pts",
+      "winPercent": "PCT"
+    }
+  },
   "playoff": {
     "title": "Playoff projection",
     "subtitle": "Bracket projected from World Series win odds",

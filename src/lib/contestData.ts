@@ -64,6 +64,9 @@ export function factsRowsToStandings(
     group: row.group ?? '',
     rank: row.rank,
     sourceRank: row.sourceRank,
+    goalsFor: row.goalsFor,
+    goalsAgainst: row.goalsAgainst,
+    goalDifference: row.goalDifference,
   }))
 }
 

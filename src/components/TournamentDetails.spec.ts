@@ -368,4 +368,114 @@ describe('TournamentDetails', () => {
 
     expect(wrapper.text()).not.toContain('Playoff projection')
   })
+
+  it('does not render actual standings columns on the predictions tab in detail view', async () => {
+    const wrapper = mountDetails({
+      showChart: true,
+      leagueId: 'mlb',
+      title: 'MLB',
+      teams: [
+        {
+          id: '1',
+          name: 'Milwaukee Brewers',
+          winProbability: 18,
+          standings: {
+            group: 'National League',
+            playoffSeed: 1,
+            played: 111,
+            wins: 69,
+            losses: 42,
+            winPercent: 0.6216216,
+          },
+        },
+      ],
+    })
+    await flushPromises()
+    const text = wrapper.text()
+
+    expect(text).toContain('Milwaukee Brewers')
+    expect(text).toContain('18%')
+    expect(text).not.toContain('Conf')
+    expect(text).not.toContain('GP')
+    expect(text).not.toContain('69–42')
+    expect(text).not.toContain('.622')
+  })
+
+  it('shows the actual data tab when contest facts are available', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async (input) => {
+        const url = String(input)
+        if (url.endsWith('contests/rpl-26-27/facts/latest.json')) {
+          return jsonResponse({
+            kind: 'standings',
+            contestId: 'rpl-26-27',
+            date: '2026-08-11',
+            metric: 'points',
+            rows: [
+              {
+                participantId: 'krasnodar',
+                played: 3,
+                wins: 3,
+                draws: 0,
+                losses: 0,
+                points: 9,
+                rank: 1,
+                goalDifference: 5,
+              },
+              {
+                participantId: 'zenit-st-petersburg',
+                played: 3,
+                wins: 2,
+                draws: 1,
+                losses: 0,
+                points: 7,
+                rank: 2,
+                goalDifference: 3,
+              },
+            ],
+          })
+        }
+        if (url.endsWith('contests/rpl-26-27/participants.json')) {
+          return jsonResponse({
+            contestId: 'rpl-26-27',
+            participants: [
+              { id: 'krasnodar', name: 'Krasnodar' },
+              { id: 'zenit-st-petersburg', name: 'Zenit St Petersburg' },
+            ],
+          })
+        }
+        return errorResponse()
+      }),
+    )
+
+    const wrapper = mountDetails({
+      showChart: true,
+      leagueId: 'rpl-26-27',
+      layout: 'contests',
+      contestPath: 'contests/rpl-26-27',
+      title: 'RPL',
+    })
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Actual data')
+    expect(wrapper.text()).toContain('Krasnodar')
+    expect(wrapper.text()).toContain('Zenit St Petersburg')
+    expect(wrapper.text()).toContain('Pts')
+    expect(wrapper.text()).toContain('GD')
+    expect(wrapper.text()).toContain('As of')
+  })
+
+  it('hides the actual data tab when facts are unavailable', async () => {
+    const wrapper = mountDetails({
+      showChart: true,
+      leagueId: 'epl',
+      layout: 'contests',
+      contestPath: 'contests/epl-26-27',
+      title: 'EPL',
+    })
+    await flushPromises()
+
+    expect(wrapper.text()).not.toContain('Actual data')
+  })
 })

@@ -40,6 +40,16 @@ export interface StandingRow {
   rank?: number
   sourceRank?: number
   participantId?: string
+  goalsFor?: number
+  goalsAgainst?: number
+  goalDifference?: number
+}
+
+export interface TournamentFactsSnapshot {
+  date: string
+  metric: string
+  rows: StandingRow[]
+  fetchedAt?: string
 }
 
 export interface LeagueHistorySnapshot {
