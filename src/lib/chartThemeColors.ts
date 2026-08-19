@@ -6,7 +6,8 @@ export const TOP_CHART_COLOR_TOKENS = [
   '--chart-5',
 ] as const
 
-export const OTHERS_CHART_COLOR_TOKEN = '--muted-foreground'
+export const OTHERS_CHART_COLOR_TOKEN_LIGHT = '--muted-foreground'
+export const OTHERS_CHART_COLOR_TOKEN_DARK = '--muted'
 
 export const CHART_COLORS: readonly [string, string, string, string, string] = [
   'var(--chart-1)',
@@ -16,7 +17,13 @@ export const CHART_COLORS: readonly [string, string, string, string, string] = [
   'var(--chart-5)',
 ]
 
-export const OTHERS_CHART_COLOR = `var(${OTHERS_CHART_COLOR_TOKEN})`
+export function getOthersChartColorToken(isDark: boolean): string {
+  return isDark ? OTHERS_CHART_COLOR_TOKEN_DARK : OTHERS_CHART_COLOR_TOKEN_LIGHT
+}
+
+export function getOthersChartColor(isDark: boolean): string {
+  return cssVar(getOthersChartColorToken(isDark))
+}
 
 export function cssVar(token: string): string {
   return `var(${token})`
@@ -34,8 +41,9 @@ export function readTopChartColors(element?: Element): string[] {
   return TOP_CHART_COLOR_TOKENS.map((token) => readCssVariable(token, element))
 }
 
-export function readOthersChartColor(element?: Element): string {
-  return readCssVariable(OTHERS_CHART_COLOR_TOKEN, element)
+export function readOthersChartColor(element: Element = document.documentElement): string {
+  const isDark = element.classList.contains('dark')
+  return readCssVariable(getOthersChartColorToken(isDark), element)
 }
 
 export function getTeamChartColor(

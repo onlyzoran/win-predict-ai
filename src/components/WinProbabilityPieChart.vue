@@ -6,11 +6,12 @@ import { VisDonut, VisSingleContainer } from '@unovis/vue'
 import type { ChartConfig } from '@/components/ui/chart'
 import { ChartContainer, ChartTooltip, componentToString } from '@/components/ui/chart'
 import type { TeamProbability } from '@/types/league'
+import { useColorPalette } from '@/composables/useColorPalette'
 import { useChartThemeRevision } from '@/composables/useChartThemeColors'
 import {
   CHART_COLORS,
+  getOthersChartColor,
   getTeamChartColor,
-  OTHERS_CHART_COLOR,
 } from '@/lib/chartThemeColors'
 import { aggregateTopTeams, TOP_TEAMS_COUNT } from '@/lib/teamProbability'
 import WinProbabilityPieTooltip from '@/components/WinProbabilityPieTooltip.vue'
@@ -28,6 +29,7 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const { isDark } = useColorPalette()
 const chartThemeRevision = useChartThemeRevision()
 
 const slices = computed<PieSlice[]>(() => {
@@ -42,7 +44,9 @@ const slices = computed<PieSlice[]>(() => {
   return aggregated.map((team, index) => {
     const key = team.id === 'rest' ? 'others' : `team-${team.id}`
     const fill =
-      team.id === 'rest' ? OTHERS_CHART_COLOR : (getTeamChartColor(index) ?? CHART_COLORS[0])
+      team.id === 'rest'
+        ? getOthersChartColor(isDark.value)
+        : (getTeamChartColor(index) ?? CHART_COLORS[0])
 
     return {
       key,
