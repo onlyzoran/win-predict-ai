@@ -9,6 +9,8 @@ export type FactsColumnKey =
   | 'wins'
   | 'draws'
   | 'losses'
+  | 'goalsFor'
+  | 'goalsAgainst'
   | 'goalDifference'
   | 'points'
   | 'winPercent'
@@ -57,6 +59,14 @@ export function resolveFactsColumns(rows: StandingRow[], metric: string): FactsT
 
   if (rowHasValue(rows, 'losses')) {
     columns.push({ key: 'losses', align: 'center' })
+  }
+
+  if (rowHasValue(rows, 'goalsFor')) {
+    columns.push({ key: 'goalsFor', align: 'center' })
+  }
+
+  if (rowHasValue(rows, 'goalsAgainst')) {
+    columns.push({ key: 'goalsAgainst', align: 'center' })
   }
 
   if (rowHasValue(rows, 'goalDifference')) {
@@ -128,6 +138,10 @@ export function formatFactsCell(row: StandingRow, key: FactsColumnKey): string {
       return row.draws != null ? String(row.draws) : '—'
     case 'losses':
       return row.losses != null ? String(row.losses) : '—'
+    case 'goalsFor':
+      return row.goalsFor != null ? String(row.goalsFor) : '—'
+    case 'goalsAgainst':
+      return row.goalsAgainst != null ? String(row.goalsAgainst) : '—'
     case 'goalDifference':
       return row.goalDifference != null ? formatGoalDifference(row.goalDifference) : '—'
     case 'points':

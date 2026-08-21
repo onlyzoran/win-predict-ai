@@ -1,20 +1,26 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { StandingsGlossary } from '@onlyzoran/win-predict-ai-ui'
 import type { FactsColumnKey } from '@/lib/factsTable'
 import { formatFactsCell, resolveFactsColumns, sortFactsRows } from '@/lib/factsTable'
+import { isFootballSport, resolveFootballFactsGlossary } from '@/lib/factsGlossary'
+import type { Sport } from '@/types/sport'
 import type { TournamentFactsSnapshot } from '@/types/league'
 import { locale } from '@/i18n'
 import { formatDate } from '@/lib/utils'
 
 const props = defineProps<{
   snapshot: TournamentFactsSnapshot
+  sport?: Sport
 }>()
 
 const { t } = useI18n()
 
 const sortedRows = computed(() => sortFactsRows(props.snapshot.rows))
 const columns = computed(() => resolveFactsColumns(props.snapshot.rows, props.snapshot.metric))
+const showFootballGlossary = computed(() => isFootballSport(props.sport))
+const glossaryEntries = computed(() => resolveFootballFactsGlossary(t))
 
 const asOfDate = computed(() =>
   formatDate(props.snapshot.fetchedAt ?? props.snapshot.date, locale.value),
@@ -78,6 +84,8 @@ function headerClass(key: FactsColumnKey): string {
         </tbody>
       </table>
     </div>
+
+    <StandingsGlossary v-if="showFootballGlossary" :entries="glossaryEntries" />
 
     <p class="text-xs text-muted-foreground">
       {{ t('facts.asOf', { date: asOfDate }) }}

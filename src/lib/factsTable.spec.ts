@@ -11,6 +11,8 @@ describe('factsTable', () => {
       wins: 3,
       draws: 0,
       losses: 0,
+      goalsFor: 8,
+      goalsAgainst: 3,
       points: 9,
       goalDifference: 5,
       group: '',
@@ -22,13 +24,15 @@ describe('factsTable', () => {
       wins: 2,
       draws: 1,
       losses: 0,
+      goalsFor: 6,
+      goalsAgainst: 3,
       points: 7,
       goalDifference: 3,
       group: '',
     },
   ]
 
-  it('builds soccer columns with draws, goal difference, and points', () => {
+  it('builds soccer columns with goals for, goals against, goal difference, and points', () => {
     expect(resolveFactsColumns(soccerRows, 'points').map((column) => column.key)).toEqual([
       'rank',
       'team',
@@ -36,6 +40,8 @@ describe('factsTable', () => {
       'wins',
       'draws',
       'losses',
+      'goalsFor',
+      'goalsAgainst',
       'goalDifference',
       'points',
     ])

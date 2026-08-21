@@ -43,9 +43,21 @@
       "wins": "В",
       "draws": "Н",
       "losses": "П",
+      "goalsFor": "ЗМ",
+      "goalsAgainst": "ПМ",
       "goalDifference": "Разн",
       "points": "О",
       "winPercent": "PCT"
+    },
+    "glossary": {
+      "GP": "Сыграно матчей",
+      "W": "Победы",
+      "D": "Ничьи",
+      "L": "Поражения",
+      "GF": "Забито",
+      "GA": "Пропущено",
+      "GD": "Разница мячей",
+      "Pts": "Очки"
     }
   },
   "playoff": {
