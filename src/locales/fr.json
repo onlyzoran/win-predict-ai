@@ -73,6 +73,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Surfaces ivoire chaudes avec accent terracotta clay — ambiance Claude+ pour le terminal."
+      },
+      "nexora": {
+        "name": "Nexora",
+        "description": "Cockpit violet futuriste — surfaces verre et CTA en dégradé."
       }
     }
   },

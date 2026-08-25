@@ -72,6 +72,24 @@ const PALETTE_THEME_VARS = {
     '--muted': 'oklch(0.274 0.006 286.033)',
     '--muted-foreground': 'oklch(0.705 0.015 286.067)',
   },
+  'nexora-light': {
+    '--chart-1': 'oklch(0.52 0.22 277)',
+    '--chart-2': 'oklch(0.58 0.14 195)',
+    '--chart-3': 'oklch(0.62 0.16 55)',
+    '--chart-4': 'oklch(0.58 0.18 330)',
+    '--chart-5': 'oklch(0.54 0.15 150)',
+    '--muted': 'oklch(0.938 0.018 278 / 48%)',
+    '--muted-foreground': 'oklch(0.46 0.034 278)',
+  },
+  'nexora-dark': {
+    '--chart-1': 'oklch(0.68 0.19 277)',
+    '--chart-2': 'oklch(0.72 0.13 195)',
+    '--chart-3': 'oklch(0.76 0.15 55)',
+    '--chart-4': 'oklch(0.7 0.17 330)',
+    '--chart-5': 'oklch(0.7 0.14 150)',
+    '--muted': 'oklch(0.225 0.04 278 / 45%)',
+    '--muted-foreground': 'oklch(0.66 0.034 278)',
+  },
 } as const
 
 function applyThemeVars(themeKey: keyof typeof PALETTE_THEME_VARS) {
@@ -109,6 +127,8 @@ describe('chartThemeColors', () => {
     ['slate-teal-dark', 'slate-teal', true],
     ['claude-plus-light', 'claude-plus', false],
     ['claude-plus-dark', 'claude-plus', true],
+    ['nexora-light', 'nexora', false],
+    ['nexora-dark', 'nexora', true],
   ] as const)('palette %s', (themeKey, palette, dark) => {
     it('reads five distinct chart colors without green hue 160', () => {
       applyThemeVars(themeKey)
@@ -136,7 +156,7 @@ describe('chartThemeColors', () => {
     })
   })
 
-  describe.each(['slate-teal-dark', 'claude-plus-dark'] as const)(
+  describe.each(['slate-teal-dark', 'claude-plus-dark', 'nexora-dark'] as const)(
     'dark Others color %s',
     (themeKey) => {
     it('uses muted surface instead of light muted-foreground', () => {

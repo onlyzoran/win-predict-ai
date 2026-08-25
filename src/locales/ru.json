@@ -89,6 +89,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Тёплые ivory-поверхности с clay terracotta — настроение Claude+ для терминала."
+      },
+      "nexora": {
+        "name": "Nexora",
+        "description": "Футуристичный violet-кокpit — стеклянные поверхности и gradient CTA."
       }
     }
   },
