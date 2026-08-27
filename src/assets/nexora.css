@@ -1,0 +1,227 @@
+/*
+ * Nexora — synced with @onlyzoran/win-predict-ai-ui Storybook theme
+ * (.storybook/themes/nexora.css, Goal #25).
+ *
+ * UI-пакет пока не экспортирует themes/nexora.css в npm; после экспорта
+ * заменить импорт в main.css на @onlyzoran/win-predict-ai-ui/themes/nexora.css
+ * и удалить этот файл.
+ *
+ * Design Read: спортивный терминал прогнозов в духе Nexora — холодный футуристичный
+ * кокpit с violet-акцентом, вечерний и точный; не zinc-SaaS и не кислотный cyberpunk.
+ */
+
+[data-palette='nexora'] {
+  --radius: 0.75rem;
+  --nexora-glass-blur: 20px;
+  --nexora-glass-saturate: 1.35;
+
+  --background: oklch(0.962 0.014 278);
+  --foreground: oklch(0.22 0.042 278);
+  --card: oklch(0.988 0.012 278 / 62%);
+  --card-foreground: oklch(0.22 0.042 278);
+  --popover: oklch(0.995 0.01 278 / 72%);
+  --popover-foreground: oklch(0.22 0.042 278);
+  --primary: oklch(0.52 0.22 277);
+  --primary-foreground: oklch(0.98 0.012 277);
+  --secondary: oklch(0.928 0.022 278 / 55%);
+  --secondary-foreground: oklch(0.28 0.038 278);
+  --muted: oklch(0.938 0.018 278 / 48%);
+  --muted-foreground: oklch(0.46 0.034 278);
+  --accent: oklch(0.908 0.028 278 / 52%);
+  --accent-foreground: oklch(0.28 0.038 278);
+  --destructive: oklch(0.55 0.22 25);
+  --border: oklch(0.92 0.02 278 / 42%);
+  --input: oklch(0.898 0.02 278 / 58%);
+  --ring: oklch(0.52 0.22 277);
+  --chart-1: oklch(0.52 0.22 277);
+  --chart-2: oklch(0.58 0.14 195);
+  --chart-3: oklch(0.62 0.16 55);
+  --chart-4: oklch(0.58 0.18 330);
+  --chart-5: oklch(0.54 0.15 150);
+  --sidebar: oklch(0.975 0.016 278 / 52%);
+  --sidebar-foreground: oklch(0.24 0.04 278);
+  --sidebar-primary: oklch(0.52 0.22 277);
+  --sidebar-primary-foreground: oklch(0.98 0.012 277);
+  --sidebar-accent: oklch(0.908 0.028 278 / 45%);
+  --sidebar-accent-foreground: oklch(0.28 0.038 278);
+  --sidebar-border: oklch(0.92 0.02 278 / 38%);
+  --sidebar-ring: oklch(0.52 0.22 277);
+
+  --nexora-glass-highlight: oklch(1 0 0 / 14%);
+  --nexora-glass-shadow:
+    0 0 0 1px var(--nexora-glass-highlight) inset,
+    0 8px 32px oklch(0.52 0.22 277 / 10%),
+    0 2px 8px oklch(0.22 0.042 278 / 6%);
+}
+
+[data-palette='nexora'].dark {
+  --nexora-glass-blur: 24px;
+  --nexora-glass-saturate: 1.5;
+
+  --background: oklch(0.145 0.042 278);
+  --foreground: oklch(0.93 0.018 278);
+  --card: oklch(0.22 0.05 278 / 52%);
+  --card-foreground: oklch(0.93 0.018 278);
+  --popover: oklch(0.235 0.052 278 / 62%);
+  --popover-foreground: oklch(0.93 0.018 278);
+  --primary: oklch(0.68 0.19 277);
+  --primary-foreground: oklch(0.145 0.042 278);
+  --secondary: oklch(0.245 0.044 278 / 55%);
+  --secondary-foreground: oklch(0.93 0.018 278);
+  --muted: oklch(0.225 0.04 278 / 45%);
+  --muted-foreground: oklch(0.66 0.034 278);
+  --accent: oklch(0.265 0.052 278 / 50%);
+  --accent-foreground: oklch(0.93 0.018 278);
+  --destructive: oklch(0.65 0.19 22);
+  --border: oklch(0.72 0.04 278 / 18%);
+  --input: oklch(0.26 0.04 278 / 65%);
+  --ring: oklch(0.68 0.19 277);
+  --chart-1: oklch(0.68 0.19 277);
+  --chart-2: oklch(0.72 0.13 195);
+  --chart-3: oklch(0.76 0.15 55);
+  --chart-4: oklch(0.7 0.17 330);
+  --chart-5: oklch(0.7 0.14 150);
+  --sidebar: oklch(0.17 0.044 278 / 48%);
+  --sidebar-foreground: oklch(0.88 0.022 278);
+  --sidebar-primary: oklch(0.68 0.19 277);
+  --sidebar-primary-foreground: oklch(0.145 0.042 278);
+  --sidebar-accent: oklch(0.245 0.044 278 / 42%);
+  --sidebar-accent-foreground: oklch(0.88 0.022 278);
+  --sidebar-border: oklch(0.72 0.04 278 / 16%);
+  --sidebar-ring: oklch(0.68 0.19 277);
+
+  --nexora-glass-highlight: oklch(1 0 0 / 8%);
+  --nexora-glass-shadow:
+    0 0 0 1px var(--nexora-glass-highlight) inset,
+    0 12px 40px oklch(0.05 0.04 278 / 55%),
+    0 0 48px oklch(0.68 0.19 277 / 12%);
+}
+
+[data-palette='nexora'] .nexora-canvas {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 70% 55% at 12% 18%, oklch(0.68 0.19 277 / 22%), transparent 68%),
+    radial-gradient(ellipse 55% 45% at 88% 78%, oklch(0.58 0.14 195 / 16%), transparent 65%),
+    radial-gradient(ellipse 45% 38% at 72% 12%, oklch(0.62 0.16 55 / 10%), transparent 60%),
+    linear-gradient(145deg, oklch(0.975 0.018 278) 0%, oklch(0.94 0.022 285) 100%);
+}
+
+[data-palette='nexora'].dark .nexora-canvas {
+  background-image:
+    radial-gradient(ellipse 65% 50% at 8% 22%, oklch(0.68 0.19 277 / 28%), transparent 68%),
+    radial-gradient(ellipse 50% 42% at 92% 72%, oklch(0.58 0.14 195 / 18%), transparent 62%),
+    radial-gradient(ellipse 40% 35% at 65% 8%, oklch(0.58 0.18 330 / 12%), transparent 58%),
+    linear-gradient(160deg, oklch(0.13 0.044 278) 0%, oklch(0.11 0.038 285) 100%);
+}
+
+[data-palette='nexora'] .nexora-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.85;
+  background-image: inherit;
+  background-color: inherit;
+}
+
+[data-palette='nexora'] :is(
+    .bg-card,
+    .bg-sidebar,
+    .bg-popover,
+    .bg-secondary,
+    .bg-accent,
+    .bg-muted,
+    [class*='bg-card/'],
+    [class*='bg-sidebar/'],
+    [class*='bg-muted/'],
+    [class*='bg-background/']
+  ) {
+  -webkit-backdrop-filter: blur(var(--nexora-glass-blur)) saturate(var(--nexora-glass-saturate));
+  backdrop-filter: blur(var(--nexora-glass-blur)) saturate(var(--nexora-glass-saturate));
+}
+
+[data-palette='nexora'] :is(.bg-card, .bg-sidebar, .bg-popover) {
+  box-shadow: var(--nexora-glass-shadow);
+}
+
+[data-palette='nexora'] .nexora-glass-panel {
+  -webkit-backdrop-filter: blur(var(--nexora-glass-blur)) saturate(var(--nexora-glass-saturate));
+  backdrop-filter: blur(var(--nexora-glass-blur)) saturate(var(--nexora-glass-saturate));
+  box-shadow: var(--nexora-glass-shadow);
+  border-color: var(--border);
+}
+
+[data-palette='nexora'] {
+  --nexora-primary-gradient: linear-gradient(
+    135deg,
+    oklch(0.46 0.25 295) 0%,
+    oklch(0.52 0.22 277) 46%,
+    oklch(0.56 0.17 228) 100%
+  );
+  --nexora-primary-gradient-hover: linear-gradient(
+    135deg,
+    oklch(0.5 0.25 295) 0%,
+    oklch(0.56 0.22 277) 46%,
+    oklch(0.6 0.17 228) 100%
+  );
+  --nexora-primary-shadow:
+    0 1px 0 oklch(1 0 0 / 24%) inset,
+    0 4px 18px oklch(0.52 0.22 277 / 32%);
+}
+
+[data-palette='nexora'].dark {
+  --nexora-primary-gradient: linear-gradient(
+    135deg,
+    oklch(0.56 0.22 295) 0%,
+    oklch(0.68 0.19 277) 50%,
+    oklch(0.72 0.14 210) 100%
+  );
+  --nexora-primary-gradient-hover: linear-gradient(
+    135deg,
+    oklch(0.6 0.22 295) 0%,
+    oklch(0.72 0.19 277) 50%,
+    oklch(0.76 0.14 210) 100%
+  );
+  --nexora-primary-shadow:
+    0 1px 0 oklch(1 0 0 / 16%) inset,
+    0 6px 28px oklch(0.68 0.19 277 / 38%);
+}
+
+[data-palette='nexora'] :is(
+    button.bg-primary,
+    a.bg-primary,
+    [data-slot='button'].bg-primary,
+    .bg-sidebar-primary
+  ) {
+  border-color: transparent;
+  background-color: transparent;
+  background-image: var(--nexora-primary-gradient);
+  box-shadow: var(--nexora-primary-shadow);
+  transition:
+    background-image 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+[data-palette='nexora'] :is(
+    button.bg-primary,
+    a.bg-primary,
+    [data-slot='button'].bg-primary,
+    .bg-sidebar-primary
+  ):hover {
+  background-color: transparent;
+  background-image: var(--nexora-primary-gradient-hover);
+}
+
+[data-palette='nexora'] :is(button.bg-primary, a.bg-primary, [data-slot='button'].bg-primary):active {
+  transform: translateY(1px);
+}
+
+[data-palette='nexora'] .bg-primary:not(:is(button, a, [data-slot='button'])) {
+  background-color: transparent;
+  background-image: var(--nexora-primary-gradient);
+  box-shadow: var(--nexora-primary-shadow);
+}

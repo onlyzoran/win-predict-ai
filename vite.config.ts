@@ -10,6 +10,8 @@ const { version } = JSON.parse(
   readFileSync(fileURLToPath(new URL('./package.json', import.meta.url)), 'utf-8'),
 ) as { version: string }
 
+const nexoraThemePath = fileURLToPath(new URL('./src/assets/nexora.css', import.meta.url))
+
 // https://vite.dev/config/
 export default defineConfig({
   base: process.env.VITE_BASE_PATH ?? '/win-predict-ai/',
@@ -24,6 +26,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // UI #37: nexora пока Storybook-only — alias до экспорта themes/nexora.css в npm
+      '@onlyzoran/win-predict-ai-ui/themes/nexora.css': nexoraThemePath,
     },
   },
 })
