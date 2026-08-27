@@ -1,8 +1,4 @@
-import {
-  DEFAULT_PALETTE,
-  PALETTES,
-  type Palette,
-} from '@onlyzoran/win-predict-ai-ui'
+import { PALETTES, type Palette } from '@onlyzoran/win-predict-ai-ui'
 import { useColorMode, useStorage } from '@vueuse/core'
 import { computed, watch } from 'vue'
 
@@ -23,8 +19,8 @@ export const DEFAULT_COLOR_SCHEME = 'auto' as const
 
 /** Color palettes before the user opens /settings/appearance. */
 export const DEFAULT_PALETTE_PREFERENCES: PalettePreferences = {
-  light: DEFAULT_PALETTE,
-  dark: DEFAULT_PALETTE,
+  light: NEXORA_PALETTE,
+  dark: NEXORA_PALETTE,
 }
 
 export const PALETTE_STORAGE_KEY = 'color-palette-preferences'

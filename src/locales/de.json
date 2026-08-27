@@ -55,7 +55,7 @@
     "shortLabel": "Darstellung",
     "title": "Darstellung",
     "subtitle": "Wählen Sie für den hellen und dunklen Modus jeweils eine Farbschema.",
-    "defaultsNote": "Standard für neue Nutzer: Slate + Teal in beiden Modi; Hell/Dunkel folgt der Systemeinstellung, bis Sie es in der Kopfzeile ändern.",
+    "defaultsNote": "Standard für neue Nutzer: Nexora in beiden Modi; Hell/Dunkel folgt der Systemeinstellung, bis Sie es in der Kopfzeile ändern.",
     "back": "Zur Startseite",
     "lightMode": "Farbschema für den hellen Modus",
     "lightModeHint": "Wird im hellen Modus angewendet.",
