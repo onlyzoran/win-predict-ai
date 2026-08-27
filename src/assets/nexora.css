@@ -127,6 +127,12 @@
   background-color: inherit;
 }
 
+/*
+ * Nexora visual overrides (glass, gradients) apply only to the root chrome.
+ * Nested palette preview swatches use their own data-palette on an inner element;
+ * exclude descendants of a second [data-palette] so zinc/slate-teal/claude-plus
+ * swatches keep solid token colors inside Appearance Settings.
+ */
 [data-palette='nexora'] :is(
     .bg-card,
     .bg-sidebar,
@@ -138,16 +144,16 @@
     [class*='bg-sidebar/'],
     [class*='bg-muted/'],
     [class*='bg-background/']
-  ) {
+  ):not([data-palette] [data-palette] *) {
   -webkit-backdrop-filter: blur(var(--nexora-glass-blur)) saturate(var(--nexora-glass-saturate));
   backdrop-filter: blur(var(--nexora-glass-blur)) saturate(var(--nexora-glass-saturate));
 }
 
-[data-palette='nexora'] :is(.bg-card, .bg-sidebar, .bg-popover) {
+[data-palette='nexora'] :is(.bg-card, .bg-sidebar, .bg-popover):not([data-palette] [data-palette] *) {
   box-shadow: var(--nexora-glass-shadow);
 }
 
-[data-palette='nexora'] .nexora-glass-panel {
+[data-palette='nexora'] .nexora-glass-panel:not([data-palette] [data-palette] *) {
   -webkit-backdrop-filter: blur(var(--nexora-glass-blur)) saturate(var(--nexora-glass-saturate));
   backdrop-filter: blur(var(--nexora-glass-blur)) saturate(var(--nexora-glass-saturate));
   box-shadow: var(--nexora-glass-shadow);
@@ -195,7 +201,7 @@
     a.bg-primary,
     [data-slot='button'].bg-primary,
     .bg-sidebar-primary
-  ) {
+  ):not([data-palette] [data-palette] *) {
   border-color: transparent;
   background-color: transparent;
   background-image: var(--nexora-primary-gradient);
@@ -211,16 +217,20 @@
     a.bg-primary,
     [data-slot='button'].bg-primary,
     .bg-sidebar-primary
-  ):hover {
+  ):not([data-palette] [data-palette] *):hover {
   background-color: transparent;
   background-image: var(--nexora-primary-gradient-hover);
 }
 
-[data-palette='nexora'] :is(button.bg-primary, a.bg-primary, [data-slot='button'].bg-primary):active {
+[data-palette='nexora']
+  :is(button.bg-primary, a.bg-primary, [data-slot='button'].bg-primary):not(
+    [data-palette] [data-palette] *
+  ):active {
   transform: translateY(1px);
 }
 
-[data-palette='nexora'] .bg-primary:not(:is(button, a, [data-slot='button'])) {
+[data-palette='nexora']
+  .bg-primary:not(:is(button, a, [data-slot='button'])):not([data-palette] [data-palette] *) {
   background-color: transparent;
   background-image: var(--nexora-primary-gradient);
   box-shadow: var(--nexora-primary-shadow);
