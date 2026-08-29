@@ -1,0 +1,71 @@
+name: Apply path layout (/ + /admin)
+
+# Public app at /, admin at /admin/. Uses VPS_* secrets in this repo.
+#   gh workflow run apply-path-layout.yml -R onlyzoran/win-predict-ai
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  apply-path-layout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: '@onlyzoran'
+
+      - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: npm run build
+        env:
+          VITE_BASE_PATH: /
+
+      - name: Install SSH key
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Rsync Vue dist to VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_PATH: ${{ secrets.VPS_PATH }}
+        run: |
+          rsync -avz --delete \
+            -e 'ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+            dist/ \
+            "${VPS_USER}@${VPS_HOST}:${VPS_PATH}/"
+
+      - name: Apply nginx + rebuild admin on VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          REMOTE_DIR=/tmp/wpa-path-layout
+          rsync -avz \
+            -e 'ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+            deploy/nginx-domain.conf deploy/apply-path-layout.sh \
+            "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/"
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes \
+            "${VPS_USER}@${VPS_HOST}" \
+            "chmod +x ${REMOTE_DIR}/apply-path-layout.sh
+             export NODE_AUTH_TOKEN=$(printf %q "${NODE_AUTH_TOKEN}")
+             if [ \"\$(id -u)\" -eq 0 ]; then
+               env NODE_AUTH_TOKEN=\"\$NODE_AUTH_TOKEN\" ${REMOTE_DIR}/apply-path-layout.sh
+             else
+               sudo env NODE_AUTH_TOKEN=\"\$NODE_AUTH_TOKEN\" ${REMOTE_DIR}/apply-path-layout.sh
+             fi"

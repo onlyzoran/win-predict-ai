@@ -31,12 +31,29 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Bumps version in the working tree (and pushes the release commit with [skip ci]).
-      - name: Release
+      # Version + CHANGELOG are set by the orchestrator releaser before merge.
+      # Here we only tag (and create a GitHub Release) when the tag is missing.
+      - name: Tag release
         if: github.event_name == 'push'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VER="$(node -p "require('./package.json').version")"
+          if [ -z "$VER" ] || [ "$VER" = "undefined" ]; then
+            echo "No version in package.json — skip tag"
+            exit 0
+          fi
+          if git rev-parse "v${VER}" >/dev/null 2>&1; then
+            echo "Tag v${VER} already exists"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Need credentials to push tags with persist-credentials: false
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          git tag "v${VER}"
+          git push origin "v${VER}"
+          gh release create "v${VER}" --title "v${VER}" --generate-notes || true
 
       - run: npm run build
 

@@ -1,0 +1,48 @@
+name: Enable domain (HTTPS)
+
+# Uses VPS_* secrets in this repo. Run after Namecheap A records point at the VPS:
+#   gh workflow run enable-domain.yml -R onlyzoran/win-predict-ai
+on:
+  workflow_dispatch:
+    inputs:
+      skip_dns_check:
+        description: 'Set to 1 to skip DNS→IP check (not recommended)'
+        required: false
+        default: '0'
+
+permissions:
+  contents: read
+
+jobs:
+  enable-domain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SSH key
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Sync scripts and enable domain on VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          SKIP_DNS_CHECK: ${{ inputs.skip_dns_check }}
+        run: |
+          set -euo pipefail
+          REMOTE_DIR=/tmp/wpa-enable-domain
+          rsync -avz \
+            -e 'ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+            deploy/nginx-domain.conf deploy/enable-domain.sh \
+            "${VPS_USER}@${VPS_HOST}:${REMOTE_DIR}/"
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes \
+            "${VPS_USER}@${VPS_HOST}" \
+            "chmod +x ${REMOTE_DIR}/enable-domain.sh
+             if [ \"\$(id -u)\" -eq 0 ]; then
+               SKIP_DNS_CHECK=$(printf %q "${SKIP_DNS_CHECK}") ${REMOTE_DIR}/enable-domain.sh
+             else
+               sudo SKIP_DNS_CHECK=$(printf %q "${SKIP_DNS_CHECK}") ${REMOTE_DIR}/enable-domain.sh
+             fi"
