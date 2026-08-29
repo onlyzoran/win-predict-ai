@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { LocaleSwitcher, ThemeToggle } from '@onlyzoran/win-predict-ai-ui'
-import { IconBrandGithub, IconLogin } from '@onlyzoran/win-predict-ai-icons'
-import { IconPalette } from '@tabler/icons-vue'
+import { IconBrandGithub, IconLogin, IconPalette } from '@onlyzoran/win-predict-ai-icons'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { locale, localeLabels, locales, setLocale, type Locale } from '@/i18n'
@@ -53,7 +52,7 @@ function onLocaleUpdate(code: string) {
         <IconBrandGithub :size="16" aria-hidden="true" />
       </a>
       <a
-        href="http://202.71.15.138"
+        href="/admin/"
         target="_blank"
         rel="noreferrer"
         class="inline-flex items-center gap-1.5 rounded-md p-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:px-2 sm:py-1.5"

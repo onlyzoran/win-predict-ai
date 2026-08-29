@@ -111,3 +111,28 @@ export function togglePinned(
 
   return [...pinnedIds, id]
 }
+
+export function toggleHidden(
+  hiddenIds: string[],
+  id: string,
+  isCurrentlyHidden: boolean,
+): string[] {
+  if (isCurrentlyHidden) {
+    return hiddenIds.filter((tournamentId) => tournamentId !== id)
+  }
+
+  return [...hiddenIds, id]
+}
+
+export function excludeHiddenSlots<T extends { id: string }>(slots: T[], hiddenIds: string[]): T[] {
+  if (hiddenIds.length === 0) {
+    return slots
+  }
+
+  const hiddenSet = new Set(hiddenIds)
+  return slots.filter((slot) => !hiddenSet.has(slot.id))
+}
+
+export function slotIdsForLoading(slots: Array<{ id: string }>, hiddenIds: string[]): string[] {
+  return excludeHiddenSlots(slots, hiddenIds).map((slot) => slot.id)
+}

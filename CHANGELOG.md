@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.42.1 (2026-08-27)
+
+* chore: bump @onlyzoran/win-predict-ai-ui to 0.3.0-pr.39.611e0be ([PR](https://github.com/onlyzoran/win-predict-ai/pull/56), [issue](https://github.com/onlyzoran/win-predict-ai/issues/55))
+
+## [0.42.0](https://github.com/onlyzoran/win-predict-ai/compare/v0.41.2...v0.42.0) (2026-08-19)
+
+## [0.41.2](https://github.com/onlyzoran/win-predict-ai/compare/v0.41.1...v0.41.2) (2026-08-19)
+
+## [0.41.1](https://github.com/onlyzoran/win-predict-ai/compare/v0.41.0...v0.41.1) (2026-08-19)
+
+## [0.41.0](https://github.com/onlyzoran/win-predict-ai/compare/v0.40.0...v0.41.0) (2026-08-19)
+
+## [0.40.0](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.9...v0.40.0) (2026-08-19)
+
+## [0.39.9](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.8...v0.39.9) (2026-08-19)
+
+## [0.39.8](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.7...v0.39.8) (2026-08-19)
+
+## [0.39.7](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.6...v0.39.7) (2026-08-18)
+
+## [0.39.6](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.5...v0.39.6) (2026-08-18)
+
+## [0.39.5](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.4...v0.39.5) (2026-08-18)
+
+## [0.39.4](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.3...v0.39.4) (2026-08-18)
+
+## [0.39.3](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.2...v0.39.3) (2026-08-18)
+
+## [0.39.2](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.1...v0.39.2) (2026-08-18)
+
 ## [0.39.1](https://github.com/onlyzoran/win-predict-ai/compare/v0.39.0...v0.39.1) (2026-08-18)
 
 ## [0.39.0](https://github.com/onlyzoran/win-predict-ai/compare/v0.38.0...v0.39.0) (2026-08-18)

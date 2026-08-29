@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import { computed } from 'vue'
-import { IconArrowsSort } from '@onlyzoran/win-predict-ai-icons'
+import { IconArrowsSort, IconEyeOff, IconEyeOpen, IconPencil } from '@onlyzoran/win-predict-ai-icons'
 import { useI18n } from 'vue-i18n'
 import TournamentSearch from '@/components/TournamentSearch.vue'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useSports } from '@/composables/useSports'
@@ -24,12 +28,16 @@ defineProps<{
   modelValue: Sport | 'all'
   search: string
   sort: SortMode
+  editMode: boolean
+  hiddenItems: Array<{ id: string; title: string }>
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: Sport | 'all']
   'update:search': [value: string]
   'update:sort': [value: SortMode]
+  'update:editMode': [value: boolean]
+  restore: [id: string]
 }>()
 
 function sportLabel(slug: string, apiLabel: string): string {
@@ -57,6 +65,10 @@ function onSortChange(value: string | number | bigint | Record<string, unknown> 
     emit('update:sort', value)
   }
 }
+
+function toggleEditMode(editMode: boolean) {
+  emit('update:editMode', !editMode)
+}
 </script>
 
 <template>
@@ -80,6 +92,51 @@ function onSortChange(value: string | number | bigint | Record<string, unknown> 
       </div>
 
       <div class="hidden shrink-0 items-center gap-2 md:flex">
+        <Button
+          variant="ghost"
+          size="sm"
+          class="shrink-0 cursor-pointer"
+          :class="editMode ? 'bg-accent text-accent-foreground' : undefined"
+          :aria-label="editMode ? t('editMode.exit') : t('editMode.enter')"
+          :aria-pressed="editMode"
+          @click="toggleEditMode(editMode)"
+        >
+          <IconPencil class="size-4" />
+          <span class="hidden min-[1350px]:inline">{{ t('editMode.label') }}</span>
+        </Button>
+
+        <DropdownMenu v-if="hiddenItems.length > 0" :modal="false">
+          <DropdownMenuTrigger as-child>
+            <Button
+              variant="ghost"
+              size="sm"
+              class="relative shrink-0 cursor-pointer"
+              :aria-label="t('hidden.panel')"
+            >
+              <IconEyeOff class="size-4" />
+              <Badge
+                variant="secondary"
+                class="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] leading-none"
+              >
+                {{ hiddenItems.length }}
+              </Badge>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-64">
+            <DropdownMenuLabel>{{ t('hidden.panel') }}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              v-for="item in hiddenItems"
+              :key="item.id"
+              class="flex items-center justify-between gap-2"
+              @select.prevent="emit('restore', item.id)"
+            >
+              <span class="truncate">{{ item.title }}</span>
+              <IconEyeOpen class="size-4 shrink-0 text-muted-foreground" />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         <DropdownMenu :modal="false">
           <DropdownMenuTrigger as-child>
             <Button
@@ -114,6 +171,50 @@ function onSortChange(value: string | number | bigint | Record<string, unknown> 
     </div>
 
     <div class="flex items-center gap-2 border-t px-4 py-2 md:hidden">
+      <Button
+        variant="ghost"
+        size="sm"
+        class="shrink-0 cursor-pointer"
+        :class="editMode ? 'bg-accent text-accent-foreground' : undefined"
+        :aria-label="editMode ? t('editMode.exit') : t('editMode.enter')"
+        :aria-pressed="editMode"
+        @click="toggleEditMode(editMode)"
+      >
+        <IconPencil class="size-4" />
+      </Button>
+
+      <DropdownMenu v-if="hiddenItems.length > 0" :modal="false">
+        <DropdownMenuTrigger as-child>
+          <Button
+            variant="ghost"
+            size="sm"
+            class="relative shrink-0 cursor-pointer"
+            :aria-label="t('hidden.panel')"
+          >
+            <IconEyeOff class="size-4" />
+            <Badge
+              variant="secondary"
+              class="absolute -top-1 -right-1 h-4 min-w-4 px-1 text-[10px] leading-none"
+            >
+              {{ hiddenItems.length }}
+            </Badge>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" class="w-64">
+          <DropdownMenuLabel>{{ t('hidden.panel') }}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            v-for="item in hiddenItems"
+            :key="item.id"
+            class="flex items-center justify-between gap-2"
+            @select.prevent="emit('restore', item.id)"
+          >
+            <span class="truncate">{{ item.title }}</span>
+            <IconEyeOpen class="size-4 shrink-0 text-muted-foreground" />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       <DropdownMenu :modal="false">
         <DropdownMenuTrigger as-child>
           <Button

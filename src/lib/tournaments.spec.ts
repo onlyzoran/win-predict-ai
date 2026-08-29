@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   compareSlots,
+  excludeHiddenSlots,
   filterSlots,
+  slotIdsForLoading,
   sortSlotsWithPinned,
+  toggleHidden,
   togglePinned,
   type FilterableSlot,
 } from './tournaments'
@@ -82,6 +85,43 @@ describe('togglePinned', () => {
 
   it('unpins a tournament', () => {
     expect(togglePinned(['epl', 'nba'], 'epl', true)).toEqual(['nba'])
+  })
+})
+
+describe('toggleHidden', () => {
+  it('hides a tournament', () => {
+    expect(toggleHidden(['epl'], 'nba', false)).toEqual(['epl', 'nba'])
+  })
+
+  it('restores a hidden tournament', () => {
+    expect(toggleHidden(['epl', 'nba'], 'epl', true)).toEqual(['nba'])
+  })
+})
+
+describe('excludeHiddenSlots', () => {
+  const slots = [
+    slot({ id: 'epl' }),
+    slot({ id: 'nba' }),
+    slot({ id: 'pending', league: null }),
+  ]
+
+  it('returns all slots when nothing is hidden', () => {
+    expect(excludeHiddenSlots(slots, []).map((entry) => entry.id)).toEqual(['epl', 'nba', 'pending'])
+  })
+
+  it('removes hidden tournament ids', () => {
+    expect(excludeHiddenSlots(slots, ['nba', 'missing']).map((entry) => entry.id)).toEqual([
+      'epl',
+      'pending',
+    ])
+  })
+})
+
+describe('slotIdsForLoading', () => {
+  it('excludes hidden ids from batch loading', () => {
+    const slots = [slot({ id: 'epl' }), slot({ id: 'nba' }), slot({ id: 'pending', league: null })]
+
+    expect(slotIdsForLoading(slots, ['nba'])).toEqual(['epl', 'pending'])
   })
 })
 

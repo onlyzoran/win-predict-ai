@@ -1,27 +1,29 @@
+import { PALETTES, type Palette } from '@onlyzoran/win-predict-ai-ui'
 import { useColorMode, useStorage } from '@vueuse/core'
 import { computed, watch } from 'vue'
 
-export type ColorPalette = 'zinc' | 'slate-teal' | 'claude-plus' | 'pastel'
+/** Pastel — пока не в PALETTES npm-пакета (ожидается в bump UI). */
+export const PASTEL_PALETTE = 'pastel' as const
+
+/** Nexora — пока не в PALETTES npm-пакета (Storybook-only в UI #37). */
+export const NEXORA_PALETTE = 'nexora' as const
+
+export type ColorPalette = Palette | typeof PASTEL_PALETTE | typeof NEXORA_PALETTE
 
 export interface PalettePreferences {
   light: ColorPalette
   dark: ColorPalette
 }
 
-export const COLOR_PALETTES: readonly ColorPalette[] = [
-  'zinc',
-  'slate-teal',
-  'claude-plus',
-  'pastel',
-] as const
+export const COLOR_PALETTES: readonly ColorPalette[] = [...PALETTES, PASTEL_PALETTE, NEXORA_PALETTE]
 
 /** Light/dark mode before the user toggles ThemeToggle (`vueuse-color-scheme`). */
 export const DEFAULT_COLOR_SCHEME = 'auto' as const
 
 /** Color palettes before the user opens /settings/appearance. */
 export const DEFAULT_PALETTE_PREFERENCES: PalettePreferences = {
-  light: 'slate-teal',
-  dark: 'slate-teal',
+  light: NEXORA_PALETTE,
+  dark: NEXORA_PALETTE,
 }
 
 export const PALETTE_STORAGE_KEY = 'color-palette-preferences'
@@ -32,12 +34,7 @@ export const palettePreferences = useStorage<PalettePreferences>(
 )
 
 function isColorPalette(value: unknown): value is ColorPalette {
-  return (
-    value === 'zinc' ||
-    value === 'slate-teal' ||
-    value === 'claude-plus' ||
-    value === 'pastel'
-  )
+  return (COLOR_PALETTES as readonly string[]).includes(value as string)
 }
 
 export function normalizePalettePreferences(raw: unknown): PalettePreferences {
@@ -68,11 +65,17 @@ export function useColorPalette() {
 
   const isDark = computed(() => resolveIsDark(mode.value))
 
+  const activePalette = computed((): ColorPalette =>
+    isDark.value ? palettePreferences.value.dark : palettePreferences.value.light,
+  )
+
+  const isNexoraActive = computed(() => activePalette.value === NEXORA_PALETTE)
+
   watch(
     [isDark, palettePreferences],
     () => applyColorPalette(isDark.value, palettePreferences.value),
     { immediate: true, deep: true },
   )
 
-  return { palettePreferences, isDark, mode }
+  return { palettePreferences, isDark, mode, activePalette, isNexoraActive }
 }

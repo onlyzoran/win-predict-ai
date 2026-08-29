@@ -55,7 +55,7 @@
     "shortLabel": "Aspetto",
     "title": "Aspetto",
     "subtitle": "Scegli uno schema colore per la modalità chiara e uno per la scura.",
-    "defaultsNote": "Predefinito per i nuovi utenti: Slate + Teal in entrambe le modalità; chiaro/scuro segue l'impostazione di sistema finché non lo cambi nell'intestazione.",
+    "defaultsNote": "Predefinito per i nuovi utenti: Nexora in entrambe le modalità; chiaro/scuro segue l'impostazione di sistema finché non lo cambi nell'intestazione.",
     "back": "Torna alla home",
     "lightMode": "Schema per modalità chiara",
     "lightModeHint": "Applicato quando la modalità chiara è attiva.",
@@ -77,6 +77,10 @@
       "pastel": {
         "name": "Pastel",
         "description": "Neutri lavanda morbidi con accento pervinca; verde e giallo per i risultati delle partite."
+      },
+      "nexora": {
+        "name": "Nexora",
+        "description": "Cockpit violet futuristico — superfici vetro e CTA con gradiente."
       }
     }
   },
@@ -89,6 +93,18 @@
   "pin": {
     "add": "Fissa torneo",
     "remove": "Rimuovi fissaggio"
+  },
+  "editMode": {
+    "label": "Modifica schede",
+    "enter": "Attiva modalità modifica",
+    "exit": "Esci dalla modalità modifica"
+  },
+  "hide": {
+    "action": "Nascondi torneo"
+  },
+  "hidden": {
+    "panel": "Tornei nascosti",
+    "restore": "Mostra torneo"
   },
   "sports": {
     "all": "Tutti",

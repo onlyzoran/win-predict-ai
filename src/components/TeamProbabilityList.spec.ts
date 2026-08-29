@@ -50,6 +50,24 @@ describe('TeamProbabilityList', () => {
     expect(wrapper.text()).toContain('13%')
   })
 
+  it('shows pre-aggregated card snapshot teams with localized Others count', async () => {
+    const cardTeams = [
+      { id: '1', name: 'Team A', winProbability: 30 },
+      { id: '2', name: 'Team B', winProbability: 20 },
+      { id: '3', name: 'Team C', winProbability: 15 },
+      { id: '4', name: 'Team D', winProbability: 12 },
+      { id: '5', name: 'Team E', winProbability: 10 },
+      { id: 'others', name: 'Others', winProbability: 13, othersCount: 2 },
+    ]
+    const wrapper = await mountList({ teams: cardTeams })
+
+    expect(wrapper.text()).toContain('Team A')
+    expect(wrapper.text()).toContain('Team E')
+    expect(wrapper.text()).not.toContain('Team F')
+    expect(wrapper.text()).toContain('Others (2)')
+    expect(wrapper.text()).toContain('13%')
+  })
+
   it('does not show Others when there are 5 or fewer teams', async () => {
     const wrapper = await mountList({ teams: teams.slice(0, 5) })
 
@@ -57,12 +75,27 @@ describe('TeamProbabilityList', () => {
     expect(wrapper.text()).toContain('Team E')
   })
 
-  it('emits pin with id and current pinned state', async () => {
-    const wrapper = await mountList({ pinned: false })
+  it('does not show pin or hide controls outside edit mode', async () => {
+    const wrapper = await mountList({ pinned: false, editMode: false })
+
+    expect(wrapper.find('button[aria-label="Pin tournament"]').exists()).toBe(false)
+    expect(wrapper.find('button[aria-label="Hide tournament"]').exists()).toBe(false)
+  })
+
+  it('emits pin with id and current pinned state in edit mode', async () => {
+    const wrapper = await mountList({ pinned: false, editMode: true })
 
     await wrapper.get('button[aria-label="Pin tournament"]').trigger('click')
 
     expect(wrapper.emitted('pin')).toEqual([['epl', false]])
+  })
+
+  it('emits hide with id in edit mode', async () => {
+    const wrapper = await mountList({ editMode: true })
+
+    await wrapper.get('button[aria-label="Hide tournament"]').trigger('click')
+
+    expect(wrapper.emitted('hide')).toEqual([['epl']])
   })
 
   it('emits preview with league payload', async () => {

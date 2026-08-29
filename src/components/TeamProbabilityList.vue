@@ -3,8 +3,13 @@ import { computed } from 'vue'
 import type { Component } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
-import { IconBallFootball, IconPin, IconPinnedOff } from '@onlyzoran/win-predict-ai-icons'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  IconBallFootball,
+  IconEyeOff,
+  IconPin,
+  IconPinnedOff,
+} from '@onlyzoran/win-predict-ai-icons'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@onlyzoran/win-predict-ai-ui'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -26,6 +31,7 @@ const props = withDefaults(
     endDate?: string
     icon?: Component
     pinned: boolean
+    editMode?: boolean
   }>(),
   {
     fullTitle: undefined,
@@ -34,11 +40,13 @@ const props = withDefaults(
     endDate: '',
     icon: () => IconBallFootball,
     pinned: false,
+    editMode: false,
   },
 )
 
 const emit = defineEmits<{
   pin: [id: string, pinned: boolean]
+  hide: [id: string]
   preview: [
     league: {
       id: string
@@ -83,7 +91,24 @@ function handlePinClick() {
   emit('pin', props.id, props.pinned)
 }
 
+function handleHideClick() {
+  emit('hide', props.id)
+}
+
 const visibleTeams = computed<TeamProbability[]>(() => {
+  const othersRow = props.teams.find((team) => team.id === 'others')
+  if (othersRow) {
+    const topTeams = props.teams.filter((team) => team.id !== 'others')
+    const othersCount = othersRow.othersCount ?? 0
+    return [
+      ...topTeams,
+      {
+        ...othersRow,
+        name: t('team.others', { count: othersCount }),
+      },
+    ]
+  }
+
   const restCount = Math.max(0, props.teams.length - TOP_TEAMS_COUNT)
 
   return aggregateTopTeams(props.teams, {
@@ -96,19 +121,28 @@ const visibleTeams = computed<TeamProbability[]>(() => {
 <template>
   <Card class="w-full p-0 sm:max-w-xs sm:min-w-3xs">
     <CardHeader class="px-4 pt-4">
-      <div class="flex justify-between">
+      <div class="flex min-h-8 items-center justify-between">
         <CardTitle class="flex items-center gap-2">
           <component :is="icon" class="size-4" />
           {{ displayTitle }}
         </CardTitle>
-        <button
-          class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          :aria-label="pinned ? t('pin.remove') : t('pin.add')"
-          @click="handlePinClick"
-        >
-          <IconPin v-if="!pinned" />
-          <IconPinnedOff v-else />
-        </button>
+        <div v-if="editMode" class="flex items-center gap-1">
+          <button
+            class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            :aria-label="pinned ? t('pin.remove') : t('pin.add')"
+            @click="handlePinClick"
+          >
+            <IconPin v-if="!pinned" />
+            <IconPinnedOff v-else />
+          </button>
+          <button
+            class="rounded-md px-2 py-1 text-sm font-medium uppercase text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            :aria-label="t('hide.action')"
+            @click="handleHideClick"
+          >
+            <IconEyeOff />
+          </button>
+        </div>
       </div>
       <Progress :model-value="progress" class="mt-4 h-1" />
     </CardHeader>

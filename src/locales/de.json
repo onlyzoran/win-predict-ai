@@ -55,7 +55,7 @@
     "shortLabel": "Darstellung",
     "title": "Darstellung",
     "subtitle": "Wählen Sie für den hellen und dunklen Modus jeweils eine Farbschema.",
-    "defaultsNote": "Standard für neue Nutzer: Slate + Teal in beiden Modi; Hell/Dunkel folgt der Systemeinstellung, bis Sie es in der Kopfzeile ändern.",
+    "defaultsNote": "Standard für neue Nutzer: Nexora in beiden Modi; Hell/Dunkel folgt der Systemeinstellung, bis Sie es in der Kopfzeile ändern.",
     "back": "Zur Startseite",
     "lightMode": "Farbschema für den hellen Modus",
     "lightModeHint": "Wird im hellen Modus angewendet.",
@@ -77,6 +77,10 @@
       "pastel": {
         "name": "Pastel",
         "description": "Sanfte Lavendel-Neutrals mit Periwinkle-Akzent; Grün und Gelb für Spielergebnisse."
+      },
+      "nexora": {
+        "name": "Nexora",
+        "description": "Futuristisches Violet-Cockpit — Glasoberflächen und Gradient-CTAs."
       }
     }
   },
@@ -89,6 +93,18 @@
   "pin": {
     "add": "Turnier anheften",
     "remove": "Turnier lösen"
+  },
+  "editMode": {
+    "label": "Karten bearbeiten",
+    "enter": "Bearbeitungsmodus aktivieren",
+    "exit": "Bearbeitungsmodus beenden"
+  },
+  "hide": {
+    "action": "Turnier ausblenden"
+  },
+  "hidden": {
+    "panel": "Ausgeblendete Turniere",
+    "restore": "Turnier einblenden"
   },
   "sports": {
     "all": "Alle",

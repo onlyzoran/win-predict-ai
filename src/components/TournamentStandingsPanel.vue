@@ -13,15 +13,17 @@ const props = withDefaults(
     teams: TeamProbability[]
     compact?: boolean
     showChart?: boolean
+    predictionsOnly?: boolean
   }>(),
   {
     compact: false,
     showChart: false,
+    predictionsOnly: false,
   },
 )
 
 const { t } = useI18n()
-const showStandings = computed(() => hasWinsStandings(props.teams))
+const showStandings = computed(() => !props.predictionsOnly && hasWinsStandings(props.teams))
 </script>
 
 <template>

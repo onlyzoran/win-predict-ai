@@ -5,15 +5,16 @@ import SportFilter from '@/components/SportFilter.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleton.vue'
 import TournamentDetails from '@/components/TournamentDetails.vue'
+import { useLeaguePreview } from '@/composables/useLeaguePreview'
 import { useLeagues } from '@/composables/useLeagues'
+import { useHiddenTournaments } from '@/composables/useHiddenTournaments'
 import { usePinnedTournaments } from '@/composables/usePinnedTournaments'
-import type { SelectedLeague } from '@/types/league'
 import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { locale } from '@/i18n'
-import { filterSlots, sortSlotsWithPinned } from '@/lib/tournaments'
+import { excludeHiddenSlots, filterSlots, slotIdsForLoading, sortSlotsWithPinned } from '@/lib/tournaments'
 
 const {
   slots,
@@ -27,27 +28,47 @@ const {
   retryFailed,
 } = useLeagues()
 const { pinnedTournaments, handlePin } = usePinnedTournaments()
+const { hiddenTournaments, handleHide, handleRestore } = useHiddenTournaments()
+const { isPreviewOpen, previewLeague, isPreviewLoading, openPreview } = useLeaguePreview()
 
 const selectedSport = ref<Sport | 'all'>('all')
 const searchQuery = ref('')
 const sortMode = useStorage<SortMode>('tournamentSort', 'popular')
+const editMode = ref(false)
 const visibleCount = ref(initialBatchSize)
 const loadMoreTrigger = ref<HTMLElement | null>(null)
 
-const filteredSlots = computed(() =>
+const sportFilteredSlots = computed(() =>
   filterSlots(slots.value, selectedSport.value, searchQuery.value),
 )
 
+const displaySlots = computed(() =>
+  excludeHiddenSlots(sportFilteredSlots.value, hiddenTournaments.value),
+)
+
 const sortedSlots = computed(() =>
-  sortSlotsWithPinned(filteredSlots.value, pinnedTournaments.value, sortMode.value, locale.value),
+  sortSlotsWithPinned(displaySlots.value, pinnedTournaments.value, sortMode.value, locale.value),
+)
+
+const hiddenItems = computed(() =>
+  hiddenTournaments.value
+    .map((id) => {
+      const slot = slots.value.find((entry) => entry.id === id)
+      if (!slot) {
+        return null
+      }
+
+      return {
+        id,
+        title: slot.league?.title ?? slot.sortTitle ?? id,
+      }
+    })
+    .filter((item): item is { id: string; title: string } => item !== null),
 )
 
 const visibleSlots = computed(() => sortedSlots.value.slice(0, visibleCount.value))
 const hasPendingSlots = computed(() => visibleSlots.value.some((slot) => !slot.league))
 const hasMore = computed(() => sortedSlots.value.length > visibleCount.value)
-
-const isPreviewOpen = ref(false)
-const selectedLeague = ref<SelectedLeague | null>(null)
 
 watch(
   () => visibleSlots.value.map((slot) => slot.id),
@@ -72,7 +93,7 @@ watch(searchQuery, async (query) => {
     return
   }
 
-  await loadNextBatch(slots.value.map((slot) => slot.id))
+  await loadNextBatch(slotIdsForLoading(slots.value, hiddenTournaments.value))
 })
 
 useIntersectionObserver(
@@ -93,15 +114,18 @@ useIntersectionObserver(
   },
 )
 
-function handlePreview(league: SelectedLeague) {
-  selectedLeague.value = league
-  isPreviewOpen.value = true
-}
 </script>
 
 <template>
   <div class="flex flex-1 flex-col">
-    <SportFilter v-model="selectedSport" v-model:search="searchQuery" v-model:sort="sortMode" />
+    <SportFilter
+      v-model="selectedSport"
+      v-model:search="searchQuery"
+      v-model:sort="sortMode"
+      v-model:edit-mode="editMode"
+      :hidden-items="hiddenItems"
+      @restore="handleRestore"
+    />
     <main class="flex flex-1 flex-wrap items-start justify-start gap-4 px-4 py-4">
       <template v-if="isManifestLoading">
         <span class="sr-only">{{ $t('data.loading') }}</span>
@@ -146,8 +170,10 @@ function handlePreview(league: SelectedLeague) {
             :end-date="slot.league.endDate"
             :icon="slot.league.icon"
             :pinned="pinnedTournaments.includes(slot.league.id)"
+            :edit-mode="editMode"
             @pin="handlePin"
-            @preview="handlePreview"
+            @hide="handleHide"
+            @preview="openPreview"
           />
           <TeamProbabilityListSkeleton v-else />
         </template>
@@ -164,18 +190,22 @@ function handlePreview(league: SelectedLeague) {
       <SheetContent>
         <SheetHeader class="sr-only">
           <SheetTitle>
-            {{ selectedLeague?.fullTitle || selectedLeague?.title }}
+            {{ previewLeague?.fullTitle || previewLeague?.title }}
           </SheetTitle>
         </SheetHeader>
-        <div v-if="selectedLeague" class="overflow-y-auto p-4">
+        <div v-if="previewLeague" class="overflow-y-auto p-4">
+          <p v-if="isPreviewLoading" class="text-sm text-muted-foreground">
+            {{ $t('data.loading') }}
+          </p>
           <TournamentDetails
-            :title="selectedLeague.title"
-            :full-title="selectedLeague.fullTitle"
-            :teams="selectedLeague.teams"
-            :progress="selectedLeague.progress"
-            :start-date="selectedLeague.startDate"
-            :end-date="selectedLeague.endDate"
-            :icon="selectedLeague.icon"
+            v-else
+            :title="previewLeague.title"
+            :full-title="previewLeague.fullTitle"
+            :teams="previewLeague.teams"
+            :progress="previewLeague.progress"
+            :start-date="previewLeague.startDate"
+            :end-date="previewLeague.endDate"
+            :icon="previewLeague.icon"
             compact
           />
         </div>

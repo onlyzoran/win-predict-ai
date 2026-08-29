@@ -55,7 +55,7 @@
     "shortLabel": "Apparence",
     "title": "Apparence",
     "subtitle": "Choisissez un schéma de couleurs pour les modes clair et sombre.",
-    "defaultsNote": "Par défaut pour les nouveaux utilisateurs : Slate + Teal dans les deux modes ; clair/sombre suit le réglage système tant que vous ne le changez pas dans l'en-tête.",
+    "defaultsNote": "Par défaut pour les nouveaux utilisateurs : Nexora dans les deux modes ; clair/sombre suit le réglage système tant que vous ne le changez pas dans l'en-tête.",
     "back": "Retour à l'accueil",
     "lightMode": "Schéma pour le mode clair",
     "lightModeHint": "Appliqué lorsque le mode clair est actif.",
@@ -77,6 +77,10 @@
       "pastel": {
         "name": "Pastel",
         "description": "Neutres lavande doux avec accent pervenche ; vert et jaune pour les résultats de match."
+      },
+      "nexora": {
+        "name": "Nexora",
+        "description": "Cockpit violet futuriste — surfaces verre et CTA en dégradé."
       }
     }
   },
@@ -89,6 +93,18 @@
   "pin": {
     "add": "Épingler le tournoi",
     "remove": "Désépingler le tournoi"
+  },
+  "editMode": {
+    "label": "Modifier les cartes",
+    "enter": "Activer le mode édition",
+    "exit": "Quitter le mode édition"
+  },
+  "hide": {
+    "action": "Masquer le tournoi"
+  },
+  "hidden": {
+    "panel": "Tournois masqués",
+    "restore": "Afficher le tournoi"
   },
   "sports": {
     "all": "Tous",

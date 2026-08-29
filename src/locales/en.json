@@ -32,6 +32,22 @@
     "winChance": "Win %",
     "rankMovement": "Standings movement"
   },
+  "facts": {
+    "title": "Actual data",
+    "asOf": "As of {date}",
+    "columns": {
+      "rank": "Pos",
+      "team": "Team",
+      "group": "Conf",
+      "played": "GP",
+      "wins": "W",
+      "draws": "D",
+      "losses": "L",
+      "goalDifference": "GD",
+      "points": "Pts",
+      "winPercent": "PCT"
+    }
+  },
   "playoff": {
     "title": "Playoff projection",
     "subtitle": "Bracket projected from World Series win odds",
@@ -55,7 +71,7 @@
     "shortLabel": "Appearance",
     "title": "Appearance",
     "subtitle": "Choose a color scheme for light and dark mode independently.",
-    "defaultsNote": "Defaults for new users: Slate + Teal in both modes; light/dark follows your system setting until you change it in the header.",
+    "defaultsNote": "Defaults for new users: Nexora in both modes; light/dark follows your system setting until you change it in the header.",
     "back": "Back to home",
     "lightMode": "Light mode scheme",
     "lightModeHint": "Applied when the app is in light mode.",
@@ -77,6 +93,10 @@
       "pastel": {
         "name": "Pastel",
         "description": "Soft lavender neutrals with periwinkle accent; green and yellow reserved for match outcomes."
+      },
+      "nexora": {
+        "name": "Nexora",
+        "description": "Futuristic violet cockpit — frosted glass surfaces and gradient CTAs."
       }
     }
   },
@@ -89,6 +109,18 @@
   "pin": {
     "add": "Pin tournament",
     "remove": "Unpin tournament"
+  },
+  "editMode": {
+    "label": "Edit cards",
+    "enter": "Enter card edit mode",
+    "exit": "Exit card edit mode"
+  },
+  "hide": {
+    "action": "Hide tournament"
+  },
+  "hidden": {
+    "panel": "Hidden tournaments",
+    "restore": "Show tournament"
   },
   "sports": {
     "all": "All",

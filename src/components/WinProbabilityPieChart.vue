@@ -6,13 +6,14 @@ import { VisDonut, VisSingleContainer } from '@unovis/vue'
 import type { ChartConfig } from '@/components/ui/chart'
 import { ChartContainer, ChartTooltip, componentToString } from '@/components/ui/chart'
 import type { TeamProbability } from '@/types/league'
+import { useColorPalette } from '@/composables/useColorPalette'
+import { useChartThemeRevision } from '@/composables/useChartThemeColors'
 import {
-  aggregateTopTeams,
   CHART_COLORS,
+  getOthersChartColor,
   getTeamChartColor,
-  OTHERS_CHART_COLOR,
-  TOP_TEAMS_COUNT,
-} from '@/lib/teamProbability'
+} from '@/lib/chartThemeColors'
+import { aggregateTopTeams, TOP_TEAMS_COUNT } from '@/lib/teamProbability'
 import WinProbabilityPieTooltip from '@/components/WinProbabilityPieTooltip.vue'
 import { formatPercent } from '@/lib/utils'
 
@@ -28,8 +29,12 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const { isDark } = useColorPalette()
+const chartThemeRevision = useChartThemeRevision()
 
 const slices = computed<PieSlice[]>(() => {
+  void chartThemeRevision.value
+
   const restCount = Math.max(0, props.teams.length - TOP_TEAMS_COUNT)
   const aggregated = aggregateTopTeams(props.teams, {
     topN: TOP_TEAMS_COUNT,
@@ -39,7 +44,9 @@ const slices = computed<PieSlice[]>(() => {
   return aggregated.map((team, index) => {
     const key = team.id === 'rest' ? 'others' : `team-${team.id}`
     const fill =
-      team.id === 'rest' ? OTHERS_CHART_COLOR : (getTeamChartColor(index) ?? CHART_COLORS[0])
+      team.id === 'rest'
+        ? getOthersChartColor(isDark.value)
+        : (getTeamChartColor(index) ?? CHART_COLORS[0])
 
     return {
       key,
@@ -74,7 +81,7 @@ const tooltipTriggers = {
 <template>
   <div data-testid="win-probability-pie" class="w-full space-y-4">
     <ChartContainer :config="chartConfig" class="mx-auto aspect-square max-h-[260px] w-full">
-      <VisSingleContainer :data="slices" :margin="{ top: 4, bottom: 4 }">
+      <VisSingleContainer :key="chartThemeRevision" :data="slices" :margin="{ top: 4, bottom: 4 }">
         <VisDonut :value="valueAccessor" :color="colorAccessor" :arc-width="28" />
         <ChartTooltip :triggers="tooltipTriggers" />
       </VisSingleContainer>

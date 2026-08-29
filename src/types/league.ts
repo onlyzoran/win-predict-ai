@@ -40,6 +40,16 @@ export interface StandingRow {
   rank?: number
   sourceRank?: number
   participantId?: string
+  goalsFor?: number
+  goalsAgainst?: number
+  goalDifference?: number
+}
+
+export interface TournamentFactsSnapshot {
+  date: string
+  metric: string
+  rows: StandingRow[]
+  fetchedAt?: string
 }
 
 export interface LeagueHistorySnapshot {
@@ -78,6 +88,26 @@ export interface ContestPredictionFile {
   contestId: string
   date: string
   items: ContestPredictionItem[]
+}
+
+export interface ContestPredictionCardItem {
+  participantId: string
+  name: string
+  probability: number
+  othersCount?: number
+}
+
+export interface ContestPredictionCardFile {
+  kind: 'predictionCard'
+  contestId: string
+  date: string
+  generatedAt?: string
+  basedOnFactsDate?: string
+  basedOnTour?: number | null
+  target?: string
+  unit?: string
+  topN?: number
+  items: ContestPredictionCardItem[]
 }
 
 export interface ContestFactsRow {
@@ -139,6 +169,8 @@ export interface TeamProbability {
   name: string
   winProbability: number
   standings?: TeamStandings
+  /** Set on pre-aggregated card "others" rows from predictionCard snapshots. */
+  othersCount?: number
 }
 
 export interface League {
