@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Switch layout: public app at /, admin at /admin/, /api → Nuxt /admin/api/.
-# Run as root on the VPS after admin+vue code with this layout is on disk.
+# Apply / + /admin layout: rebuild admin on VPS, nginx, env, pm2.
+# Run as root. Expects NODE_AUTH_TOKEN for GitHub Packages if needed.
 set -euo pipefail
 
 DOMAIN="${DOMAIN:-win-predict-ai.com}"
@@ -24,8 +24,8 @@ if [[ ! -f "$ENV_FILE" ]]; then
   exit 1
 fi
 
-echo "==> Set NUXT_APP_BASE_URL=/admin/ and APP_URL=https://${DOMAIN}"
 PUBLIC_URL="https://${DOMAIN}"
+echo "==> Set APP_URL / NUXT_APP_URL / NUXT_APP_BASE_URL"
 if grep -q '^APP_URL=' "$ENV_FILE"; then
   sed -i "s|^APP_URL=.*|APP_URL=${PUBLIC_URL}|" "$ENV_FILE"
 else
@@ -42,14 +42,16 @@ else
   printf 'NUXT_APP_BASE_URL=/admin/\n' >> "$ENV_FILE"
 fi
 
-echo "==> Pull + rebuild admin with base /admin/"
+echo "==> Pull + clean install + rebuild admin"
 cd "$APP_DIR"
 git fetch origin
 git reset --hard origin/main
 export NUXT_APP_BASE_URL=/admin/
-npm ci
-npm ci --prefix api
-npm run build
+rm -rf node_modules api/node_modules .nuxt
+# Skip postinstall (nuxt prepare); full build below
+npm ci --ignore-scripts
+npm ci --prefix api --ignore-scripts
+npx nuxt build
 npm run build:api
 
 echo "==> Install nginx layout (re-attach TLS with certbot)"
