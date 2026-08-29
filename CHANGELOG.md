@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.42.2 (2026-08-29)
+
+* chore: bump @onlyzoran/win-predict-ai-ui to 0.3.4-pr.44.570861c ([PR](https://github.com/onlyzoran/win-predict-ai/pull/58), [issue](https://github.com/onlyzoran/win-predict-ai/issues/57))
+
 ## 0.42.1 (2026-08-27)
 
 * chore: bump @onlyzoran/win-predict-ai-ui to 0.3.0-pr.39.611e0be ([PR](https://github.com/onlyzoran/win-predict-ai/pull/56), [issue](https://github.com/onlyzoran/win-predict-ai/issues/55))
