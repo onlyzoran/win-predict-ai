@@ -43,9 +43,21 @@
       "wins": "W",
       "draws": "D",
       "losses": "L",
+      "goalsFor": "GF",
+      "goalsAgainst": "GA",
       "goalDifference": "GD",
       "points": "Pts",
       "winPercent": "PCT"
+    },
+    "glossary": {
+      "GP": "Games played",
+      "W": "Wins",
+      "D": "Draws",
+      "L": "Losses",
+      "GF": "Goals for",
+      "GA": "Goals against",
+      "GD": "Goal difference",
+      "Pts": "Points"
     }
   },
   "playoff": {

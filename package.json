@@ -1,6 +1,6 @@
 {
   "name": "win-predict-ai",
-  "version": "0.42.2",
+  "version": "0.42.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@onlyzoran/win-predict-ai-icons": "^0.14.0",
-    "@onlyzoran/win-predict-ai-ui": "0.3.4-pr.44.570861c",
+    "@onlyzoran/win-predict-ai-ui": "0.3.0-pr.36.8f5d448",
     "@tabler/icons-vue": "^3.46.0",
     "@tailwindcss/vite": "^4.3.3",
     "@unovis/ts": "^1.6.7",
