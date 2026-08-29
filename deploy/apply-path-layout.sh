@@ -47,11 +47,8 @@ cd "$APP_DIR"
 git fetch origin
 git reset --hard origin/main
 export NUXT_APP_BASE_URL=/admin/
-# Prefer existing node_modules; refresh if lockfile changed heavily
-if [[ ! -d node_modules ]]; then
-  npm ci
-  npm ci --prefix api
-fi
+npm ci
+npm ci --prefix api
 npm run build
 npm run build:api
 

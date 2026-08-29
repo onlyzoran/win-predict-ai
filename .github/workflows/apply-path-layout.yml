@@ -52,6 +52,7 @@ jobs:
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           REMOTE_DIR=/tmp/wpa-path-layout
@@ -62,8 +63,9 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes \
             "${VPS_USER}@${VPS_HOST}" \
             "chmod +x ${REMOTE_DIR}/apply-path-layout.sh
+             export NODE_AUTH_TOKEN=$(printf %q "${NODE_AUTH_TOKEN}")
              if [ \"\$(id -u)\" -eq 0 ]; then
-               ${REMOTE_DIR}/apply-path-layout.sh
+               env NODE_AUTH_TOKEN=\"\$NODE_AUTH_TOKEN\" ${REMOTE_DIR}/apply-path-layout.sh
              else
-               sudo ${REMOTE_DIR}/apply-path-layout.sh
+               sudo env NODE_AUTH_TOKEN=\"\$NODE_AUTH_TOKEN\" ${REMOTE_DIR}/apply-path-layout.sh
              fi"
