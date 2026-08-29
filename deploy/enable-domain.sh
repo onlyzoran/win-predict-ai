@@ -102,7 +102,7 @@ if command -v pm2 >/dev/null 2>&1; then
 fi
 
 echo "==> Done"
-echo "    Admin:  ${PUBLIC_URL}/"
-echo "    App:    ${PUBLIC_URL}/win-predict-ai/"
+echo "    App:    ${PUBLIC_URL}/"
+echo "    Admin:  ${PUBLIC_URL}/admin/"
 echo "    API:    ${PUBLIC_URL}/api/leagues.json"
 echo "    Ops:    ${PUBLIC_URL}/ops/"

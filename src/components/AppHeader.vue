@@ -52,7 +52,7 @@ function onLocaleUpdate(code: string) {
         <IconBrandGithub :size="16" aria-hidden="true" />
       </a>
       <a
-        href="http://202.71.15.138"
+        href="/admin/"
         target="_blank"
         rel="noreferrer"
         class="inline-flex items-center gap-1.5 rounded-md p-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:px-2 sm:py-1.5"
