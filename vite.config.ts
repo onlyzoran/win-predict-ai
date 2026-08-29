@@ -14,7 +14,7 @@ const nexoraThemePath = fileURLToPath(new URL('./src/assets/nexora.css', import.
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.VITE_BASE_PATH ?? '/win-predict-ai/',
+  base: process.env.VITE_BASE_PATH ?? '/',
   define: {
     __APP_VERSION__: JSON.stringify(version),
   },
