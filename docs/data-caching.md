@@ -6,9 +6,13 @@
 
 ## Краткий вывод
 
-Приложение загружает данные через `fetch` из двух origin: **admin API** (manifest лиг, каталог спортов) и **GitHub Pages / `win-predict-ai-data`** (прогнозы, история, contest-файлы). Явное кэширование на клиенте **минимальное**: два in-memory `Map` в `leagueData.ts` для contest metadata. Остальные источники запрашиваются заново при каждом монтировании composable или навигации. **TTL, persist между сессиями и dedup параллельных запросов отсутствуют.** Retry есть только для части JSON через `fetchJsonWithRetry` (2 попытки).
+Приложение загружает данные через `fetch` из двух origin: **admin API** (manifest лиг, каталог спортов) и **GitHub Pages / `win-predict-ai-data`** (прогнозы, история, contest-файлы).
 
-Рекомендация: **вариант B** — централизованный слой кэша с dedup in-flight и `staleTime` (TanStack Query Vue или тонкая обёртка над `leagueData.ts`). Это закрывает основные UX-проблемы (повторная загрузка manifest, дубли при параллельных запросах) без сложности Service Worker.
+**Реализовано (вариант B):** TanStack Query Vue — shared in-memory кэш с `staleTime`, dedup параллельных запросов и stale-while-revalidate для manifest, league payload, sports catalog, history days/snapshots. Конфигурация — `src/lib/queryClient.ts`, ключи — `src/lib/queryKeys.ts`, fetch-обёртки — `src/lib/dataQueries.ts`.
+
+**Дополнительно:** два in-memory `Map` в `leagueData.ts` для contest participants/facts index внутри цепочки fetch.
+
+**Остаётся вне scope:** persist между сессиями (localStorage/IndexedDB), Service Worker, offline, явная документация `Cache-Control` на API.
 
 ---
 
@@ -32,6 +36,24 @@
 ---
 
 ## Что уже кэшируется
+
+### TanStack Query Vue (сессия SPA, с `staleTime`)
+
+Провайдер — `main.ts` (`VueQueryPlugin` + `createQueryClient()`).
+
+| Query key | Источник | `staleTime` | Где |
+| --- | --- | --- | --- |
+| `['manifest']` | `leagues.json` | 60 s | `useLeagues`, `useLeague` (через `fetchLeague`) |
+| `['league', id]` | полный `League` | 3 h | `useLeague` |
+| `['league-card', id]` | card payload | 3 h | `useLeagues` (батчи) |
+| `['league-payload', id]` | raw payload | 3 h | `fetchLeague` |
+| `['sports']` | sports catalog | 20 min | `useSports` |
+| `['history-days', …]` | days.json / facts index | 3 h | `useLeagueHistoryRanks` |
+| `['history-snapshot', …, date]` | dated snapshot | ∞ | `useLeagueHistoryRanks` |
+
+- **Dedup:** параллельные запросы с одним query key → один in-flight fetch.
+- **Stale-while-revalidate:** данные stale показываются сразу; фоновый refetch при mount/focus/reconnect (см. секцию «Как не показывать устаревшие данные»).
+- **Retry:** `QueryClient` default `retry: 2` поверх fetch-слоя.
 
 ### In-memory Map (сессия SPA, без TTL)
 
@@ -74,29 +96,28 @@ const RETRY_DELAY_MS = 400
 
 ### `useLeagues` (`HomeView`)
 
-- `onMounted`: один fetch manifest → слоты без данных → батчевая подгрузка через `loadNextBatch`.
-- Состояние (`slots`, `configs`) **локально composable**; при уходе с `/` (переход на `/tournament/:id`) компонент размонтируется — **весь прогресс теряется**.
-- Повторный заход на главную = новый manifest + повторная загрузка всех видимых лиг.
-- Retry на уровне UI: `retryFailed()` для упавших лиг (повторный `loadLeaguePayload`, не manifest).
+- Manifest через `useQuery` (`queryKeys.manifest`); при remount в пределах `staleTime` — **cache hit**, без повторного fetch.
+- Card payload — `fetchLeagueCardTeams` → shared cache по `league-card` key; повторный батч той же лиги в сессии не дублирует fetch.
+- Локальное состояние `slotOverrides` / `failedIds` — только UI-прогресс батча на текущем mount; league payload при этом уже в Query cache.
+- Retry на уровне UI: `retryFailed()` для упавших лиг.
 
 ### `useLeague` (`TournamentView`)
 
-- `onMounted` + `watch(id)`: каждый раз `loadLeagueById`.
-- `loadLeagueById` **снова fetch'ит manifest** (`fetchLeaguesManifest`), затем payload лиги — даже если пользователь только что видел эту лигу на главной.
-- Кэша результата `League` нет.
+- `useQuery` по `queryKeys.league(id)`; manifest и payload переиспользуют кэш с главной (shared `fetchLeague`).
+- Смена `id` — новый query key; возврат к ранее открытому турниру — cache hit.
+- `reload()` → `query.refetch()`.
 
 ### `useSports` (`SportFilter` на главной)
 
-- `onMounted`: fetch каталога; при ошибке — `FALLBACK_SPORTS` из кода.
-- Каждый mount `SportFilter` = новый запрос (при remount HomeView — снова fetch).
-- Нет shared state между экземплярами.
+- `useQuery` (`queryKeys.sports`); один fetch на сессию, shared между remount.
+- При ошибке — `FALLBACK_SPORTS`; `placeholderData` до первого ответа.
 
 ### `useLeagueHistoryRanks` (`TournamentDetails`, только full view с `showChart`)
 
-- Загружает `days.json` / contest facts index, затем до **40** snapshots (`sampleHistoryDates`).
-- При смене `leagueId` / `contestPath` — полная перезагрузка серии.
-- Contest index/participants берутся из Map-кэша; **каждый snapshot — новый fetch**.
-- Preview sheet на главной (`compact`, без `leagueId`) — composable **не активен**, history не грузится.
+- `days.json` / facts index — query с `staleTime` 3 h.
+- Snapshots — отдельный query key на `(source, date)` с `staleTime: ∞`; повторное открытие турнира — cache hit на все dated файлы.
+- Contest index/participants — дополнительно Map-кэш в `leagueData.ts`.
+- Preview sheet (`compact`, без `leagueId`) — composable **не активен**.
 
 ---
 
@@ -104,25 +125,26 @@ const RETRY_DELAY_MS = 400
 
 | Критерий | Состояние |
 | --- | --- |
-| TTL / устаревание | ❌ нет |
-| Persist между сессиями | ❌ только UI prefs |
-| Dedup параллельных запросов | ❌ два одновременных `loadLeagueById('epl')` → два manifest + два payload |
-| Кэш manifest | ❌ |
-| Кэш league payload (legacy/contest) | ❌ |
-| Кэш sports catalog | ❌ |
-| Кэш history snapshots | ❌ |
-| Retry единообразный | ⚠️ только payload лиг, 2 попытки |
+| TTL / устаревание | ✅ `staleTime` в Query (60 s – 3 h, snapshots ∞) |
+| Persist между сессиями | ❌ только UI prefs; Query — in-memory |
+| Dedup параллельных запросов | ✅ Query in-flight dedup |
+| Кэш manifest | ✅ `queryKeys.manifest` |
+| Кэш league payload (legacy/contest) | ✅ `league` / `league-card` / `league-payload` keys |
+| Кэш sports catalog | ✅ `queryKeys.sports` |
+| Кэш history snapshots | ✅ per-date keys, `staleTime: ∞` |
+| Retry единообразный | ✅ Query default `retry: 2` + legacy `fetchJsonWithRetry` |
 | Offline | ❌ |
-| Keep-alive / shared store | ❌ `RouterView` без `keep-alive`, Pinia/Vuex нет |
+| Keep-alive / shared store | ⚠️ `RouterView` без `keep-alive`; shared cache — QueryClient |
+| Документация `Cache-Control` API | ❌ |
 
 ---
 
 ## Сценарии навигации (UX)
 
-1. **Главная → турнир → назад:** manifest загружается **3 раза** (home mount, tournament mount, home remount); payload лиги — минимум **2 раза** (home batch + tournament).
-2. **Два быстрых клика по разным турнирам:** два параллельных manifest fetch.
-3. **Contest лига с графиком рангов:** participants + index из Map; ~40 snapshot JSON — каждый раз при открытии страницы турнира.
-4. **Обновление данных в admin:** manifest на API без клиентского TTL подхватывается при следующем fetch (хорошо для актуальности, плохо для трафика без stale-while-revalidate).
+1. **Главная → турнир → назад (в пределах `staleTime`):** manifest **1 fetch**; payload лиги с главной переиспользуется на странице турнира; при возврате на главную card payload из cache.
+2. **Два быстрых клика по разным турнирам:** manifest dedup — один in-flight fetch; payload — параллельно по разным keys.
+3. **Contest лига с графиком рангов:** первое открытие — fetch snapshots; повторное в сессии — cache hit (dated keys ∞).
+4. **Обновление данных в admin / после cron deploy:** stale data показывается сразу; фоновый refetch при mount/focus после `staleTime`; принудительно — `reload()` / `invalidateQueries`.
 
 ---
 
@@ -292,6 +314,9 @@ useQuery({
 
 | Файл | Роль |
 | --- | --- |
+| `src/lib/queryClient.ts` | QueryClient, `STALE_TIME` |
+| `src/lib/queryKeys.ts` | ключи queries |
+| `src/lib/dataQueries.ts` | fetch manifest/league с dedup |
 | `src/lib/leagueData.ts` | fetch, retry, contest Map cache, orchestration |
 | `src/lib/sportsData.ts` | sports catalog |
 | `src/lib/contestData.ts` | трансформации contest JSON (без I/O) |
