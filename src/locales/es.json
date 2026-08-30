@@ -32,6 +32,34 @@
     "winChance": "Prob.",
     "rankMovement": "Movimiento en la tabla"
   },
+  "facts": {
+    "title": "Datos reales",
+    "asOf": "A {date}",
+    "columns": {
+      "rank": "Pos",
+      "team": "Equipo",
+      "group": "Conf",
+      "played": "JJ",
+      "wins": "G",
+      "draws": "E",
+      "losses": "P",
+      "goalsFor": "GF",
+      "goalsAgainst": "GC",
+      "goalDifference": "DG",
+      "points": "Pts",
+      "winPercent": "PCT"
+    },
+    "glossary": {
+      "GP": "Partidos jugados",
+      "W": "Victorias",
+      "D": "Empates",
+      "L": "Derrotas",
+      "GF": "Goles a favor",
+      "GA": "Goles en contra",
+      "GD": "Diferencia de goles",
+      "Pts": "Puntos"
+    }
+  },
   "playoff": {
     "title": "Proyección de playoffs",
     "subtitle": "Cuadro proyectado a partir de las probabilidades de ganar la World Series",
@@ -55,7 +83,7 @@
     "shortLabel": "Apariencia",
     "title": "Apariencia",
     "subtitle": "Elige un esquema de color para el modo claro y otro para el oscuro.",
-    "defaultsNote": "Predeterminado para usuarios nuevos: Slate + Teal en ambos modos; claro/oscuro sigue la configuración del sistema hasta que lo cambies en la cabecera.",
+    "defaultsNote": "Predeterminado para usuarios nuevos: Nexora en ambos modos; claro/oscuro sigue la configuración del sistema hasta que lo cambies en la cabecera.",
     "back": "Volver al inicio",
     "lightMode": "Esquema para modo claro",
     "lightModeHint": "Se aplica cuando el modo claro está activo.",
@@ -73,6 +101,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Superficies marfil cálidas con acento terracotta clay — ambiente Claude+ para el terminal."
+      },
+      "nexora": {
+        "name": "Nexora",
+        "description": "Cabina violeta futurista — superficies de cristal y CTAs con gradiente."
       }
     }
   },

@@ -371,4 +371,199 @@ describe('TournamentDetails', () => {
 
     expect(wrapper.text()).not.toContain('Playoff projection')
   })
+
+  it('does not render actual standings columns on the predictions tab in detail view', async () => {
+    const wrapper = mountDetails({
+      showChart: true,
+      leagueId: 'mlb',
+      title: 'MLB',
+      teams: [
+        {
+          id: '1',
+          name: 'Milwaukee Brewers',
+          winProbability: 18,
+          standings: {
+            group: 'National League',
+            playoffSeed: 1,
+            played: 111,
+            wins: 69,
+            losses: 42,
+            winPercent: 0.6216216,
+          },
+        },
+      ],
+    })
+    await flushPromises()
+    const text = wrapper.text()
+
+    expect(text).toContain('Milwaukee Brewers')
+    expect(text).toContain('18%')
+    expect(text).not.toContain('Conf')
+    expect(text).not.toContain('GP')
+    expect(text).not.toContain('69–42')
+    expect(text).not.toContain('.622')
+  })
+
+  it('shows the actual data tab when contest facts are available', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async (input) => {
+        const url = String(input)
+        if (url.endsWith('contests/rpl-26-27/facts/latest.json')) {
+          return jsonResponse({
+            kind: 'standings',
+            contestId: 'rpl-26-27',
+            date: '2026-08-11',
+            metric: 'points',
+            rows: [
+              {
+                participantId: 'krasnodar',
+                played: 3,
+                wins: 3,
+                draws: 0,
+                losses: 0,
+                goalsFor: 8,
+                goalsAgainst: 3,
+                points: 9,
+                rank: 1,
+                goalDifference: 5,
+              },
+              {
+                participantId: 'zenit-st-petersburg',
+                played: 3,
+                wins: 2,
+                draws: 1,
+                losses: 0,
+                goalsFor: 6,
+                goalsAgainst: 3,
+                points: 7,
+                rank: 2,
+                goalDifference: 3,
+              },
+            ],
+          })
+        }
+        if (url.endsWith('contests/rpl-26-27/participants.json')) {
+          return jsonResponse({
+            contestId: 'rpl-26-27',
+            participants: [
+              { id: 'krasnodar', name: 'Krasnodar' },
+              { id: 'zenit-st-petersburg', name: 'Zenit St Petersburg' },
+            ],
+          })
+        }
+        return errorResponse()
+      }),
+    )
+
+    const wrapper = mountDetails({
+      showChart: true,
+      leagueId: 'rpl-26-27',
+      layout: 'contests',
+      contestPath: 'contests/rpl-26-27',
+      sport: 'football',
+      title: 'RPL',
+    })
+    await flushPromises()
+
+    const text = wrapper.text()
+
+    expect(text).toContain('Actual data')
+    expect(text).toContain('Krasnodar')
+    expect(text).toContain('Zenit St Petersburg')
+    expect(text).toContain('GF')
+    expect(text).toContain('GA')
+    expect(text).toContain('Pts')
+    expect(text).toContain('GD')
+    expect(text).toContain('Goals for')
+    expect(text).toContain('Goals against')
+    expect(text).toContain('As of')
+    expect(wrapper.find('[data-testid="standings-glossary"]').exists()).toBe(true)
+  })
+
+  it('renders football GF, GA, GD, Pts and glossary for EPL facts', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async (input) => {
+        const url = String(input)
+        if (url.endsWith('contests/epl-26-27/facts/latest.json')) {
+          return jsonResponse({
+            kind: 'standings',
+            contestId: 'epl-26-27',
+            date: '2026-08-11',
+            metric: 'points',
+            rows: [
+              {
+                participantId: 'arsenal',
+                played: 2,
+                wins: 2,
+                draws: 0,
+                losses: 0,
+                goalsFor: 5,
+                goalsAgainst: 1,
+                points: 6,
+                rank: 1,
+                goalDifference: 4,
+              },
+              {
+                participantId: 'liverpool',
+                played: 2,
+                wins: 1,
+                draws: 1,
+                losses: 0,
+                goalsFor: 4,
+                goalsAgainst: 2,
+                points: 4,
+                rank: 2,
+                goalDifference: 2,
+              },
+            ],
+          })
+        }
+        if (url.endsWith('contests/epl-26-27/participants.json')) {
+          return jsonResponse({
+            contestId: 'epl-26-27',
+            participants: [
+              { id: 'arsenal', name: 'Arsenal' },
+              { id: 'liverpool', name: 'Liverpool' },
+            ],
+          })
+        }
+        return errorResponse()
+      }),
+    )
+
+    const wrapper = mountDetails({
+      showChart: true,
+      leagueId: 'epl-26-27',
+      layout: 'contests',
+      contestPath: 'contests/epl-26-27',
+      sport: 'football',
+      title: 'EPL',
+    })
+    await flushPromises()
+
+    const text = wrapper.text()
+
+    expect(text).toContain('Arsenal')
+    expect(text).toContain('Liverpool')
+    expect(text).toContain('GF')
+    expect(text).toContain('GA')
+    expect(text).toContain('GD')
+    expect(text).toContain('Pts')
+    expect(wrapper.find('[data-testid="standings-glossary"]').exists()).toBe(true)
+  })
+
+  it('hides the actual data tab when facts are unavailable', async () => {
+    const wrapper = mountDetails({
+      showChart: true,
+      leagueId: 'epl',
+      layout: 'contests',
+      contestPath: 'contests/epl-26-27',
+      title: 'EPL',
+    })
+    await flushPromises()
+
+    expect(wrapper.text()).not.toContain('Actual data')
+  })
 })

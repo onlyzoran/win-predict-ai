@@ -32,6 +32,34 @@
     "winChance": "Chance",
     "rankMovement": "Évolution du classement"
   },
+  "facts": {
+    "title": "Données réelles",
+    "asOf": "Au {date}",
+    "columns": {
+      "rank": "Pos",
+      "team": "Équipe",
+      "group": "Conf",
+      "played": "MJ",
+      "wins": "V",
+      "draws": "N",
+      "losses": "D",
+      "goalsFor": "BP",
+      "goalsAgainst": "BC",
+      "goalDifference": "Diff",
+      "points": "Pts",
+      "winPercent": "PCT"
+    },
+    "glossary": {
+      "GP": "Matchs joués",
+      "W": "Victoires",
+      "D": "Nuls",
+      "L": "Défaites",
+      "GF": "Buts pour",
+      "GA": "Buts contre",
+      "GD": "Différence de buts",
+      "Pts": "Points"
+    }
+  },
   "playoff": {
     "title": "Projection playoffs",
     "subtitle": "Tableau projeté à partir des chances de gagner la World Series",
@@ -55,7 +83,7 @@
     "shortLabel": "Apparence",
     "title": "Apparence",
     "subtitle": "Choisissez un schéma de couleurs pour les modes clair et sombre.",
-    "defaultsNote": "Par défaut pour les nouveaux utilisateurs : Slate + Teal dans les deux modes ; clair/sombre suit le réglage système tant que vous ne le changez pas dans l'en-tête.",
+    "defaultsNote": "Par défaut pour les nouveaux utilisateurs : Nexora dans les deux modes ; clair/sombre suit le réglage système tant que vous ne le changez pas dans l'en-tête.",
     "back": "Retour à l'accueil",
     "lightMode": "Schéma pour le mode clair",
     "lightModeHint": "Appliqué lorsque le mode clair est actif.",
@@ -73,6 +101,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Surfaces ivoire chaudes avec accent terracotta clay — ambiance Claude+ pour le terminal."
+      },
+      "nexora": {
+        "name": "Nexora",
+        "description": "Cockpit violet futuriste — surfaces verre et CTA en dégradé."
       }
     }
   },

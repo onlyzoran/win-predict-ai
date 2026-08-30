@@ -13,6 +13,7 @@ import type {
   StandingRow,
   TeamProbability,
   TournamentLayout,
+  TournamentFactsSnapshot,
 } from '@/types/league'
 import { getSportIcon, sportIcons } from '@/lib/sportIcons'
 import {
@@ -191,6 +192,48 @@ export async function fetchStandingsOptional(leagueId: string): Promise<Standing
   try {
     const snapshot = await fetchJson<LeagueHistorySnapshot>(`history/${leagueId}/latest.json`)
     return snapshot.standings
+  } catch {
+    return null
+  }
+}
+
+export async function loadTournamentFactsOptional(
+  source: Pick<LeagueManifest, 'id' | 'layout' | 'contestPath'>,
+): Promise<TournamentFactsSnapshot | null> {
+  try {
+    if (isContestsLayout(source)) {
+      const base = normalizeContestPath(source.contestPath!)
+      const [facts, participants] = await Promise.all([
+        fetchJsonOptional<ContestFactsFile & { fetchedAt?: string }>(`${base}/facts/latest.json`),
+        fetchContestParticipants(base),
+      ])
+
+      if (!facts || facts.rows.length === 0) {
+        return null
+      }
+
+      return {
+        date: facts.date,
+        metric: facts.metric,
+        rows: factsToStandingRows(facts, participants),
+        fetchedAt: facts.fetchedAt,
+      }
+    }
+
+    const snapshot = await fetchJson<LeagueHistorySnapshot & { fetchedAt?: string }>(
+      `history/${source.id}/latest.json`,
+    )
+
+    if (!snapshot.standings?.length) {
+      return null
+    }
+
+    return {
+      date: snapshot.date,
+      metric: snapshot.metric,
+      rows: snapshot.standings,
+      fetchedAt: snapshot.fetchedAt,
+    }
   } catch {
     return null
   }

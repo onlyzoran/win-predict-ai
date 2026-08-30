@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.42.3 (2026-08-29)
+
+* GF/GA и Glossary на вкладке фактических данных ([PR](https://github.com/onlyzoran/win-predict-ai/pull/54), [issue](https://github.com/onlyzoran/win-predict-ai/issues/53))
+
+## 0.42.2 (2026-08-29)
+
+* chore: bump @onlyzoran/win-predict-ai-ui to 0.3.4-pr.44.570861c ([PR](https://github.com/onlyzoran/win-predict-ai/pull/58), [issue](https://github.com/onlyzoran/win-predict-ai/issues/57))
+
+## 0.42.1 (2026-08-27)
+
+* chore: bump @onlyzoran/win-predict-ai-ui to 0.3.0-pr.39.611e0be ([PR](https://github.com/onlyzoran/win-predict-ai/pull/56), [issue](https://github.com/onlyzoran/win-predict-ai/issues/55))
+
+## [0.42.0](https://github.com/onlyzoran/win-predict-ai/compare/v0.41.2...v0.42.0) (2026-08-19)
+
+## [0.41.2](https://github.com/onlyzoran/win-predict-ai/compare/v0.41.1...v0.41.2) (2026-08-19)
+
 ## [0.41.1](https://github.com/onlyzoran/win-predict-ai/compare/v0.41.0...v0.41.1) (2026-08-19)
 
 ## [0.41.0](https://github.com/onlyzoran/win-predict-ai/compare/v0.40.0...v0.41.0) (2026-08-19)

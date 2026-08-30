@@ -46,6 +46,7 @@ function goBack() {
       :league-id="league.id"
       :layout="league.layout"
       :contest-path="league.contestPath"
+      :sport="league.sport"
       show-chart
     />
   </main>
