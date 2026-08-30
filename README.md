@@ -18,6 +18,8 @@ VITE_DATA_BASE_URL=https://onlyzoran.github.io/win-predict-ai-data/data
 
 On load the app fetches the manifest, then per-league files (e.g. `epl-26-27.json`) with `{ "team": string, "win_predict": number }`.
 
+**Caching:** TanStack Query Vue (`@tanstack/vue-query`) — manifest, league payloads, sports catalog, history days/snapshots with `staleTime` aligned to backend cron (see [docs/data-caching.md](docs/data-caching.md)). In-memory Maps in `leagueData.ts` remain for contest participants/facts index within a fetch chain.
+
 ### Local / alternate data source
 
 If `VITE_LEAGUES_URL` is unset, the manifest falls back to `{VITE_DATA_BASE_URL}/leagues.json`.  

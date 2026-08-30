@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.42.4 (2026-08-30)
+
+* docs: аудит кэширования данных и варианты улучшения ([PR](https://github.com/onlyzoran/win-predict-ai/pull/48), [issue](https://github.com/onlyzoran/win-predict-ai/issues/47))
+
 ## 0.42.3 (2026-08-29)
 
 * GF/GA и Glossary на вкладке фактических данных ([PR](https://github.com/onlyzoran/win-predict-ai/pull/54), [issue](https://github.com/onlyzoran/win-predict-ai/issues/53))

@@ -1,7 +1,9 @@
 import { describe, expect, it, vi, afterEach } from 'vitest'
 import { defineComponent, h, type MaybeRefOrGetter } from 'vue'
 import { flushPromises, mount } from '@vue/test-utils'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import { useLeague } from './useLeague'
+import { createTestQueryClient } from '@/test/query'
 
 function jsonResponse(data: unknown) {
   return {
@@ -20,6 +22,7 @@ function errorResponse(status = 500) {
 
 function mountUseLeague(id: MaybeRefOrGetter<string>) {
   let api!: ReturnType<typeof useLeague>
+  const queryClient = createTestQueryClient()
 
   mount(
     defineComponent({
@@ -28,9 +31,14 @@ function mountUseLeague(id: MaybeRefOrGetter<string>) {
         return () => h('div')
       },
     }),
+    {
+      global: {
+        plugins: [[VueQueryPlugin, { queryClient }]],
+      },
+    },
   )
 
-  return api
+  return { api, queryClient }
 }
 
 describe('useLeague', () => {
@@ -63,15 +71,15 @@ describe('useLeague', () => {
       }),
     )
 
-    const { league, isLoading, notFound, loadError } = mountUseLeague('epl')
+    const { api } = mountUseLeague('epl')
     await flushPromises()
 
-    expect(isLoading.value).toBe(false)
-    expect(notFound.value).toBe(false)
-    expect(loadError.value).toBeNull()
-    expect(league.value?.title).toBe('Premier League')
-    expect(league.value?.teams[0]?.name).toBe('Arsenal')
-    expect(league.value?.teams[0]?.standings).toBeUndefined()
+    expect(api.isLoading.value).toBe(false)
+    expect(api.notFound.value).toBe(false)
+    expect(api.loadError.value).toBeNull()
+    expect(api.league.value?.title).toBe('Premier League')
+    expect(api.league.value?.teams[0]?.name).toBe('Arsenal')
+    expect(api.league.value?.teams[0]?.standings).toBeUndefined()
   })
 
   it('merges optional history standings when available', async () => {
@@ -117,13 +125,13 @@ describe('useLeague', () => {
       }),
     )
 
-    const { league, isLoading, loadError } = mountUseLeague('mlb-world-series-26')
+    const { api } = mountUseLeague('mlb-world-series-26')
     await flushPromises()
 
-    expect(isLoading.value).toBe(false)
-    expect(loadError.value).toBeNull()
-    expect(league.value?.layout).toBe('legacy')
-    expect(league.value?.teams[0]?.standings).toEqual({
+    expect(api.isLoading.value).toBe(false)
+    expect(api.loadError.value).toBeNull()
+    expect(api.league.value?.layout).toBe('legacy')
+    expect(api.league.value?.teams[0]?.standings).toEqual({
       group: 'National League',
       playoffSeed: 1,
       played: 111,
@@ -189,16 +197,16 @@ describe('useLeague', () => {
       }),
     )
 
-    const { league, isLoading, loadError } = mountUseLeague('mlb-world-series-26')
+    const { api } = mountUseLeague('mlb-world-series-26')
     await flushPromises()
 
-    expect(isLoading.value).toBe(false)
-    expect(loadError.value).toBeNull()
-    expect(league.value?.layout).toBe('contests')
-    expect(league.value?.contestPath).toBe('contests/mlb-world-series-26')
-    expect(league.value?.teams[0]?.id).toBe('milwaukee-brewers')
-    expect(league.value?.teams[0]?.name).toBe('Milwaukee Brewers')
-    expect(league.value?.teams[0]?.standings).toEqual({
+    expect(api.isLoading.value).toBe(false)
+    expect(api.loadError.value).toBeNull()
+    expect(api.league.value?.layout).toBe('contests')
+    expect(api.league.value?.contestPath).toBe('contests/mlb-world-series-26')
+    expect(api.league.value?.teams[0]?.id).toBe('milwaukee-brewers')
+    expect(api.league.value?.teams[0]?.name).toBe('Milwaukee Brewers')
+    expect(api.league.value?.teams[0]?.standings).toEqual({
       group: 'National League',
       playoffSeed: 1,
       played: 111,
@@ -219,11 +227,62 @@ describe('useLeague', () => {
       }),
     )
 
-    const { league, notFound, isLoading } = mountUseLeague('missing')
+    const { api } = mountUseLeague('missing')
     await flushPromises()
 
-    expect(isLoading.value).toBe(false)
-    expect(notFound.value).toBe(true)
-    expect(league.value).toBeNull()
+    expect(api.isLoading.value).toBe(false)
+    expect(api.notFound.value).toBe(true)
+    expect(api.league.value).toBeNull()
+  })
+
+  it('reuses cached manifest across remounts', async () => {
+    const fetchMock = vi.fn<(input: RequestInfo | URL) => Promise<unknown>>(async (input) => {
+      const url = String(input)
+      if (url.endsWith('leagues.json')) {
+        return jsonResponse([
+          {
+            id: 'epl',
+            title: 'Premier League',
+            sport: 'football',
+            file: 'epl.json',
+            startDate: '2026-01-01',
+            endDate: '2026-12-31',
+            popularPriority: 1,
+          },
+        ])
+      }
+      if (url.endsWith('epl.json')) {
+        return jsonResponse([{ team: 'Arsenal', win_predict: 40 }])
+      }
+      return errorResponse(404)
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const queryClient = createTestQueryClient()
+    const mountOne = () =>
+      mount(
+        defineComponent({
+          setup() {
+            useLeague('epl')
+            return () => h('div')
+          },
+        }),
+        { global: { plugins: [[VueQueryPlugin, { queryClient }]] } },
+      )
+
+    mountOne()
+    await flushPromises()
+    const manifestCallsAfterFirst = fetchMock.mock.calls.filter((call) =>
+      String(call[0]).endsWith('leagues.json'),
+    ).length
+
+    mountOne()
+    await flushPromises()
+    const manifestCallsAfterSecond = fetchMock.mock.calls.filter((call) =>
+      String(call[0]).endsWith('leagues.json'),
+    ).length
+
+    expect(manifestCallsAfterFirst).toBe(1)
+    expect(manifestCallsAfterSecond).toBe(1)
   })
 })
