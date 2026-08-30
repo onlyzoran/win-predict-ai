@@ -101,7 +101,7 @@ describe('App', () => {
     const wrapper = await mountApp()
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Win Predict AI')
+    expect(wrapper.text()).toMatch(/Win Predict\sAI/)
     expect(wrapper.text()).toMatch(/v\d+\.\d+\.\d+/)
   })
 

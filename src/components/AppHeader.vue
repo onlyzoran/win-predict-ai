@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LocaleSwitcher, ThemeToggle } from '@onlyzoran/win-predict-ai-ui'
+import { BrandTitle, LocaleSwitcher, ThemeToggle } from '@onlyzoran/win-predict-ai-ui'
 import { IconBrandGithub, IconLogin, IconPalette } from '@onlyzoran/win-predict-ai-icons'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -17,8 +17,8 @@ function onLocaleUpdate(code: string) {
     class="fixed top-0 right-0 left-0 z-50 flex h-14 items-center justify-between border-b bg-background/80 px-6 shadow-sm backdrop-blur-md"
   >
     <div class="min-w-0">
-      <RouterLink to="/" class="font-semibold text-foreground hover:opacity-80">
-        {{ t('app.title') }}
+      <RouterLink to="/" class="inline-block hover:opacity-80">
+        <BrandTitle />
       </RouterLink>
     </div>
     <div class="flex items-center gap-1">
