@@ -13,6 +13,7 @@ import {
   getOthersChartColor,
   getTeamChartColor,
 } from '@/lib/chartThemeColors'
+import { shortTeamName } from '@onlyzoran/win-predict-ai-ui'
 import { aggregateTopTeams, TOP_TEAMS_COUNT } from '@/lib/teamProbability'
 import WinProbabilityPieTooltip from '@/components/WinProbabilityPieTooltip.vue'
 import { formatPercent } from '@/lib/utils'
@@ -95,7 +96,13 @@ const tooltipTriggers = {
             :style="{ backgroundColor: slice.fill }"
             aria-hidden="true"
           />
-          <span class="truncate font-medium">{{ slice.name }}</span>
+          <span class="truncate font-medium" :title="slice.name">
+            <template v-if="slice.key === 'others'">{{ slice.name }}</template>
+            <template v-else>
+              <span class="md:hidden">{{ shortTeamName(slice.name) }}</span>
+              <span class="hidden md:inline">{{ slice.name }}</span>
+            </template>
+          </span>
         </span>
         <span class="shrink-0 text-muted-foreground tabular-nums">
           {{ formatPercent(slice.winProbability) }}

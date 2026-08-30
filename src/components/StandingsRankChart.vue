@@ -11,6 +11,7 @@ import {
   ChartTooltipContent,
   componentToString,
 } from '@/components/ui/chart'
+import { shortTeamName } from '@onlyzoran/win-predict-ai-ui'
 import type { RankSeries } from '@/lib/historyRank'
 import { locale } from '@/i18n'
 
@@ -205,7 +206,10 @@ function labelClass(teamName: string): string {
           @mouseenter="setHighlightedTeam(team.name)"
           @mouseleave="setHighlightedTeam(null)"
         >
-          <span class="truncate font-medium" :style="{ color: team.color }">{{ team.name }}</span>
+          <span class="truncate font-medium" :style="{ color: team.color }" :title="team.name">
+            <span class="md:hidden">{{ shortTeamName(team.name) }}</span>
+            <span class="hidden md:inline">{{ team.name }}</span>
+          </span>
           <span
             class="size-1.5 shrink-0 rounded-full"
             :style="{ backgroundColor: team.color }"
@@ -273,7 +277,10 @@ function labelClass(teamName: string): string {
             :style="{ backgroundColor: team.color }"
             aria-hidden="true"
           />
-          <span class="truncate font-medium" :style="{ color: team.color }">{{ team.name }}</span>
+          <span class="truncate font-medium" :style="{ color: team.color }" :title="team.name">
+            <span class="md:hidden">{{ shortTeamName(team.name) }}</span>
+            <span class="hidden md:inline">{{ team.name }}</span>
+          </span>
         </li>
       </ul>
     </div>

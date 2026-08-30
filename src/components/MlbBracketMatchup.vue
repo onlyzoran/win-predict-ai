@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { shortTeamName } from '@onlyzoran/win-predict-ai-ui'
 import type { BracketMatchup, BracketTeam } from '@/lib/mlbPlayoffBracket'
-import { shortTeamName } from '@/lib/mlbPlayoffBracket'
 import { cn, formatPercent } from '@/lib/utils'
 
 const props = withDefaults(
