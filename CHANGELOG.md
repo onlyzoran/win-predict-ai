@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.42.5 (2026-08-30)
+
+* Акцент «AI» в header приложения ([PR](https://github.com/onlyzoran/win-predict-ai/pull/62), [issue](https://github.com/onlyzoran/win-predict-ai-orchestrator/issues/31))
+
 ## 0.42.4 (2026-08-30)
 
 * docs: аудит кэширования данных и варианты улучшения ([PR](https://github.com/onlyzoran/win-predict-ai/pull/48), [issue](https://github.com/onlyzoran/win-predict-ai/issues/47))

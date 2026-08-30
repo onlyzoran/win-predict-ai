@@ -46,6 +46,8 @@
   --sidebar-accent-foreground: oklch(0.28 0.038 278);
   --sidebar-border: oklch(0.92 0.02 278 / 38%);
   --sidebar-ring: oklch(0.52 0.22 277);
+  --brand-ai-from: oklch(0.50 0.22 277);
+  --brand-ai-to: oklch(0.54 0.18 228);
 
   --nexora-glass-highlight: oklch(1 0 0 / 14%);
   --nexora-glass-shadow:
@@ -89,6 +91,8 @@
   --sidebar-accent-foreground: oklch(0.88 0.022 278);
   --sidebar-border: oklch(0.72 0.04 278 / 16%);
   --sidebar-ring: oklch(0.68 0.19 277);
+  --brand-ai-from: oklch(0.72 0.19 277);
+  --brand-ai-to: oklch(0.76 0.14 210);
 
   --nexora-glass-highlight: oklch(1 0 0 / 8%);
   --nexora-glass-shadow:
