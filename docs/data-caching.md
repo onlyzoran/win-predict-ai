@@ -103,8 +103,9 @@ const RETRY_DELAY_MS = 400
 
 ### `useLeague` (`TournamentView`)
 
-- `useQuery` по `queryKeys.league(id)`; manifest и payload переиспользуют кэш с главной (shared `fetchLeague`).
-- Смена `id` — новый query key; возврат к ранее открытому турниру — cache hit.
+- `useQuery` по `queryKeys.league(id)` → внутри `fetchLeague` отдельный fetch по `['league-payload', id]` (`loadLeaguePayload`).
+- **Manifest** переиспользуется с главной (общий `queryKeys.manifest`). **Payload лиги с главной не переиспользуется:** Home кэширует card-данные по `['league-card', id]` (`loadLeagueCardPayload` — для contest это `predictions/card.json`, для legacy — тот же `{file}`, но другой query key), турнир — полный payload по `['league-payload', id]` (`loadLeaguePayload` — contest: `latest.json` + facts + participants; legacy: `{file}` + standings). При переходе home → tournament возможен **повторный fetch** тех же или других URL.
+- Смена `id` — новый query key; возврат к ранее открытому турниру — cache hit по `league` / `league-payload`.
 - `reload()` → `query.refetch()`.
 
 ### `useSports` (`SportFilter` на главной)
@@ -129,7 +130,8 @@ const RETRY_DELAY_MS = 400
 | Persist между сессиями | ❌ только UI prefs; Query — in-memory |
 | Dedup параллельных запросов | ✅ Query in-flight dedup |
 | Кэш manifest | ✅ `queryKeys.manifest` |
-| Кэш league payload (legacy/contest) | ✅ `league` / `league-card` / `league-payload` keys |
+| Кэш league payload (legacy/contest) | ✅ `league` / `league-card` / `league-payload` keys (раздельно) |
+| Card ↔ full payload между home и tournament | ❌ разные keys; общий только manifest; возможен повторный fetch |
 | Кэш sports catalog | ✅ `queryKeys.sports` |
 | Кэш history snapshots | ✅ per-date keys, `staleTime: ∞` |
 | Retry единообразный | ✅ Query default `retry: 2` + legacy `fetchJsonWithRetry` |
@@ -141,7 +143,7 @@ const RETRY_DELAY_MS = 400
 
 ## Сценарии навигации (UX)
 
-1. **Главная → турнир → назад (в пределах `staleTime`):** manifest **1 fetch**; payload лиги с главной переиспользуется на странице турнира; при возврате на главную card payload из cache.
+1. **Главная → турнир → назад (в пределах `staleTime`):** manifest **1 fetch** (shared `queryKeys.manifest`). Card payload на главной (`league-card`) и полный payload на турнире (`league-payload`) — **разные query keys**, между экранами **не переиспользуются**; при первом открытии турнира после card на главной — отдельный fetch (для contest — другие файлы: `card.json` vs `latest.json` + facts; для legacy — тот же `{file}` может запроситься повторно). При возврате на главную card payload берётся из cache `league-card`; при повторном заходе на тот же турнир — cache hit по `league` / `league-payload`.
 2. **Два быстрых клика по разным турнирам:** manifest dedup — один in-flight fetch; payload — параллельно по разным keys.
 3. **Contest лига с графиком рангов:** первое открытие — fetch snapshots; повторное в сессии — cache hit (dated keys ∞).
 4. **Обновление данных в admin / после cron deploy:** stale data показывается сразу; фоновый refetch при mount/focus после `staleTime`; принудительно — `reload()` / `invalidateQueries`.
