@@ -1,7 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import { i18n } from '@/i18n'
+import { createTestQueryClient } from '@/test/query'
 import TournamentDetails from './TournamentDetails.vue'
 
 const teams = [
@@ -55,6 +57,7 @@ function errorResponse(status = 404) {
 }
 
 function mountDetails(props: Record<string, unknown> = {}) {
+  const queryClient = createTestQueryClient()
   return mount(TournamentDetails, {
     props: {
       title: 'EPL',
@@ -66,7 +69,7 @@ function mountDetails(props: Record<string, unknown> = {}) {
       ...props,
     },
     global: {
-      plugins: [i18n],
+      plugins: [i18n, [VueQueryPlugin, { queryClient }]],
       stubs: {
         WinProbabilityPieChart: PieStub,
         StandingsRankChart: RankChartStub,

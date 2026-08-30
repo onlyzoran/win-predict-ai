@@ -1,27 +1,35 @@
-import { onMounted, ref } from 'vue'
+import { computed } from 'vue'
+import { useQuery } from '@tanstack/vue-query'
 import {
   fetchSportsCatalog,
   getFallbackSportsCatalog,
   resolveSportsCatalog,
 } from '@/lib/sportsData'
-import type { SportCatalogItem } from '@/types/sport'
+import { STALE_TIME } from '@/lib/queryClient'
+import { queryKeys } from '@/lib/queryKeys'
 
 export function useSports() {
-  const sports = ref<SportCatalogItem[]>(getFallbackSportsCatalog())
-  const isLoading = ref(true)
-  const loadError = ref<string | null>(null)
-
-  onMounted(async () => {
-    try {
-      sports.value = resolveSportsCatalog(await fetchSportsCatalog())
-      loadError.value = null
-    } catch (error) {
-      sports.value = getFallbackSportsCatalog()
-      loadError.value = error instanceof Error ? error.message : 'Failed to load sports'
-    } finally {
-      isLoading.value = false
-    }
+  const query = useQuery({
+    queryKey: queryKeys.sports,
+    queryFn: async () => resolveSportsCatalog(await fetchSportsCatalog()),
+    staleTime: STALE_TIME.sports,
+    placeholderData: () => getFallbackSportsCatalog(),
+    retry: 1,
   })
+
+  const sports = computed(() => {
+    if (query.isError.value) {
+      return getFallbackSportsCatalog()
+    }
+    return query.data.value ?? getFallbackSportsCatalog()
+  })
+
+  const isLoading = computed(() => query.isLoading.value)
+  const loadError = computed(() =>
+    query.isError.value && query.error.value instanceof Error
+      ? query.error.value.message
+      : null,
+  )
 
   return {
     sports,

@@ -273,16 +273,18 @@ useQuery({
 
 ---
 
-## Чеклист для реализации (вне scope этого PR)
+## Чеклист для реализации
 
-- [ ] Кэш manifest + dedup `fetchLeaguesManifest`
-- [ ] Кэш `loadLeaguePayload` / `loadLeagueById` по `leagueId`
-- [ ] Кэш sports catalog (shared, один fetch на сессию)
-- [ ] Кэш history: `days.json` + snapshots по `(source, date)`
-- [ ] Единая политика retry (3× с backoff?) или делегирование Query
-- [ ] `staleTime`: manifest 30–60 s; `latest.json`/payload 2–4 h (согласовано с daily/8h cron data); dated snapshots ∞
-- [ ] Тесты: dedup, stale hit, navigation без лишних fetch (mock `fetch`)
+- [x] Кэш manifest + dedup `fetchLeaguesManifest` — `useQuery` / `queryKeys.manifest`
+- [x] Кэш `loadLeaguePayload` / `loadLeagueById` по `leagueId` — `fetchLeague`, `queryKeys.league`
+- [x] Кэш sports catalog (shared, один fetch на сессию) — `useSports`, `queryKeys.sports`
+- [x] Кэш history: `days.json` + snapshots по `(source, date)` — `useLeagueHistoryRanks`
+- [x] Единая политика retry — `QueryClient` default `retry: 2`
+- [x] `staleTime`: manifest 60 s; payload 3 h; sports 20 min; dated snapshots ∞
+- [x] Тесты: dedup manifest при remount (`useLeague.spec.ts`)
 - [ ] Документировать ожидания от `Cache-Control` на API
+
+Реализация: **вариант B** (`@tanstack/vue-query`) — `src/lib/queryClient.ts`, `src/lib/queryKeys.ts`, `src/lib/dataQueries.ts`, провайдер в `main.ts`.
 
 ---
 
