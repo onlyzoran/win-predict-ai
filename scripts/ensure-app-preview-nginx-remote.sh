@@ -2,7 +2,10 @@
 # Runs on VPS via: ssh … "bash -s" < scripts/ensure-app-preview-nginx-remote.sh
 set -euo pipefail
 
-SITE="${NGINX_SITE:-/etc/nginx/sites-available/win-predict-ai-admin}"
+SITE="${NGINX_SITE:-/etc/nginx/sites-enabled/win-predict-ai-admin}"
+if [[ ! -f "$SITE" ]]; then
+  SITE="/etc/nginx/sites-available/win-predict-ai-admin"
+fi
 
 if grep -q 'location /app-preview/' "$SITE"; then
   echo "ok: location /app-preview/ already configured"
