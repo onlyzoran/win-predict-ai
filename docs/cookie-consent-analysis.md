@@ -1,19 +1,25 @@
 # Анализ необходимости cookie consent (семья win-predict-ai)
 
-Дата: 2026-08-30  
+Дата: 2026-08-31 (обновлено по review Goal #34)  
 Репозиторий-носитель: `win-predict-ai`  
 Parent: [onlyzoran/win-predict-ai-orchestrator#34](https://github.com/onlyzoran/win-predict-ai-orchestrator/issues/34)
+
+### Review Goal (2026-08-31)
+
+> «Я думаю стоит сразу сделать, чтобы потом когда понадобится уже было» — onlyzoran
+
+**Влияние на вывод:** формально CMP **не обязателен** при текущем стеке (см. §3), но продуктовое решение — **внедрить consent-инфраструктуру проактивно**, не дожидаясь analytics. Баннер и категории consent готовятся сейчас; подключение метрик сводится к включению категории «Analytics» без переделки UX.
 
 ## Краткий вывод
 
 | Поверхность | Cookie consent сейчас | Комментарий |
 | --- | --- | --- |
-| **Публичный web app** (`win-predict-ai.com/`) | **Не обязателен** для текущего стека | Нет analytics/рекламы; cookies не ставятся; localStorage — только UI-преференсы первой стороны. Единственный спорный внешний запрос — **Google Fonts** (IP уходит на Google). |
+| **Публичный web app** (`win-predict-ai.com/`) | **Не обязателен юридически**, **рекомендуется внедрить** | Нет analytics/рекламы; cookies не ставятся; localStorage — UI-преференсы первой стороны. Спорный внешний запрос — **Google Fonts** (IP уходит на Google). Proactive CMP закрывает fonts-риск и готовит gate под будущие скрипты. |
 | **Admin** (`win-predict-ai.com/admin/`) | **Не нужен баннер** | Закрытый инструмент операторов; `wpa_session` — строго необходимая auth-cookie; `sidebar_state` — функциональная UI-cookie после входа. |
-| **iOS** | **Не применимо** (нет web-cookies) | Только `UserDefaults` для UI; нет SDK трекинга → **ATT не нужен** сейчас. |
-| **Будущее** (analytics, ads, embeds) | **Понадобится** | CMP на публичном app; отдельные Goal на ui/app/admin/ios. |
+| **iOS** | **Не применимо** (нет web-cookies) | Только `UserDefaults` для UI; нет SDK трекинга → **ATT не нужен** сейчас. Privacy policy URL — в follow-up. |
+| **Будущее** (analytics, ads, embeds) | **Инфраструктура — сейчас** | CMP на публичном app внедряется до метрик; analytics — только активация категории. |
 
-**Предпочтительный путь:** не внедрять полноценный CMP сейчас; закрыть риск Google Fonts (self-host Inter **или** короткое уведомление в footer); подготовить privacy policy; при добавлении метрик — компонент consent в `@onlyzoran/win-predict-ai-ui` + интеграция в app.
+**Предпочтительный путь (после review):** в ближайших Goal — privacy policy, `CookieConsentBanner` + `useConsent()` в `@onlyzoran/win-predict-ai-ui`, интеграция в app с категориями (Necessary / Preferences / Analytics); Google Fonts — либо self-host Inter, либо загрузка после consent категории «Preferences»; admin/ios без баннера.
 
 ---
 
@@ -222,13 +228,15 @@ Keychain, IDFA, IDFV для трекинга, analytics SDK (Firebase, Amplitude
 
 | Вариант | Оценка |
 | --- | --- |
-| **Обязателен сейчас** | **Нет** (нет non-essential cookies + нет analytics) |
-| **Желателен (low-cost)** | Privacy policy + self-host Inter **или** однострочное «We use Google Fonts» с opt-in load |
-| **Обязателен при расширении** | Любой EU-facing analytics (GA4, Plausible с cookies, Hotjar), ads, social embeds, A/B SaaS |
+| **Обязателен сейчас (strict legal)** | **Нет** (нет non-essential cookies + нет analytics) |
+| **Рекомендуется внедрить сейчас (product decision, Goal review)** | Privacy policy + CMP на публичном app: категории готовы, Analytics пустая до подключения метрик; Google Fonts — self-host **или** consent-gated load |
+| **Обязателен при расширении без proactive CMP** | Любой EU-facing analytics (GA4, Plausible с cookies, Hotjar), ads, social embeds, A/B SaaS — **не актуально**, если CMP уже развёрнут |
 
 ---
 
-## 4. Где добавлять consent (если/когда понадобится)
+## 4. Где добавлять consent
+
+> **После review Goal:** баннер на публичном app внедряется **проактивно**, даже без analytics — см. §6.
 
 | Поверхность | Баннер / CMP | Почему |
 | --- | --- | --- |
@@ -252,10 +260,11 @@ Keychain, IDFA, IDFV для трекинга, analytics SDK (Firebase, Amplitude
 | **B. OSS (vanilla-cookieconsent, Klaro, cookieconsent v3)** | Быстрый старт; готовые категории GDPR | Чужой visual language (не Nexora); сложнее sync с `@onlyzoran/win-predict-ai-ui`; CSS conflicts с Tailwind 4 | `app`: интеграция + theme override CSS; возможно форк стилей |
 | **C. Минимальный inline в app** | Малый diff; без npm ui release | Дублирование если понадобится в admin/marketing site; нет Storybook contract | Только `app`; технический долг при масштабировании |
 
-**Сравнение для текущего профиля (без analytics):**
+**Сравнение с учётом review (proactive implementation):**
 
-- Вариант C достаточен для **однострочного** fonts disclosure.
-- При планируемых метриках — **вариант A** предпочтителен (один banner для всей web-семьи).
+- **Вариант A — единственный рекомендуемый** для «сделать сразу»: один banner, Storybook-контракт, категории расширяются без смены UX; admin по-прежнему без баннера.
+- Вариант C (inline) — отклонён: при proactive rollout быстро превращается в техдолг; при добавлении analytics всё равно потребуется рефакторинг.
+- Вариант B (OSS) — отклонён: визуально не Nexora, сложнее i18n и версионирование с `@onlyzoran/win-predict-ai-ui`.
 
 **iOS:** отдельный SwiftUI sheet / Settings link «Privacy» — Goal `ios`, не переиспользует web CMP.
 
@@ -263,36 +272,47 @@ Keychain, IDFA, IDFV для трекинга, analytics SDK (Firebase, Amplitude
 
 ## 6. Рекомендация и следующие шаги
 
-### Предпочтительный вариант (фазированно)
+### Предпочтительный вариант (proactive, после review Goal)
 
-**Фаза 0 (сейчас, без CMP):**
+**Принцип:** consent-инфраструктура разворачивается **до** analytics, чтобы при подключении метрик не переделывать UX и не откладывать compliance.
 
-1. Опубликовать **Privacy Policy** (страница или markdown на сайте): какие storage keys, third-party hosts (Google Fonts, GitHub, Resend для admin), контакт DPO/owner.
-2. **Self-host Inter** в app (убрать `fonts.googleapis.com` из `src/assets/main.css`) — снимает главный EU-spor с third-party transfer без тяжёлого баннера.
-3. iOS: подготовить текст policy URL для App Store metadata (без ATT).
+**Фаза 1 — consent-инфраструктура (ближайшие Goal, параллельно где возможно):**
 
-**Фаза 1 (перед analytics):**
+1. **`win-predict-ai-ui`:** `CookieConsentBanner` + `useConsent()` + типы категорий (`necessary`, `preferences`, `analytics`). Storybook: Accept all / Reject non-essential / Customize. Persist выбора в `localStorage` (ключ, например `cookie-consent-preferences`).
+2. **`win-predict-ai`:** интеграция баннера в корневой layout; gate для будущих script injection; mapping:
+   - **Necessary (always on):** bootstrap locale/theme (нельзя блокировать без поломки FOUC — disclosed в policy).
+   - **Preferences:** `tournamentSort`, `pinnedTournaments`, `hiddenTournaments`; опционально — Google Fonts load (если не self-host).
+   - **Analytics (off by default, пустая):** placeholder до выбора vendor.
+3. **`win-predict-ai`:** **Privacy Policy** — страница или route + ссылка в footer и в баннере; перечень storage keys, third-party hosts (Google Fonts, GitHub Pages, Resend для admin), контакт.
+4. **Google Fonts — один из двух путей** (отдельный Goal или подзадача app):
+   - **A (предпочтительно):** self-host Inter — убрать `@import` из `src/assets/main.css`; fonts не требуют consent.
+   - **B:** оставить CDN, но загружать CSS только после consent «Preferences» (fallback system font до согласия).
 
-4. `CookieConsentBanner` + `useConsent()` в `win-predict-ai-ui` (Storybook: Accept / Reject / Customize).
-5. Интеграция в app: блокировка script injection до consent; категории «Necessary» (always on) vs «Analytics».
-6. Документировать mapping ключей localStorage → категория «Functional — no block».
+**Фаза 2 — iOS и admin (без web-баннера):**
 
-**Фаза 2 (если product решит):**
+5. **`win-predict-ai-ios`:** URL privacy policy в App Store metadata; privacy questionnaire («Data Not Collected» для текущего профиля).
+6. **Admin:** без CMP; при необходимости — ссылка на policy во внутреннем onboarding (не публичный баннер).
 
-7. Plausible/Fathom (cookieless) vs GA4 — правовая и UX оценка; cookieless может не требовать banner, но нужна policy.
-8. iOS: Privacy Manifest + nutrition labels update при crash/analytics SDK.
+**Фаза 3 — когда product выберет analytics:**
+
+7. **`win-predict-ai-orchestrator`:** decision — vendor (Plausible cookieless vs GA4 и т.д.) + jurisdictions.
+8. **`win-predict-ai`:** loader analytics только при `consent.analytics === true`; без изменения баннера.
+9. **`win-predict-ai-ios`:** Privacy Manifest + ATT — только если SDK требует tracking.
 
 ### Черновой список follow-up Goal (без реализации в этом PR)
 
-| # | Repo | Заголовок (черновик) |
-| --- | --- | --- |
-| 1 | `win-predict-ai` | Privacy Policy page + footer link |
-| 2 | `win-predict-ai` | Self-host Inter (remove Google Fonts CDN) |
-| 3 | `win-predict-ai-ui` | CookieConsentBanner + useConsent composable + Storybook |
-| 4 | `win-predict-ai` | Integrate consent gate + optional analytics loader |
-| 5 | `win-predict-ai-ios` | Privacy policy URL + App Store privacy questionnaire |
-| 6 | `win-predict-ai-ios` | PrivacyInfo.xcprivacy (when adding SDKs) |
-| 7 | `win-predict-ai-orchestrator` | Decision: analytics vendor + jurisdictions |
+| # | Приоритет | Repo | Заголовок (черновик) |
+| --- | --- | --- | --- |
+| 1 | **P0** | `win-predict-ai-ui` | CookieConsentBanner + useConsent + Storybook |
+| 2 | **P0** | `win-predict-ai` | Integrate consent banner + category gate + footer link |
+| 3 | **P0** | `win-predict-ai` | Privacy Policy page |
+| 4 | **P1** | `win-predict-ai` | Self-host Inter (remove Google Fonts CDN) — *или* fonts consent-gate |
+| 5 | **P1** | `win-predict-ai-ios` | Privacy policy URL + App Store privacy questionnaire |
+| 6 | **P2** | `win-predict-ai-orchestrator` | Decision: analytics vendor + jurisdictions |
+| 7 | **P2** | `win-predict-ai` | Analytics loader (after vendor decision) |
+| 8 | **P3** | `win-predict-ai-ios` | PrivacyInfo.xcprivacy (when adding SDKs) |
+
+**Admin** в списке отсутствует — баннер не нужен (§4).
 
 ### Что сознательно не делаем в этом PR
 
