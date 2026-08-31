@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { BrandTitle, LocaleSwitcher, ThemeToggle } from '@onlyzoran/win-predict-ai-ui'
 import { IconBrandGithub, IconLogin, IconPalette } from '@onlyzoran/win-predict-ai-icons'
+import { AppLogo } from '@/lib/appLogo'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { locale, localeLabels, locales, setLocale, type Locale } from '@/i18n'
@@ -17,8 +18,9 @@ function onLocaleUpdate(code: string) {
     class="fixed top-0 right-0 left-0 z-50 flex h-14 items-center justify-between border-b bg-background/80 px-6 shadow-sm backdrop-blur-md"
   >
     <div class="min-w-0">
-      <RouterLink to="/" class="inline-block hover:opacity-80">
-        <BrandTitle />
+      <RouterLink to="/" class="inline-flex min-w-0 items-center gap-2.5 hover:opacity-80">
+        <AppLogo :size="28" class="shrink-0 text-primary" aria-hidden="true" />
+        <BrandTitle class="truncate" />
       </RouterLink>
     </div>
     <div class="flex items-center gap-1">
