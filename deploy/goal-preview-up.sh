@@ -24,9 +24,12 @@ VITE_BASE_PATH="${BASE_PATH}" npm run build
 mkdir -p "$TARGET"
 rsync -av --delete dist/ "$TARGET/"
 
-if [[ -f /etc/nginx/sites-available/win-predict-ai-admin ]] \
-  && ! grep -q 'location /app-preview/' /etc/nginx/sites-available/win-predict-ai-admin; then
-  echo "==> WARN: nginx has no /app-preview/ location — run deploy/apply-path-layout.sh or reload after updating nginx-domain.conf"
+NGINX_SITE="${NGINX_SITE:-/etc/nginx/sites-enabled/win-predict-ai-admin}"
+if [[ ! -f "$NGINX_SITE" ]]; then
+  NGINX_SITE="/etc/nginx/sites-available/win-predict-ai-admin"
+fi
+if [[ -f "$NGINX_SITE" ]] && ! grep -q 'location /app-preview/' "$NGINX_SITE"; then
+  echo "==> WARN: nginx has no /app-preview/ location — run scripts/ensure-app-preview-nginx-remote.sh or reload after updating nginx-domain.conf"
 fi
 
 echo "==> Done: https://win-predict-ai.com${BASE_PATH}"

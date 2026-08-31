@@ -142,4 +142,14 @@ describe('TeamProbabilityList', () => {
     expect(wrapper.text()).not.toContain('Season')
     expect(wrapper.text()).not.toContain('2026')
   })
+
+  it('shows short team nickname on mobile and full name on desktop', async () => {
+    const wrapper = await mountList({
+      teams: [{ id: 'nyy', name: 'New York Yankees', winProbability: 30 }],
+    })
+
+    const nameCell = wrapper.get('span[title="New York Yankees"]')
+    expect(nameCell.find('.md\\:hidden').text()).toBe('Yankees')
+    expect(nameCell.find('.hidden.md\\:inline').text()).toBe('New York Yankees')
+  })
 })

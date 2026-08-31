@@ -22,6 +22,7 @@ snippet = (
     "\n"
     "    location /app-preview/ {\n"
     "        alias /var/www/win-predict-ai-app-preview/;\n"
+    "        index index.html;\n"
     "        autoindex off;\n"
     "        try_files $uri $uri/ =404;\n"
     "    }\n"
