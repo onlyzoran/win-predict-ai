@@ -83,7 +83,7 @@
     "shortLabel": "Appearance",
     "title": "Appearance",
     "subtitle": "Choose a color scheme for light and dark mode independently.",
-    "defaultsNote": "Defaults for new users: Nexora in both modes; light/dark follows your system setting until you change it in the header.",
+    "defaultsNote": "Defaults for new users: Pastel in both modes; light/dark follows your system setting until you change it in the header.",
     "back": "Back to home",
     "lightMode": "Light mode scheme",
     "lightModeHint": "Applied when the app is in light mode.",
@@ -101,6 +101,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Warm ivory surfaces with clay terracotta accent — Claude+ mood for the terminal."
+      },
+      "pastel": {
+        "name": "Pastel",
+        "description": "Soft sage surfaces with butter accent — calm palette for final and intermediate results."
       },
       "nexora": {
         "name": "Nexora",

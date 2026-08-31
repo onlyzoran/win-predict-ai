@@ -83,7 +83,7 @@
     "shortLabel": "Apparence",
     "title": "Apparence",
     "subtitle": "Choisissez un schéma de couleurs pour les modes clair et sombre.",
-    "defaultsNote": "Par défaut pour les nouveaux utilisateurs : Nexora dans les deux modes ; clair/sombre suit le réglage système tant que vous ne le changez pas dans l'en-tête.",
+    "defaultsNote": "Par défaut pour les nouveaux utilisateurs : Pastel dans les deux modes ; clair/sombre suit le réglage système tant que vous ne le changez pas dans l'en-tête.",
     "back": "Retour à l'accueil",
     "lightMode": "Schéma pour le mode clair",
     "lightModeHint": "Appliqué lorsque le mode clair est actif.",
@@ -101,6 +101,10 @@
       "claude-plus": {
         "name": "Claude+",
         "description": "Surfaces ivoire chaudes avec accent terracotta clay — ambiance Claude+ pour le terminal."
+      },
+      "pastel": {
+        "name": "Pastel",
+        "description": "Surfaces sage douces avec accent butter — palette calme pour résultats finaux et intermédiaires."
       },
       "nexora": {
         "name": "Nexora",
