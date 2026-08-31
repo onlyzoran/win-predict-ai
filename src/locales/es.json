@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "Win Predict AI",
-    "version": "v{version}"
+    "version": "v{version}",
+    "cookieSettings": "Configuración de cookies"
   },
   "team": {
     "preview": "Vista previa",

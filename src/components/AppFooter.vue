@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { useAppConsent } from '@/composables/useAppConsent'
 
 const { t } = useI18n()
+const { resetConsent } = useAppConsent()
 const version = __APP_VERSION__
 const stack = [
   'Vue',
@@ -31,8 +33,16 @@ const stackRows = [stack.slice(0, 4), stack.slice(4)] as const
             <span>{{ item }}</span>
             <span v-if="index < row.length - 1" aria-hidden="true" class="ml-1.5 text-border">·</span>
           </li>
-          <li v-if="rowIndex === 0" class="ml-auto tabular-nums">
-            {{ t('app.version', { version }) }}
+          <li v-if="rowIndex === 0" class="ml-auto inline-flex items-center gap-x-1.5">
+            <button
+              type="button"
+              class="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+              @click="resetConsent()"
+            >
+              {{ t('app.cookieSettings') }}
+            </button>
+            <span aria-hidden="true" class="text-border">·</span>
+            <span class="tabular-nums">{{ t('app.version', { version }) }}</span>
           </li>
         </ul>
       </div>
@@ -43,7 +53,17 @@ const stackRows = [stack.slice(0, 4), stack.slice(4)] as const
           <span>{{ item }}</span>
           <span v-if="index < stack.length - 1" aria-hidden="true" class="ml-1.5 text-border">·</span>
         </li>
-        <li class="ml-auto tabular-nums">{{ t('app.version', { version }) }}</li>
+        <li class="ml-auto inline-flex items-center gap-x-1.5">
+          <button
+            type="button"
+            class="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            @click="resetConsent()"
+          >
+            {{ t('app.cookieSettings') }}
+          </button>
+          <span aria-hidden="true" class="text-border">·</span>
+          <span class="tabular-nums">{{ t('app.version', { version }) }}</span>
+        </li>
       </ul>
     </div>
   </footer>
