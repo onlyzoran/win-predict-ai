@@ -3,6 +3,7 @@ name: PR Preview
 on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -82,21 +83,13 @@ jobs:
       - name: Ensure nginx serves /app-preview/
         if: steps.goal.outputs.issue != ''
         run: |
+          rsync -avz \
+            -e 'ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+            deploy/ensure-app-preview-nginx.sh \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/ensure-app-preview-nginx.sh"
           ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes \
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
-            'SITE=/etc/nginx/sites-available/win-predict-ai-admin
-             if ! grep -q "location /app-preview/" "$SITE"; then
-               sed -i "/location \\/win-predict-ai-preview\\//,/}/{
-                 /^    }\$/a\\
-\\
-    location /app-preview/ {\\
-        alias /var/www/win-predict-ai-app-preview/;\\
-        autoindex off;\\
-        try_files \$uri \$uri/ =404;\\
-    }
-               }" "$SITE"
-               nginx -t && systemctl reload nginx
-             fi'
+            "chmod +x /tmp/ensure-app-preview-nginx.sh && /tmp/ensure-app-preview-nginx.sh"
 
       - name: Comment preview URL on PR
         uses: marocchino/sticky-pull-request-comment@v2
