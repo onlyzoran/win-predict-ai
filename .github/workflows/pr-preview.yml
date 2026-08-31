@@ -3,7 +3,6 @@ name: PR Preview
 on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,7 +11,7 @@ permissions:
 
 jobs:
   deploy-preview:
-    if: github.event_name == 'workflow_dispatch' || github.event.action != 'closed'
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
