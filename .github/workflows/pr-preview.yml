@@ -91,7 +91,7 @@ jobs:
         with:
           message: |
             🔗 **Preview deployed:** http://${{ secrets.VPS_HOST }}/win-predict-ai-preview/pr-${{ github.event.number }}/
-            ${{ steps.goal.outputs.issue != '' && concat('🎯 **Goal-demo:** https://win-predict-ai.com/app-preview/issue-', steps.goal.outputs.issue, '/') || '' }}
+            ${{ steps.goal.outputs.issue && format('🎯 **Goal-demo:** https://win-predict-ai.com/app-preview/issue-{0}/', steps.goal.outputs.issue) || '' }}
 
   cleanup-preview:
     if: github.event.action == 'closed'
