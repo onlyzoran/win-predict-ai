@@ -23,13 +23,25 @@ export function loadAnalyticsIfConsented(onConsented?: () => void): void {
   const { consent, hasConsent } = useConsent()
 
   function maybeLoad() {
-    if (analyticsLoaded || !consent.value.decided || !hasConsent('analytics')) return
+    if (!consent.value.decided || !hasConsent('analytics')) {
+      analyticsLoaded = false
+      return
+    }
+    if (analyticsLoaded) return
     analyticsLoaded = true
     onConsented?.()
   }
 
   maybeLoad()
-  watch(() => consent.value.updatedAt, maybeLoad)
+  watch(
+    () =>
+      [
+        consent.value.decided,
+        consent.value.categories.analytics,
+        consent.value.updatedAt,
+      ] as const,
+    maybeLoad,
+  )
 }
 
 /** Test helper — resets module-level load guard. */

@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { effectScope } from 'vue'
-import { createInitialConsentState, CONSENT_STORAGE_KEY } from '@onlyzoran/win-predict-ai-ui'
+import { effectScope, nextTick } from 'vue'
+import {
+  createInitialConsentState,
+  CONSENT_STORAGE_KEY,
+  useConsent,
+} from '@onlyzoran/win-predict-ai-ui'
 import { loadAnalyticsIfConsented, resetAnalyticsLoadGuard } from './loadAnalyticsIfConsented'
 
 describe('loadAnalyticsIfConsented', () => {
@@ -48,6 +52,31 @@ describe('loadAnalyticsIfConsented', () => {
     })
 
     expect(called).toBe(false)
+    scope.stop()
+  })
+
+  it('calls loader again after resetConsent and re-opt-in', async () => {
+    const scope = effectScope()
+    let callCount = 0
+
+    await scope.run(async () => {
+      loadAnalyticsIfConsented(() => {
+        callCount += 1
+      })
+
+      const { acceptAll, resetConsent } = useConsent()
+
+      acceptAll()
+      await nextTick()
+      expect(callCount).toBe(1)
+
+      resetConsent()
+      await nextTick()
+      acceptAll()
+      await nextTick()
+      expect(callCount).toBe(2)
+    })
+
     scope.stop()
   })
 
