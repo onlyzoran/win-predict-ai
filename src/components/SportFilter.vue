@@ -4,9 +4,9 @@ import { computed } from 'vue'
 import { IconArrowsSort, IconEyeOff, IconEyeOpen, IconPencil } from '@onlyzoran/win-predict-ai-icons'
 import { useI18n } from 'vue-i18n'
 import TournamentSearch from '@/components/TournamentSearch.vue'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import {
+  Badge,
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -15,7 +15,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@onlyzoran/win-predict-ai-ui'
 import { useSports } from '@/composables/useSports'
 import { getSportIcon } from '@/lib/sportIcons'
 import type { SortMode } from '@/types/sort'

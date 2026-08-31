@@ -3,8 +3,12 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Donut } from '@unovis/ts'
 import { VisDonut, VisSingleContainer } from '@unovis/vue'
-import type { ChartConfig } from '@/components/ui/chart'
-import { ChartContainer, ChartTooltip, componentToString } from '@/components/ui/chart'
+import {
+  ChartContainer,
+  ChartTooltip,
+  componentToString,
+  type ChartConfig,
+} from '@onlyzoran/win-predict-ai-ui'
 import type { TeamProbability } from '@/types/league'
 import { useColorPalette } from '@/composables/useColorPalette'
 import { useChartThemeRevision } from '@/composables/useChartThemeColors'

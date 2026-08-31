@@ -7,7 +7,13 @@ import {
   type ColorPalette,
   palettePreferences,
 } from '@/composables/useColorPalette'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@onlyzoran/win-predict-ai-ui'
 import { cn } from '@/lib/utils'
 
 const { t } = useI18n()

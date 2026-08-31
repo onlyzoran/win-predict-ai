@@ -11,8 +11,13 @@ import { useHiddenTournaments } from '@/composables/useHiddenTournaments'
 import { usePinnedTournaments } from '@/composables/usePinnedTournaments'
 import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
-import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import {
+  Button,
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@onlyzoran/win-predict-ai-ui'
 import { locale } from '@/i18n'
 import { excludeHiddenSlots, filterSlots, slotIdsForLoading, sortSlotsWithPinned } from '@/lib/tournaments'
 

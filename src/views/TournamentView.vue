@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { IconArrowLeft } from '@onlyzoran/win-predict-ai-icons'
 import TournamentDetails from '@/components/TournamentDetails.vue'
-import { Button } from '@/components/ui/button'
+import { Button } from '@onlyzoran/win-predict-ai-ui'
 import { useLeague } from '@/composables/useLeague'
 
 const route = useRoute()

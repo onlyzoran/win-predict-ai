@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
+import { Badge, Separator } from '@onlyzoran/win-predict-ai-ui'
 import WinProbabilityPieChart from '@/components/WinProbabilityPieChart.vue'
 import type { TeamProbability } from '@/types/league'
 import { abbreviateGroup, formatRecord, formatWinPercent, hasWinsStandings } from '@/lib/standings'
