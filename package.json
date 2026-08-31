@@ -17,11 +17,11 @@
     "release": "semantic-release"
   },
   "dependencies": {
-    "@onlyzoran/win-predict-ai-icons": "^0.14.0",
+    "@onlyzoran/win-predict-ai-icons": "0.14.1-pr.29.7f47a44",
     "@onlyzoran/win-predict-ai-ui": "0.4.0-pr.47.1c4e8b2",
-    "@tanstack/vue-query": "^5.101.4",
     "@tabler/icons-vue": "^3.46.0",
     "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/vue-query": "^5.101.4",
     "@unovis/ts": "^1.6.7",
     "@unovis/vue": "^1.6.7",
     "@vueuse/core": "^14.4.0",
