@@ -152,6 +152,9 @@
     "clear": "Clear search",
     "empty": "No tournaments found"
   },
+  "home": {
+    "categorySliders": "Tournament categories"
+  },
   "sort": {
     "label": "Sort",
     "popular": "Popular",

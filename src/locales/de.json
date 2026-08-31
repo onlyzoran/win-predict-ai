@@ -152,6 +152,9 @@
     "clear": "Suche löschen",
     "empty": "Keine Turniere gefunden"
   },
+  "home": {
+    "categorySliders": "Turnierkategorien"
+  },
   "sort": {
     "label": "Sortierung",
     "popular": "Beliebt",

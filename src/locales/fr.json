@@ -152,6 +152,9 @@
     "clear": "Effacer la recherche",
     "empty": "Aucun tournoi trouvé"
   },
+  "home": {
+    "categorySliders": "Catégories de tournois"
+  },
   "sort": {
     "label": "Trier",
     "popular": "Populaires",
