@@ -106,3 +106,4 @@ Apply via `gh workflow run apply-path-layout.yml` or copy the nginx config and r
 
 - Prefer auto-deploy via `release.yml` (release + single deploy).
 - Production Vite `base` is `/`. PR previews still set `VITE_BASE_PATH=/win-predict-ai-preview/pr-N/`.
+- Goal-demo (orchestrator): `VITE_BASE_PATH=/app-preview/issue-N/`, static files under `/var/www/win-predict-ai-app-preview/issue-N/`, URL `https://win-predict-ai.com/app-preview/issue-N/`. Deploy locally: `chmod +x deploy/goal-preview-up.sh && ./deploy/goal-preview-up.sh 35`. PR workflow deploys Goal-demo when the PR body contains `win-predict-ai-orchestrator#N`.
