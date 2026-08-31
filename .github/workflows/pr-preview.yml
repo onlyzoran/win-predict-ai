@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   deploy-preview:
-    if: github.event.action != 'closed'
+    if: github.event_name == 'workflow_dispatch' || github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -83,20 +83,16 @@ jobs:
       - name: Ensure nginx serves /app-preview/
         if: steps.goal.outputs.issue != ''
         run: |
-          rsync -avz \
-            -e 'ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
-            deploy/ensure-app-preview-nginx.sh \
-            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/ensure-app-preview-nginx.sh"
           ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes \
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
-            "chmod +x /tmp/ensure-app-preview-nginx.sh && /tmp/ensure-app-preview-nginx.sh"
+            "bash -s" < scripts/ensure-app-preview-nginx-remote.sh
 
       - name: Comment preview URL on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
             🔗 **Preview deployed:** http://${{ secrets.VPS_HOST }}/win-predict-ai-preview/pr-${{ github.event.number }}/
-            ${{ steps.goal.outputs.issue && format('🎯 **Goal-demo:** https://win-predict-ai.com/app-preview/issue-{0}/', steps.goal.outputs.issue) || '' }}
+            ${{ steps.goal.outputs.issue != '' && concat('🎯 **Goal-demo:** https://win-predict-ai.com/app-preview/issue-', steps.goal.outputs.issue, '/') || '' }}
 
   cleanup-preview:
     if: github.event.action == 'closed'
