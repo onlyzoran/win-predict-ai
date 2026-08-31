@@ -9,11 +9,17 @@ import {
   IconPin,
   IconPinnedOff,
 } from '@onlyzoran/win-predict-ai-icons'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@onlyzoran/win-predict-ai-ui'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
-import { Separator } from '@/components/ui/separator'
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Progress,
+  Separator,
+} from '@onlyzoran/win-predict-ai-ui'
 import type { TeamProbability } from '@/types/league'
 import { aggregateTopTeams, TOP_TEAMS_COUNT } from '@/lib/teamProbability'
 import { formatPercent, formatSeason } from '@/lib/utils'

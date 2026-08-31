@@ -9,8 +9,13 @@ import {
   IconReplace,
   IconTable,
 } from '@onlyzoran/win-predict-ai-icons'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@onlyzoran/win-predict-ai-ui'
-import { Progress } from '@/components/ui/progress'
+import {
+  Progress,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@onlyzoran/win-predict-ai-ui'
 import MlbPlayoffBracket from '@/components/MlbPlayoffBracket.vue'
 import StandingsRankChart from '@/components/StandingsRankChart.vue'
 import TournamentFactsPanel from '@/components/TournamentFactsPanel.vue'

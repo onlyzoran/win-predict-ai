@@ -3,14 +3,14 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { CurveType, Line } from '@unovis/ts'
 import { VisAxis, VisLine, VisXYContainer } from '@unovis/vue'
-import type { ChartConfig } from '@/components/ui/chart'
 import {
   ChartContainer,
   ChartCrosshair,
   ChartTooltip,
   ChartTooltipContent,
   componentToString,
-} from '@/components/ui/chart'
+  type ChartConfig,
+} from '@onlyzoran/win-predict-ai-ui'
 import type { RankSeries } from '@/lib/historyRank'
 import { locale } from '@/i18n'
 
