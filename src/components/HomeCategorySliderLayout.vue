@@ -3,8 +3,7 @@ import type { Component } from 'vue'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { CategorySliderLayout } from '@onlyzoran/win-predict-ai-ui'
-import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
-import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleton.vue'
+import HomeCategorySliderItem from '@/components/HomeCategorySliderItem.vue'
 import { buildCategorySliderCategories } from '@/lib/categorySliderCategories'
 import { getSportIcon } from '@/lib/sportIcons'
 import type { LeagueSlot, SelectedLeague } from '@/types/league'
@@ -47,12 +46,16 @@ function iconForCategory(categoryId: string): Component | undefined {
   const catalogItem = props.sportsCatalog.find((item) => item.slug === categoryId)
   return getSportIcon(catalogItem?.iconKey ?? categoryId)
 }
+
+function asLeagueSlot(item: unknown): LeagueSlot {
+  return item as LeagueSlot
+}
 </script>
 
 <template>
   <CategorySliderLayout
     :categories="categories"
-    class="flex-1"
+    class="min-h-0 w-full"
     :aria-label="$t('home.categorySliders')"
   >
     <template #category-header="{ category }">
@@ -67,26 +70,15 @@ function iconForCategory(categoryId: string): Component | undefined {
       </h2>
     </template>
 
-    <template #item="{ item: slot }">
-      <div class="w-72 min-w-72">
-        <TeamProbabilityList
-          v-if="slot.league"
-          :id="slot.league.id"
-          :title="slot.league.title"
-          :full-title="slot.league.fullTitle"
-          :teams="slot.league.teams"
-          :progress="slot.league.progress"
-          :start-date="slot.league.startDate"
-          :end-date="slot.league.endDate"
-          :icon="slot.league.icon"
-          :pinned="props.pinnedIds.includes(slot.league.id)"
-          :edit-mode="editMode"
-          @pin="(id, pinned) => emit('pin', id, pinned)"
-          @hide="(id) => emit('hide', id)"
-          @preview="(league) => emit('preview', league)"
-        />
-        <TeamProbabilityListSkeleton v-else />
-      </div>
+    <template #item="{ item }">
+      <HomeCategorySliderItem
+        :slot-item="asLeagueSlot(item)"
+        :pinned-ids="pinnedIds"
+        :edit-mode="editMode"
+        @pin="(id, pinned) => emit('pin', id, pinned)"
+        @hide="(id) => emit('hide', id)"
+        @preview="(league) => emit('preview', league)"
+      />
     </template>
   </CategorySliderLayout>
 </template>

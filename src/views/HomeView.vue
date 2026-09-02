@@ -148,7 +148,7 @@ useIntersectionObserver(
 </script>
 
 <template>
-  <div class="flex flex-1 flex-col">
+  <div class="flex min-h-0 flex-1 flex-col">
     <SportFilter
       v-if="showsFilters"
       v-model="selectedSport"
@@ -158,10 +158,10 @@ useIntersectionObserver(
       :hidden-items="hiddenItems"
       @restore="handleRestore"
     />
-    <main
+    <div
       :class="
         isCategorySliderLayout
-          ? 'flex flex-1 flex-col'
+          ? 'flex min-h-0 flex-1 flex-col overflow-y-auto'
           : 'flex flex-1 flex-wrap items-start justify-start gap-4 px-4 py-4'
       "
     >
@@ -251,7 +251,7 @@ useIntersectionObserver(
           />
         </template>
       </template>
-    </main>
+    </div>
 
     <Sheet v-model:open="isPreviewOpen">
       <SheetContent>
