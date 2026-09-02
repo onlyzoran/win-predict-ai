@@ -31,6 +31,9 @@ jobs:
         run: npm run build
         env:
           VITE_BASE_PATH: /win-predict-ai-preview/pr-${{ github.event.number }}/
+          # VPS preview path has no /api — load manifest from production (CORS *)
+          VITE_LEAGUES_URL: https://win-predict-ai.com/api/leagues.json
+          VITE_SPORTS_URL: https://win-predict-ai.com/api/sports
 
       - name: Install SSH key
         run: |

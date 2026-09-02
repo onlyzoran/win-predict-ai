@@ -124,6 +124,26 @@ describe('App', () => {
     expect(wrapper.text()).toContain('Lakers')
   })
 
+  it('renders category-slider layout without sport filters', async () => {
+    vi.stubGlobal(
+      'fetch',
+      mockFetchByFile({
+        'leagues.json': () => jsonResponse(manifest),
+        'epl.json': () => jsonResponse(eplTeams),
+        'nba.json': () => jsonResponse(nbaTeams),
+      }),
+    )
+
+    const wrapper = await mountApp()
+    await flushPromises()
+
+    expect(wrapper.find('input[placeholder="Search…"]').exists()).toBe(false)
+    expect(wrapper.text()).toContain('Football')
+    expect(wrapper.text()).toContain('Basketball')
+    expect(wrapper.text()).toContain('Premier League')
+    expect(wrapper.text()).toContain('Lakers')
+  })
+
   it('shows an error when the manifest fails to load', async () => {
     vi.stubGlobal('fetch', vi.fn<() => Promise<unknown>>().mockResolvedValue(errorResponse(503)))
 

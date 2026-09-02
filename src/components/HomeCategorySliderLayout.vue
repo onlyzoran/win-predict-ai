@@ -56,7 +56,7 @@ function asLeagueSlot(item: unknown): LeagueSlot {
   <CategorySliderLayout
     :categories="categories"
     class="min-h-0 w-full"
-    :aria-label="$t('home.categorySliders')"
+    :aria-label="t('home.categorySliders')"
   >
     <template #category-header="{ category }">
       <h2 class="flex items-center gap-2 text-base font-semibold tracking-tight text-foreground">
