@@ -165,7 +165,11 @@ const startCountdownLabel = computed(() => {
         </div>
       </TabsContent>
 
-      <TabsContent v-if="showRankMovementTab" value="movement" class="mt-4 w-full">
+      <TabsContent
+        v-if="showRankMovementTab"
+        value="movement"
+        class="mt-4 w-full max-md:-mx-4 max-md:w-[calc(100%+2rem)] md:mx-0"
+      >
         <StandingsRankChart :series="rankSeries!" class="w-full" />
       </TabsContent>
 

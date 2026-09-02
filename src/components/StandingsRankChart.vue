@@ -189,12 +189,12 @@ function labelClass(teamName: string): string {
 </script>
 
 <template>
-  <div data-testid="standings-rank-chart" class="w-full space-y-3">
-    <h3 class="text-sm font-medium">{{ t('standings.rankMovement') }}</h3>
+  <div data-testid="standings-rank-chart" class="w-full min-w-0 space-y-3">
+    <h3 class="text-sm font-medium max-md:px-4 md:px-0">{{ t('standings.rankMovement') }}</h3>
 
-    <div class="flex w-full gap-2">
+    <div class="flex w-full min-w-0 gap-1 md:gap-2">
       <ul
-        class="relative w-28 shrink-0 sm:w-36 md:w-44"
+        class="relative w-10 shrink-0 sm:w-11 md:w-36"
         :style="{ height: `${PLOT_HEIGHT_PX}px` }"
         aria-label="Start standings"
       >
@@ -220,7 +220,11 @@ function labelClass(teamName: string): string {
 
       <div class="flex min-w-0 flex-1 flex-col gap-1.5">
         <div ref="plotEl">
-          <ChartContainer :config="chartConfig" class="aspect-auto h-[768px] w-full min-w-0">
+          <ChartContainer
+            :config="chartConfig"
+            class="aspect-auto w-full min-w-0"
+            :style="{ height: `${PLOT_HEIGHT_PX}px` }"
+          >
             <VisXYContainer
               :data="flatPoints"
               :y-domain="yDomain"
@@ -260,7 +264,7 @@ function labelClass(teamName: string): string {
       </div>
 
       <ul
-        class="relative w-28 shrink-0 sm:w-36 md:w-44"
+        class="relative w-10 shrink-0 sm:w-11 md:w-36"
         :style="{ height: `${PLOT_HEIGHT_PX}px` }"
         aria-label="Latest standings"
       >
