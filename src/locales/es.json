@@ -32,6 +32,10 @@
     "winChance": "Prob.",
     "rankMovement": "Movimiento en la tabla"
   },
+  "outcomes": {
+    "demoTitle": "Resultados de partidos",
+    "demoDescription": "Sage (final) y butter (en curso) — semántica pastel."
+  },
   "facts": {
     "title": "Datos reales",
     "asOf": "A {date}",
@@ -83,7 +87,7 @@
     "shortLabel": "Apariencia",
     "title": "Apariencia",
     "subtitle": "Elige un esquema de color para el modo claro y otro para el oscuro.",
-    "defaultsNote": "Predeterminado para usuarios nuevos: Nexora en ambos modos; claro/oscuro sigue la configuración del sistema hasta que lo cambies en la cabecera.",
+    "defaultsNote": "Predeterminado para usuarios nuevos: Pastel en ambos modos; claro/oscuro sigue la configuración del sistema hasta que lo cambies en la cabecera.",
     "back": "Volver al inicio",
     "lightMode": "Esquema para modo claro",
     "lightModeHint": "Se aplica cuando el modo claro está activo.",
@@ -102,10 +106,21 @@
         "name": "Claude+",
         "description": "Superficies marfil cálidas con acento terracotta clay — ambiente Claude+ para el terminal."
       },
+      "pastel": {
+        "name": "Pastel",
+        "description": "Superficies sage suaves con acento butter — paleta tranquila para resultados finales e intermedios."
+      },
       "nexora": {
         "name": "Nexora",
         "description": "Cabina violeta futurista — superficies de cristal y CTAs con gradiente."
       }
+    },
+    "resultPreview": {
+      "title": "Tarjetas de resultados",
+      "subtitle": "Vista previa pastel — sage para finales, butter para partidos en curso.",
+      "pastelHint": "Seleccione Pastel arriba para ver los tokens en la interfaz; las tarjetas abajo usan la paleta activa.",
+      "legendFinal": "Resultado final (chart-1 / sage)",
+      "legendIntermediate": "En curso (chart-2 / butter)"
     }
   },
   "language": {

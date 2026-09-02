@@ -32,6 +32,10 @@
     "winChance": "Win %",
     "rankMovement": "Standings movement"
   },
+  "outcomes": {
+    "demoTitle": "Match result outcomes",
+    "demoDescription": "Sage (final) and butter (in progress) — pastel palette semantics."
+  },
   "facts": {
     "title": "Actual data",
     "asOf": "As of {date}",
@@ -83,7 +87,7 @@
     "shortLabel": "Appearance",
     "title": "Appearance",
     "subtitle": "Choose a color scheme for light and dark mode independently.",
-    "defaultsNote": "Defaults for new users: Nexora in both modes; light/dark follows your system setting until you change it in the header.",
+    "defaultsNote": "Defaults for new users: Pastel in both modes; light/dark follows your system setting until you change it in the header.",
     "back": "Back to home",
     "lightMode": "Light mode scheme",
     "lightModeHint": "Applied when the app is in light mode.",
@@ -102,10 +106,21 @@
         "name": "Claude+",
         "description": "Warm ivory surfaces with clay terracotta accent — Claude+ mood for the terminal."
       },
+      "pastel": {
+        "name": "Pastel",
+        "description": "Soft sage surfaces with butter accent — calm palette for final and intermediate results."
+      },
       "nexora": {
         "name": "Nexora",
         "description": "Futuristic violet cockpit — frosted glass surfaces and gradient CTAs."
       }
+    },
+    "resultPreview": {
+      "title": "Result outcome cards",
+      "subtitle": "Pastel theme preview — sage for final results, butter for in-progress.",
+      "pastelHint": "Select Pastel above to see tokens on the live app chrome; cards below always use the active palette.",
+      "legendFinal": "Final result (chart-1 / sage)",
+      "legendIntermediate": "In progress (chart-2 / butter)"
     }
   },
   "language": {

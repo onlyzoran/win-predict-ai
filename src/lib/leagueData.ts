@@ -71,14 +71,27 @@ export async function fetchJsonOptional<T>(file: string): Promise<T | null> {
   }
 }
 
-export async function fetchLeaguesManifest<T = LeagueManifest[]>(): Promise<T> {
-  const res = await fetch(LEAGUES_URL, {
+async function fetchManifestFrom(url: string): Promise<Response> {
+  return fetch(url, {
     headers: { Accept: 'application/json' },
   })
-  if (!res.ok) {
-    throw new Error(`Failed to load leagues manifest: ${res.status}`)
+}
+
+export async function fetchLeaguesManifest<T = LeagueManifest[]>(): Promise<T> {
+  const fallbackUrl = `${DATA_BASE_URL}/leagues.json`
+  const urls =
+    LEAGUES_URL === fallbackUrl ? [LEAGUES_URL] : [LEAGUES_URL, fallbackUrl]
+
+  let lastStatus: number | undefined
+  for (const url of urls) {
+    const res = await fetchManifestFrom(url)
+    if (res.ok) {
+      return res.json() as Promise<T>
+    }
+    lastStatus = res.status
   }
-  return res.json() as Promise<T>
+
+  throw new Error(`Failed to load leagues manifest: ${lastStatus ?? 'unknown'}`)
 }
 
 export async function fetchJsonWithRetry<T>(

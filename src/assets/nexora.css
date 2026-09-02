@@ -134,7 +134,7 @@
 /*
  * Nexora visual overrides (glass, gradients) apply only to the root chrome.
  * Nested palette preview swatches use their own data-palette on an inner element;
- * exclude descendants of a second [data-palette] so zinc/slate-teal/claude-plus
+ * exclude descendants of a second [data-palette] so zinc/slate-teal/claude-plus/pastel
  * swatches keep solid token colors inside Appearance Settings.
  */
 [data-palette='nexora'] :is(

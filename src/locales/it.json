@@ -32,6 +32,10 @@
     "winChance": "Chance",
     "rankMovement": "Movimento in classifica"
   },
+  "outcomes": {
+    "demoTitle": "Esiti delle partite",
+    "demoDescription": "Sage (finale) e butter (in corso) — semantica pastel."
+  },
   "facts": {
     "title": "Dati reali",
     "asOf": "Al {date}",
@@ -83,7 +87,7 @@
     "shortLabel": "Aspetto",
     "title": "Aspetto",
     "subtitle": "Scegli uno schema colore per la modalità chiara e uno per la scura.",
-    "defaultsNote": "Predefinito per i nuovi utenti: Nexora in entrambe le modalità; chiaro/scuro segue l'impostazione di sistema finché non lo cambi nell'intestazione.",
+    "defaultsNote": "Predefinito per i nuovi utenti: Pastel in entrambe le modalità; chiaro/scuro segue l'impostazione di sistema finché non lo cambi nell'intestazione.",
     "back": "Torna alla home",
     "lightMode": "Schema per modalità chiara",
     "lightModeHint": "Applicato quando la modalità chiara è attiva.",
@@ -102,10 +106,21 @@
         "name": "Claude+",
         "description": "Superfici avorio calde con accento terracotta clay — mood Claude+ per il terminale."
       },
+      "pastel": {
+        "name": "Pastel",
+        "description": "Superfici sage morbide con accento butter — palette calma per risultati finali e intermedi."
+      },
       "nexora": {
         "name": "Nexora",
         "description": "Cockpit violet futuristico — superfici vetro e CTA con gradiente."
       }
+    },
+    "resultPreview": {
+      "title": "Schede risultati",
+      "subtitle": "Anteprima pastel — sage per i risultati finali, butter per le partite in corso.",
+      "pastelHint": "Seleziona Pastel sopra per vedere i token sull'interfaccia; le schede sotto usano la palette attiva.",
+      "legendFinal": "Risultato finale (chart-1 / sage)",
+      "legendIntermediate": "In corso (chart-2 / butter)"
     }
   },
   "language": {

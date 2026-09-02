@@ -19,8 +19,8 @@ export const DEFAULT_COLOR_SCHEME = 'auto' as const
 
 /** Color palettes before the user opens /settings/appearance. */
 export const DEFAULT_PALETTE_PREFERENCES: PalettePreferences = {
-  light: NEXORA_PALETTE,
-  dark: NEXORA_PALETTE,
+  light: 'pastel',
+  dark: 'pastel',
 }
 
 export const PALETTE_STORAGE_KEY = 'color-palette-preferences'
