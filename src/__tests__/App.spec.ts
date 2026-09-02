@@ -124,6 +124,58 @@ describe('App', () => {
     expect(wrapper.text()).toContain('Lakers')
   })
 
+  it('renders category-slider layout without sport filters', async () => {
+    vi.stubGlobal(
+      'fetch',
+      mockFetchByFile({
+        'leagues.json': () => jsonResponse(manifest),
+        'epl.json': () => jsonResponse(eplTeams),
+        'nba.json': () => jsonResponse(nbaTeams),
+      }),
+    )
+
+    const wrapper = await mountApp()
+    await flushPromises()
+
+    expect(wrapper.find('[role="group"][aria-label="Home screen layout"]').exists()).toBe(true)
+    expect(wrapper.find('input[placeholder="Search…"]').exists()).toBe(false)
+    expect(wrapper.text()).toContain('Football')
+    expect(wrapper.text()).toContain('Basketball')
+    expect(wrapper.text()).toContain('Premier League')
+    expect(wrapper.text()).toContain('Lakers')
+  })
+
+  it('switches between grid and category-slider layouts', async () => {
+    vi.stubGlobal(
+      'fetch',
+      mockFetchByFile({
+        'leagues.json': () => jsonResponse(manifest),
+        'epl.json': () => jsonResponse(eplTeams),
+        'nba.json': () => jsonResponse(nbaTeams),
+      }),
+    )
+
+    const wrapper = await mountApp()
+    await flushPromises()
+
+    const layoutButtons = wrapper.find('[role="group"][aria-label="Home screen layout"]').findAll('button')
+    expect(layoutButtons).toHaveLength(2)
+    expect(layoutButtons[1]?.attributes('aria-pressed')).toBe('true')
+
+    await layoutButtons[0]?.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('input[placeholder="Search…"]').exists()).toBe(true)
+    expect(localStorage.getItem('homeScreenLayout')).toBe('grid')
+
+    await layoutButtons[1]?.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('input[placeholder="Search…"]').exists()).toBe(false)
+    expect(wrapper.text()).toContain('Football')
+    expect(localStorage.getItem('homeScreenLayout')).toBe('category-slider')
+  })
+
   it('shows an error when the manifest fails to load', async () => {
     vi.stubGlobal('fetch', vi.fn<() => Promise<unknown>>().mockResolvedValue(errorResponse(503)))
 

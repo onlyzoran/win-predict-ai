@@ -1,20 +1,34 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useIntersectionObserver, useStorage } from '@vueuse/core'
+import HomeCategorySliderLayout from '@/components/HomeCategorySliderLayout.vue'
+import HomeScreenLayoutSwitcher from '@/components/HomeScreenLayoutSwitcher.vue'
 import SportFilter from '@/components/SportFilter.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleton.vue'
 import TournamentDetails from '@/components/TournamentDetails.vue'
+import { useHomeScreenLayout } from '@/composables/useHomeScreenLayout'
 import { useLeaguePreview } from '@/composables/useLeaguePreview'
 import { useLeagues } from '@/composables/useLeagues'
 import { useHiddenTournaments } from '@/composables/useHiddenTournaments'
 import { usePinnedTournaments } from '@/composables/usePinnedTournaments'
+import { useSports } from '@/composables/useSports'
 import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { locale } from '@/i18n'
-import { excludeHiddenSlots, filterSlots, slotIdsForLoading, sortSlotsWithPinned } from '@/lib/tournaments'
+import { homeScreenLayoutShowsFilters } from '@/lib/homeScreenLayout'
+import {
+  excludeHiddenSlots,
+  filterSlots,
+  slotIdsForLoading,
+  sortSlotsWithPinned,
+} from '@/lib/tournaments'
+
+const { homeScreenLayout } = useHomeScreenLayout()
+const showsFilters = computed(() => homeScreenLayoutShowsFilters(homeScreenLayout.value))
+const isCategorySliderLayout = computed(() => homeScreenLayout.value === 'category-slider')
 
 const {
   slots,
@@ -27,6 +41,7 @@ const {
   loadNextBatch,
   retryFailed,
 } = useLeagues()
+const { sports: sportsCatalog } = useSports()
 const { pinnedTournaments, handlePin } = usePinnedTournaments()
 const { hiddenTournaments, handleHide, handleRestore } = useHiddenTournaments()
 const { isPreviewOpen, previewLeague, isPreviewLoading, openPreview } = useLeaguePreview()
@@ -42,13 +57,16 @@ const sportFilteredSlots = computed(() =>
   filterSlots(slots.value, selectedSport.value, searchQuery.value),
 )
 
-const displaySlots = computed(() =>
-  excludeHiddenSlots(sportFilteredSlots.value, hiddenTournaments.value),
-)
+const displaySlots = computed(() => {
+  const source = showsFilters.value ? sportFilteredSlots.value : slots.value
+  return excludeHiddenSlots(source, hiddenTournaments.value)
+})
 
 const sortedSlots = computed(() =>
   sortSlotsWithPinned(displaySlots.value, pinnedTournaments.value, sortMode.value, locale.value),
 )
+
+const sliderSlots = computed(() => (isCategorySliderLayout.value ? sortedSlots.value : []))
 
 const hiddenItems = computed(() =>
   hiddenTournaments.value
@@ -66,12 +84,22 @@ const hiddenItems = computed(() =>
     .filter((item): item is { id: string; title: string } => item !== null),
 )
 
-const visibleSlots = computed(() => sortedSlots.value.slice(0, visibleCount.value))
-const hasPendingSlots = computed(() => visibleSlots.value.some((slot) => !slot.league))
-const hasMore = computed(() => sortedSlots.value.length > visibleCount.value)
+const visibleSlots = computed(() =>
+  isCategorySliderLayout.value ? [] : sortedSlots.value.slice(0, visibleCount.value),
+)
+const hasPendingSlots = computed(() => {
+  const pending = isCategorySliderLayout.value ? sliderSlots.value : visibleSlots.value
+  return pending.some((slot) => !slot.league)
+})
+const hasMore = computed(
+  () => !isCategorySliderLayout.value && sortedSlots.value.length > visibleCount.value,
+)
+const isHomeEmpty = computed(() =>
+  isCategorySliderLayout.value ? sliderSlots.value.length === 0 : visibleSlots.value.length === 0,
+)
 
 watch(
-  () => visibleSlots.value.map((slot) => slot.id),
+  () => (isCategorySliderLayout.value ? sliderSlots.value : visibleSlots.value).map((slot) => slot.id),
   async (ids) => {
     if (isManifestLoading.value || loadError.value || ids.length === 0) {
       return
@@ -83,10 +111,16 @@ watch(
 )
 
 watch([selectedSport, sortMode], () => {
-  visibleCount.value = initialBatchSize
+  if (!isCategorySliderLayout.value) {
+    visibleCount.value = initialBatchSize
+  }
 })
 
 watch(searchQuery, async (query) => {
+  if (isCategorySliderLayout.value) {
+    return
+  }
+
   visibleCount.value = initialBatchSize
 
   if (!query.trim() || isManifestLoading.value || loadError.value) {
@@ -113,32 +147,61 @@ useIntersectionObserver(
     rootMargin: '200px 0px',
   },
 )
-
 </script>
 
 <template>
-  <div class="flex flex-1 flex-col">
-    <SportFilter
-      v-model="selectedSport"
-      v-model:search="searchQuery"
-      v-model:sort="sortMode"
-      v-model:edit-mode="editMode"
-      :hidden-items="hiddenItems"
-      @restore="handleRestore"
-    />
-    <main class="flex flex-1 flex-wrap items-start justify-start gap-4 px-4 py-4">
+  <div class="flex min-h-0 flex-1 flex-col">
+    <div
+      class="sticky top-14 z-40 mt-14 shrink-0 border-b bg-background/80 backdrop-blur-md"
+    >
+      <div
+        class="flex items-center gap-2 px-4 py-2"
+        :class="showsFilters ? 'border-b border-border/60' : undefined"
+      >
+        <HomeScreenLayoutSwitcher v-model="homeScreenLayout" />
+      </div>
+      <SportFilter
+        v-if="showsFilters"
+        embedded
+        v-model="selectedSport"
+        v-model:search="searchQuery"
+        v-model:sort="sortMode"
+        v-model:edit-mode="editMode"
+        :hidden-items="hiddenItems"
+        @restore="handleRestore"
+      />
+    </div>
+    <div
+      :class="
+        isCategorySliderLayout
+          ? 'flex min-h-0 flex-1 flex-col overflow-x-visible overflow-y-auto'
+          : 'flex flex-1 flex-wrap items-start justify-start gap-4 px-4 py-4'
+      "
+    >
       <template v-if="isManifestLoading">
         <span class="sr-only">{{ $t('data.loading') }}</span>
-        <TeamProbabilityListSkeleton v-for="n in 6" :key="n" />
+        <div
+          v-if="isCategorySliderLayout"
+          class="flex gap-4 overflow-x-auto px-6 py-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          <div v-for="n in 3" :key="n" class="w-72 shrink-0">
+            <TeamProbabilityListSkeleton />
+          </div>
+        </div>
+        <TeamProbabilityListSkeleton v-else v-for="n in 6" :key="n" />
       </template>
-      <p v-else-if="loadError" class="text-sm text-destructive">
+      <p v-else-if="loadError" class="px-6 text-sm text-destructive">
         {{ $t('data.error') }}: {{ loadError }}
       </p>
       <template v-else>
         <span v-if="hasPendingSlots" class="sr-only">{{ $t('data.loading') }}</span>
         <div
           v-if="failedCount > 0"
-          class="flex w-full flex-wrap items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+          :class="
+            isCategorySliderLayout
+              ? 'mx-6 mt-4 flex w-auto flex-wrap items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive'
+              : 'flex w-full flex-wrap items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive'
+          "
           role="alert"
         >
           <p>{{ $t('data.partialError', { count: failedCount }) }}</p>
@@ -153,38 +216,55 @@ useIntersectionObserver(
           </Button>
         </div>
         <p
-          v-if="visibleSlots.length === 0"
-          class="w-full py-8 text-center text-sm text-muted-foreground"
+          v-if="isHomeEmpty"
+          :class="
+            isCategorySliderLayout
+              ? 'px-6 py-8 text-center text-sm text-muted-foreground'
+              : 'w-full py-8 text-center text-sm text-muted-foreground'
+          "
         >
           {{ $t('search.empty') }}
         </p>
-        <template v-for="slot in visibleSlots" :key="slot.id">
-          <TeamProbabilityList
-            v-if="slot.league"
-            :id="slot.league.id"
-            :title="slot.league.title"
-            :full-title="slot.league.fullTitle"
-            :teams="slot.league.teams"
-            :progress="slot.league.progress"
-            :start-date="slot.league.startDate"
-            :end-date="slot.league.endDate"
-            :icon="slot.league.icon"
-            :pinned="pinnedTournaments.includes(slot.league.id)"
-            :edit-mode="editMode"
-            @pin="handlePin"
-            @hide="handleHide"
-            @preview="openPreview"
-          />
-          <TeamProbabilityListSkeleton v-else />
-        </template>
-        <div
-          v-if="hasMore"
-          ref="loadMoreTrigger"
-          class="h-px w-full"
-          aria-hidden="true"
+        <HomeCategorySliderLayout
+          v-else-if="isCategorySliderLayout"
+          :slots="sliderSlots"
+          :sports-catalog="sportsCatalog"
+          :pinned-ids="pinnedTournaments"
+          :sort-mode="sortMode"
+          :edit-mode="editMode"
+          @pin="handlePin"
+          @hide="handleHide"
+          @preview="openPreview"
         />
+        <template v-else>
+          <template v-for="slot in visibleSlots" :key="slot.id">
+            <TeamProbabilityList
+              v-if="slot.league"
+              :id="slot.league.id"
+              :title="slot.league.title"
+              :full-title="slot.league.fullTitle"
+              :teams="slot.league.teams"
+              :progress="slot.league.progress"
+              :start-date="slot.league.startDate"
+              :end-date="slot.league.endDate"
+              :icon="slot.league.icon"
+              :pinned="pinnedTournaments.includes(slot.league.id)"
+              :edit-mode="editMode"
+              @pin="handlePin"
+              @hide="handleHide"
+              @preview="openPreview"
+            />
+            <TeamProbabilityListSkeleton v-else />
+          </template>
+          <div
+            v-if="hasMore"
+            ref="loadMoreTrigger"
+            class="h-px w-full"
+            aria-hidden="true"
+          />
+        </template>
       </template>
-    </main>
+    </div>
 
     <Sheet v-model:open="isPreviewOpen">
       <SheetContent>

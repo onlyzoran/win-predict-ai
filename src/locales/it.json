@@ -152,6 +152,14 @@
     "clear": "Cancella ricerca",
     "empty": "Nessun torneo trovato"
   },
+  "home": {
+    "categorySliders": "Categorie tornei",
+    "layout": {
+      "label": "Layout schermata principale",
+      "grid": "Griglia",
+      "category-slider": "Categorie"
+    }
+  },
   "sort": {
     "label": "Ordina",
     "popular": "Popolari",

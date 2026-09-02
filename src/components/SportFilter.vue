@@ -24,13 +24,20 @@ import type { Sport } from '@/types/sport'
 const { t, te } = useI18n()
 const { sports: catalog } = useSports()
 
-defineProps<{
-  modelValue: Sport | 'all'
-  search: string
-  sort: SortMode
-  editMode: boolean
-  hiddenItems: Array<{ id: string; title: string }>
-}>()
+withDefaults(
+  defineProps<{
+    modelValue: Sport | 'all'
+    search: string
+    sort: SortMode
+    editMode: boolean
+    hiddenItems: Array<{ id: string; title: string }>
+    /** Render filter rows without the sticky outer shell (inside Home toolbar). */
+    embedded?: boolean
+  }>(),
+  {
+    embedded: false,
+  },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: Sport | 'all']
@@ -72,7 +79,7 @@ function toggleEditMode(editMode: boolean) {
 </script>
 
 <template>
-  <div class="sticky top-14 z-40 mt-14 border-b bg-background/80 backdrop-blur-md">
+  <div :class="embedded ? undefined : 'sticky top-14 z-40 mt-14 border-b bg-background/80 backdrop-blur-md'">
     <div class="flex items-center gap-2 px-4 py-2">
       <div class="flex min-w-0 flex-1 items-center justify-start gap-2 overflow-x-auto">
         <Button
