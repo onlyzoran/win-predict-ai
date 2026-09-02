@@ -29,6 +29,19 @@ export function resolveSportsCatalog(items: SportCatalogItem[]): SportCatalogIte
     .sort((a, b) => a.sortOrder - b.sortOrder)
 }
 
+/** Adds FALLBACK_SPORTS entries missing from a successful API response (e.g. prod lag). */
+export function mergeWithFallbackSports(items: SportCatalogItem[]): SportCatalogItem[] {
+  const bySlug = new Map(items.map((item) => [item.slug, item]))
+
+  for (const fallback of FALLBACK_SPORTS) {
+    if (!bySlug.has(fallback.slug)) {
+      bySlug.set(fallback.slug, fallback)
+    }
+  }
+
+  return resolveSportsCatalog([...bySlug.values()])
+}
+
 export function getFallbackSportsCatalog(): SportCatalogItem[] {
   return resolveSportsCatalog(FALLBACK_SPORTS)
 }

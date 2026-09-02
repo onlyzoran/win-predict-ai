@@ -49,11 +49,67 @@ jobs:
             dist/ \
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PREVIEW_ROOT }}/pr-${{ github.event.number }}/"
 
+      - name: Resolve Goal issue number from PR body
+        id: goal
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          GOAL_ISSUE="$(printf '%s' "$PR_BODY" | grep -Eo 'win-predict-ai-orchestrator#[0-9]+' | head -1 | cut -d# -f2 || true)"
+          if [[ -n "$GOAL_ISSUE" ]]; then
+            echo "issue=$GOAL_ISSUE" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Resolve Goal-demo data URLs
+        if: steps.goal.outputs.issue != ''
+        id: goal_data
+        env:
+          GOAL_ISSUE: ${{ steps.goal.outputs.issue }}
+        run: |
+          # shellcheck source=deploy/goal-preview-data.sh
+          source deploy/goal-preview-data.sh
+          goal_preview_data_env "$GOAL_ISSUE"
+          echo "leagues_url=${VITE_LEAGUES_URL}" >> "$GITHUB_OUTPUT"
+          echo "sports_url=${VITE_SPORTS_URL}" >> "$GITHUB_OUTPUT"
+          if [[ -n "${VITE_DATA_BASE_URL:-}" ]]; then
+            echo "data_base_url=${VITE_DATA_BASE_URL}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build Goal-demo (orchestrator preview URL)
+        if: steps.goal.outputs.issue != ''
+        run: npm run build
+        env:
+          VITE_BASE_PATH: /app-preview/issue-${{ steps.goal.outputs.issue }}/
+          VITE_LEAGUES_URL: ${{ steps.goal_data.outputs.leagues_url }}
+          VITE_SPORTS_URL: ${{ steps.goal_data.outputs.sports_url }}
+          VITE_DATA_BASE_URL: ${{ steps.goal_data.outputs.data_base_url }}
+
+      - name: Deploy Goal-demo to VPS
+        if: steps.goal.outputs.issue != ''
+        env:
+          GOAL_ISSUE: ${{ steps.goal.outputs.issue }}
+        run: |
+          APP_PREVIEW_ROOT="${VPS_APP_PREVIEW_ROOT:-/var/www/win-predict-ai-app-preview}"
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "mkdir -p ${APP_PREVIEW_ROOT}/issue-${GOAL_ISSUE}"
+          rsync -avz --delete \
+            -e 'ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+            dist/ \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${APP_PREVIEW_ROOT}/issue-${GOAL_ISSUE}/"
+
+      - name: Ensure nginx serves /app-preview/
+        if: steps.goal.outputs.issue != ''
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "bash -s" < scripts/ensure-app-preview-nginx-remote.sh
+
       - name: Comment preview URL on PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           message: |
             🔗 **Preview deployed:** http://${{ secrets.VPS_HOST }}/win-predict-ai-preview/pr-${{ github.event.number }}/
+            ${{ steps.goal.outputs.issue != '' && format('🎯 **Goal-demo:** https://win-predict-ai.com/app-preview/issue-{0}/', steps.goal.outputs.issue) || '' }}
 
   cleanup-preview:
     if: github.event.action == 'closed'
