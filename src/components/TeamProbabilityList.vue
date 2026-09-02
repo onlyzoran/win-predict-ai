@@ -9,7 +9,14 @@ import {
   IconPin,
   IconPinnedOff,
 } from '@onlyzoran/win-predict-ai-icons'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@onlyzoran/win-predict-ai-ui'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  shortTeamName,
+} from '@onlyzoran/win-predict-ai-ui'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -149,7 +156,10 @@ const visibleTeams = computed<TeamProbability[]>(() => {
     <CardContent class="p-0">
       <div v-for="(team, index) in visibleTeams" :key="team.id">
         <div class="flex items-center justify-between px-4 py-2">
-          <span class="font-medium">{{ team.name }}</span>
+          <span class="font-medium" :title="team.name">
+            <span class="md:hidden">{{ shortTeamName(team.name) }}</span>
+            <span class="hidden md:inline">{{ team.name }}</span>
+          </span>
           <Badge variant="secondary">
             {{ formatPercent(team.winProbability) }}
           </Badge>

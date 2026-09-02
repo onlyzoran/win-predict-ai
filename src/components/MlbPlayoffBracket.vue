@@ -4,7 +4,8 @@ import { useI18n } from 'vue-i18n'
 import MlbBracketMatchup from '@/components/MlbBracketMatchup.vue'
 import MlbLeagueBracket from '@/components/MlbLeagueBracket.vue'
 import { Badge } from '@/components/ui/badge'
-import { buildMlbPlayoffBracket, shortTeamName } from '@/lib/mlbPlayoffBracket'
+import { shortTeamName } from '@onlyzoran/win-predict-ai-ui'
+import { buildMlbPlayoffBracket } from '@/lib/mlbPlayoffBracket'
 import type { TeamProbability } from '@/types/league'
 import { formatPercent } from '@/lib/utils'
 
@@ -40,7 +41,8 @@ const bracket = computed(() => buildMlbPlayoffBracket(props.teams))
             {{ t('playoff.winner') }}
           </p>
           <p class="mt-1 text-sm font-semibold" :title="bracket.winner.name">
-            {{ shortTeamName(bracket.winner.name) }}
+            <span class="md:hidden">{{ shortTeamName(bracket.winner.name) }}</span>
+            <span class="hidden md:inline">{{ bracket.winner.name }}</span>
           </p>
           <Badge variant="secondary" class="mt-2">
             {{ formatPercent(bracket.winner.winProbability) }}
@@ -69,7 +71,8 @@ const bracket = computed(() => buildMlbPlayoffBracket(props.teams))
             {{ t('playoff.winner') }}
           </p>
           <p class="mt-1 text-sm font-semibold" :title="bracket.winner.name">
-            {{ shortTeamName(bracket.winner.name) }}
+            <span class="md:hidden">{{ shortTeamName(bracket.winner.name) }}</span>
+            <span class="hidden md:inline">{{ bracket.winner.name }}</span>
           </p>
           <Badge variant="secondary" class="mt-2">
             {{ formatPercent(bracket.winner.winProbability) }}

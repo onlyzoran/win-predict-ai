@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { shortTeamName } from '@onlyzoran/win-predict-ai-ui'
 import type { BracketMatchup, BracketTeam } from '@/lib/mlbPlayoffBracket'
-import { shortTeamName } from '@/lib/mlbPlayoffBracket'
 import { cn, formatPercent } from '@/lib/utils'
 
 const props = withDefaults(
@@ -15,14 +15,6 @@ const props = withDefaults(
 
 function isWinner(team: BracketTeam | null): boolean {
   return Boolean(team && props.matchup.winner && team.id === props.matchup.winner.id)
-}
-
-function displayName(team: BracketTeam | null): string {
-  if (!team) {
-    return props.tbdLabel
-  }
-
-  return shortTeamName(team.name)
 }
 </script>
 
@@ -43,7 +35,11 @@ function displayName(team: BracketTeam | null): string {
         {{ side?.seed ?? '—' }}
       </span>
       <span class="min-w-0 flex-1 truncate" :title="side?.name ?? tbdLabel">
-        {{ displayName(side) }}
+        <template v-if="!side">{{ tbdLabel }}</template>
+        <template v-else>
+          <span class="md:hidden">{{ shortTeamName(side.name) }}</span>
+          <span class="hidden md:inline">{{ side.name }}</span>
+        </template>
       </span>
       <span
         v-if="side"

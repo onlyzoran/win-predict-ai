@@ -6,7 +6,6 @@ import {
   buildMlbPlayoffBracket,
   canBuildMlbBracket,
   pickWinner,
-  shortTeamName,
 } from './mlbPlayoffBracket'
 
 function team(
@@ -35,17 +34,6 @@ function al(name: string, pct: number) {
 function nl(name: string, pct: number) {
   return team(name, pct, NATIONAL_LEAGUE)
 }
-
-describe('shortTeamName', () => {
-  it('keeps the nickname', () => {
-    expect(shortTeamName('New York Yankees')).toBe('Yankees')
-    expect(shortTeamName('Los Angeles Dodgers')).toBe('Dodgers')
-    expect(shortTeamName('Boston Red Sox')).toBe('Red Sox')
-    expect(shortTeamName('Chicago White Sox')).toBe('White Sox')
-    expect(shortTeamName('Toronto Blue Jays')).toBe('Blue Jays')
-    expect(shortTeamName('Athletics')).toBe('Athletics')
-  })
-})
 
 describe('pickWinner', () => {
   it('picks the higher win probability', () => {

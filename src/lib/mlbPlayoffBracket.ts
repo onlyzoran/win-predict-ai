@@ -34,21 +34,6 @@ export interface MlbPlayoffBracket {
   winner: BracketTeam | null
 }
 
-const MULTI_WORD_NICKNAMES = ['Red Sox', 'White Sox', 'Blue Jays'] as const
-
-/** "New York Yankees" → "Yankees", "Boston Red Sox" → "Red Sox" */
-export function shortTeamName(name: string): string {
-  const trimmed = name.trim()
-  for (const nick of MULTI_WORD_NICKNAMES) {
-    if (trimmed.endsWith(nick)) {
-      return nick
-    }
-  }
-
-  const parts = trimmed.split(/\s+/)
-  return parts[parts.length - 1] ?? trimmed
-}
-
 function toBracketTeam(team: TeamProbability, seed: number): BracketTeam {
   return {
     id: team.id,

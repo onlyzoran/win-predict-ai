@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { StandingsGlossary } from '@onlyzoran/win-predict-ai-ui'
+import { shortTeamName, StandingsGlossary } from '@onlyzoran/win-predict-ai-ui'
 import type { FactsColumnKey } from '@/lib/factsTable'
 import { formatFactsCell, resolveFactsColumns, sortFactsRows } from '@/lib/factsTable'
 import { isFootballSport, resolveFootballFactsGlossary } from '@/lib/factsGlossary'
@@ -78,7 +78,15 @@ function headerClass(key: FactsColumnKey): string {
               :key="column.key"
               :class="cellClass(column.key)"
             >
-              {{ formatFactsCell(row, column.key) }}
+              <template v-if="column.key === 'team'">
+                <span :title="row.team">
+                  <span class="md:hidden">{{ shortTeamName(row.team) }}</span>
+                  <span class="hidden md:inline">{{ row.team }}</span>
+                </span>
+              </template>
+              <template v-else>
+                {{ formatFactsCell(row, column.key) }}
+              </template>
             </td>
           </tr>
         </tbody>
