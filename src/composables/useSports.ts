@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/vue-query'
 import {
   fetchSportsCatalog,
   getFallbackSportsCatalog,
-  resolveSportsCatalog,
+  mergeWithFallbackSports,
 } from '@/lib/sportsData'
 import { STALE_TIME } from '@/lib/queryClient'
 import { queryKeys } from '@/lib/queryKeys'
@@ -11,7 +11,7 @@ import { queryKeys } from '@/lib/queryKeys'
 export function useSports() {
   const query = useQuery({
     queryKey: queryKeys.sports,
-    queryFn: async () => resolveSportsCatalog(await fetchSportsCatalog()),
+    queryFn: async () => mergeWithFallbackSports(await fetchSportsCatalog()),
     staleTime: STALE_TIME.sports,
     placeholderData: () => getFallbackSportsCatalog(),
     retry: 1,
