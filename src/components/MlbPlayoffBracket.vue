@@ -41,7 +41,8 @@ const bracket = computed(() => buildMlbPlayoffBracket(props.teams))
             {{ t('playoff.winner') }}
           </p>
           <p class="mt-1 text-sm font-semibold" :title="bracket.winner.name">
-            {{ shortTeamName(bracket.winner.name) }}
+            <span class="md:hidden">{{ shortTeamName(bracket.winner.name) }}</span>
+            <span class="hidden md:inline">{{ bracket.winner.name }}</span>
           </p>
           <Badge variant="secondary" class="mt-2">
             {{ formatPercent(bracket.winner.winProbability) }}
@@ -70,7 +71,8 @@ const bracket = computed(() => buildMlbPlayoffBracket(props.teams))
             {{ t('playoff.winner') }}
           </p>
           <p class="mt-1 text-sm font-semibold" :title="bracket.winner.name">
-            {{ shortTeamName(bracket.winner.name) }}
+            <span class="md:hidden">{{ shortTeamName(bracket.winner.name) }}</span>
+            <span class="hidden md:inline">{{ bracket.winner.name }}</span>
           </p>
           <Badge variant="secondary" class="mt-2">
             {{ formatPercent(bracket.winner.winProbability) }}
