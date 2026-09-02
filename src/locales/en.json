@@ -114,6 +114,13 @@
         "name": "Nexora",
         "description": "Futuristic violet cockpit — frosted glass surfaces and gradient CTAs."
       }
+    },
+    "resultPreview": {
+      "title": "Result outcome cards",
+      "subtitle": "Pastel theme preview — sage for final results, butter for in-progress.",
+      "pastelHint": "Select Pastel above to see tokens on the live app chrome; cards below always use the active palette.",
+      "legendFinal": "Final result (chart-1 / sage)",
+      "legendIntermediate": "In progress (chart-2 / butter)"
     }
   },
   "language": {

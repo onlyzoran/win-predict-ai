@@ -30,7 +30,7 @@ function cardAccentClass(status: ResultStatus) {
     <Card
       v-for="card in cards"
       :key="card.id"
-      class="overflow-hidden border-l-4 p-0"
+      class="match-result-card overflow-hidden border-l-4 p-0"
       :class="cardAccentClass(card.status)"
     >
       <CardHeader class="gap-2 px-4 pt-4 pb-2">

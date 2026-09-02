@@ -2,15 +2,19 @@
 import { IconArrowLeft, IconPalette } from '@onlyzoran/win-predict-ai-icons'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
+import MatchResultCards from '@/components/MatchResultCards.vue'
 import {
   COLOR_PALETTES,
   type ColorPalette,
   palettePreferences,
+  useColorPalette,
 } from '@/composables/useColorPalette'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { DEMO_MATCH_RESULT_CARDS } from '@/dev-fixtures/matchResults'
 import { cn } from '@/lib/utils'
 
 const { t } = useI18n()
+const { activePalette } = useColorPalette()
 
 function selectLightPalette(palette: ColorPalette) {
   palettePreferences.value = { ...palettePreferences.value, light: palette }
@@ -66,7 +70,7 @@ function selectDarkPalette(palette: ColorPalette) {
             <Card
               :class="
                 cn(
-                  'h-full transition-colors hover:border-ring/50',
+                  'palette-option-card h-full transition-colors hover:border-ring/50',
                   palettePreferences.light === palette && 'border-primary ring-2 ring-ring/30',
                 )
               "
@@ -78,7 +82,7 @@ function selectDarkPalette(palette: ColorPalette) {
               <CardContent class="mt-auto">
                 <div
                   :data-palette="palette"
-                  class="overflow-hidden rounded-lg border"
+                  class="palette-preview-swatch overflow-hidden rounded-lg border"
                 >
                   <div class="flex h-16 bg-background">
                     <div class="flex flex-1 flex-col justify-end gap-1 p-2">
@@ -116,7 +120,7 @@ function selectDarkPalette(palette: ColorPalette) {
             <Card
               :class="
                 cn(
-                  'h-full transition-colors hover:border-ring/50',
+                  'palette-option-card h-full transition-colors hover:border-ring/50',
                   palettePreferences.dark === palette && 'border-primary ring-2 ring-ring/30',
                 )
               "
@@ -128,7 +132,7 @@ function selectDarkPalette(palette: ColorPalette) {
               <CardContent class="mt-auto">
                 <div
                   :data-palette="palette"
-                  class="dark overflow-hidden rounded-lg border"
+                  class="palette-preview-swatch dark overflow-hidden rounded-lg border"
                 >
                   <div class="flex h-16 bg-background">
                     <div class="flex flex-1 flex-col justify-end gap-1 p-2">
@@ -149,6 +153,40 @@ function selectDarkPalette(palette: ColorPalette) {
             </Card>
           </button>
         </div>
+      </section>
+
+      <section class="space-y-4 rounded-xl border bg-card p-6 shadow-sm">
+        <div>
+          <h2 class="text-sm font-medium text-foreground">
+            {{ t('appearance.resultPreview.title') }}
+          </h2>
+          <p class="mt-1 text-sm text-muted-foreground">
+            {{ t('appearance.resultPreview.subtitle') }}
+          </p>
+          <p
+            v-if="activePalette !== 'pastel'"
+            class="mt-2 text-sm text-muted-foreground"
+          >
+            {{ t('appearance.resultPreview.pastelHint') }}
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-3 text-xs">
+          <span
+            class="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/60 px-2.5 py-1.5 text-muted-foreground"
+          >
+            <span class="size-2.5 rounded-sm bg-chart-1" aria-hidden="true" />
+            {{ t('appearance.resultPreview.legendFinal') }}
+          </span>
+          <span
+            class="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/60 px-2.5 py-1.5 text-muted-foreground"
+          >
+            <span class="size-2.5 rounded-sm bg-chart-2" aria-hidden="true" />
+            {{ t('appearance.resultPreview.legendIntermediate') }}
+          </span>
+        </div>
+
+        <MatchResultCards :cards="DEMO_MATCH_RESULT_CARDS" />
       </section>
     </div>
   </div>

@@ -114,6 +114,13 @@
         "name": "Nexora",
         "description": "Futuristisches Violet-Cockpit — Glasoberflächen und Gradient-CTAs."
       }
+    },
+    "resultPreview": {
+      "title": "Ergebnis-Karten",
+      "subtitle": "Pastell-Vorschau — Sage für finale, Butter für laufende Ergebnisse.",
+      "pastelHint": "Wählen Sie oben Pastell, um die Tokens im Live-Interface zu sehen; die Karten unten nutzen die aktive Palette.",
+      "legendFinal": "Endergebnis (chart-1 / sage)",
+      "legendIntermediate": "Laufend (chart-2 / butter)"
     }
   },
   "language": {

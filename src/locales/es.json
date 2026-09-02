@@ -114,6 +114,13 @@
         "name": "Nexora",
         "description": "Cabina violeta futurista — superficies de cristal y CTAs con gradiente."
       }
+    },
+    "resultPreview": {
+      "title": "Tarjetas de resultados",
+      "subtitle": "Vista previa pastel — sage para finales, butter para partidos en curso.",
+      "pastelHint": "Seleccione Pastel arriba para ver los tokens en la interfaz; las tarjetas abajo usan la paleta activa.",
+      "legendFinal": "Resultado final (chart-1 / sage)",
+      "legendIntermediate": "En curso (chart-2 / butter)"
     }
   },
   "language": {

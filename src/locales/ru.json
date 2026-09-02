@@ -114,6 +114,13 @@
         "name": "Nexora",
         "description": "Футуристичный violet-кокpit — стеклянные поверхности и gradient CTA."
       }
+    },
+    "resultPreview": {
+      "title": "Карточки итогов матчей",
+      "subtitle": "Превью пастельной темы — sage для финала, butter для промежуточного итога.",
+      "pastelHint": "Выберите Pastel выше, чтобы увидеть токены на живом интерфейсе; карточки ниже используют активную палитру.",
+      "legendFinal": "Финальный итог (chart-1 / sage)",
+      "legendIntermediate": "В процессе (chart-2 / butter)"
     }
   },
   "language": {
