@@ -32,6 +32,10 @@
     "winChance": "Chance",
     "rankMovement": "Évolution du classement"
   },
+  "outcomes": {
+    "demoTitle": "Résultats des matchs",
+    "demoDescription": "Sage (final) et butter (en cours) — sémantique pastel."
+  },
   "facts": {
     "title": "Données réelles",
     "asOf": "Au {date}",

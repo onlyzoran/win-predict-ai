@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useIntersectionObserver, useStorage } from '@vueuse/core'
+import MatchResultCards from '@/components/MatchResultCards.vue'
 import SportFilter from '@/components/SportFilter.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleton.vue'
@@ -9,12 +10,16 @@ import { useLeaguePreview } from '@/composables/useLeaguePreview'
 import { useLeagues } from '@/composables/useLeagues'
 import { useHiddenTournaments } from '@/composables/useHiddenTournaments'
 import { usePinnedTournaments } from '@/composables/usePinnedTournaments'
+import { DEMO_MATCH_RESULT_CARDS } from '@/dev-fixtures/matchResults'
 import type { SortMode } from '@/types/sort'
 import type { Sport } from '@/types/sport'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { locale } from '@/i18n'
+import { useDevFixtures } from '@/lib/devFixtures'
 import { excludeHiddenSlots, filterSlots, slotIdsForLoading, sortSlotsWithPinned } from '@/lib/tournaments'
+
+const showDevFixtures = useDevFixtures()
 
 const {
   slots,
@@ -127,6 +132,16 @@ useIntersectionObserver(
       @restore="handleRestore"
     />
     <main class="flex flex-1 flex-wrap items-start justify-start gap-4 px-4 py-4">
+      <section
+        v-if="showDevFixtures"
+        class="w-full space-y-3 rounded-xl border border-border bg-card p-4"
+      >
+        <div>
+          <h2 class="text-base font-semibold text-foreground">{{ $t('outcomes.demoTitle') }}</h2>
+          <p class="text-sm text-muted-foreground">{{ $t('outcomes.demoDescription') }}</p>
+        </div>
+        <MatchResultCards :cards="DEMO_MATCH_RESULT_CARDS" />
+      </section>
       <template v-if="isManifestLoading">
         <span class="sr-only">{{ $t('data.loading') }}</span>
         <TeamProbabilityListSkeleton v-for="n in 6" :key="n" />

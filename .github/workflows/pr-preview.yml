@@ -31,6 +31,7 @@ jobs:
         run: npm run build
         env:
           VITE_BASE_PATH: /win-predict-ai-preview/pr-${{ github.event.number }}/
+          VITE_DEV_FIXTURES: 'true'
 
       - name: Install SSH key
         run: |

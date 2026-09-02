@@ -32,6 +32,10 @@
     "winChance": "Win %",
     "rankMovement": "Standings movement"
   },
+  "outcomes": {
+    "demoTitle": "Match result outcomes",
+    "demoDescription": "Sage (final) and butter (in progress) — pastel palette semantics."
+  },
   "facts": {
     "title": "Actual data",
     "asOf": "As of {date}",

@@ -126,7 +126,25 @@ const showStandings = computed(() => !props.predictionsOnly && hasWinsStandings(
     <div v-else>
       <div v-for="(team, index) in teams" :key="team.id">
         <div class="flex items-center justify-between gap-3 py-2">
-          <span class="truncate font-medium">{{ team.name }}</span>
+          <div class="min-w-0">
+            <span class="truncate font-medium">{{ team.name }}</span>
+            <div
+              v-if="team.standings"
+              class="mt-1 flex flex-wrap items-center gap-1.5"
+            >
+              <span
+                v-if="team.standings.played != null"
+                class="inline-flex items-center rounded-md bg-chart-2/20 px-1.5 py-0.5 text-xs font-semibold tabular-nums text-foreground"
+              >
+                {{ t('standings.gp') }} {{ team.standings.played }}
+              </span>
+              <span
+                class="inline-flex items-center rounded-md bg-chart-1/15 px-1.5 py-0.5 text-xs font-semibold tabular-nums text-primary"
+              >
+                {{ formatRecord(team.standings.wins, team.standings.losses) }}
+              </span>
+            </div>
+          </div>
           <Badge variant="secondary" class="shrink-0">
             {{ formatPercent(team.winProbability) }}
           </Badge>

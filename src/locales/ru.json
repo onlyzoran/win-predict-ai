@@ -32,6 +32,10 @@
     "winChance": "Шанс",
     "rankMovement": "Движение в таблице"
   },
+  "outcomes": {
+    "demoTitle": "Карточки итогов матчей",
+    "demoDescription": "Sage (финал) и butter (в процессе) — семантика пастельной палитры."
+  },
   "facts": {
     "title": "Фактические данные",
     "asOf": "На {date}",

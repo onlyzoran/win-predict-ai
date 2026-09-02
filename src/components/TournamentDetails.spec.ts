@@ -372,7 +372,7 @@ describe('TournamentDetails', () => {
     expect(wrapper.text()).not.toContain('Playoff projection')
   })
 
-  it('does not render actual standings columns on the predictions tab in detail view', async () => {
+  it('shows outcome badges but not full standings columns on the predictions tab', async () => {
     const wrapper = mountDetails({
       showChart: true,
       leagueId: 'mlb',
@@ -398,9 +398,9 @@ describe('TournamentDetails', () => {
 
     expect(text).toContain('Milwaukee Brewers')
     expect(text).toContain('18%')
+    expect(text).toContain('GP 111')
+    expect(text).toContain('69–42')
     expect(text).not.toContain('Conf')
-    expect(text).not.toContain('GP')
-    expect(text).not.toContain('69–42')
     expect(text).not.toContain('.622')
   })
 

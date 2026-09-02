@@ -32,6 +32,10 @@
     "winChance": "Chance",
     "rankMovement": "Tabellenbewegung"
   },
+  "outcomes": {
+    "demoTitle": "Spielergebnisse",
+    "demoDescription": "Sage (Endstand) und Butter (laufend) — Pastell-Semantik."
+  },
   "facts": {
     "title": "Istdaten",
     "asOf": "Stand {date}",

@@ -38,4 +38,35 @@ describe('TournamentStandingsPanel', () => {
     expect(wrapper.find('.bg-chart-2\\/20').text()).toBe('111')
     expect(wrapper.find('.bg-chart-1\\/15').text()).toBe('69–42')
   })
+
+  it('renders outcome badges in predictions-only mode when standings exist', () => {
+    const wrapper = mount(TournamentStandingsPanel, {
+      props: {
+        predictionsOnly: true,
+        teams: [
+          {
+            id: '1',
+            name: 'Milwaukee Brewers',
+            winProbability: 18,
+            standings: {
+              group: 'National League',
+              playoffSeed: 1,
+              played: 111,
+              wins: 69,
+              losses: 42,
+              winPercent: 0.6216216,
+            },
+          },
+        ],
+      },
+      global: {
+        plugins: [i18n],
+      },
+    })
+
+    expect(wrapper.text()).toContain('GP 111')
+    expect(wrapper.text()).toContain('69–42')
+    expect(wrapper.find('.bg-chart-2\\/20').exists()).toBe(true)
+    expect(wrapper.find('.bg-chart-1\\/15').exists()).toBe(true)
+  })
 })
