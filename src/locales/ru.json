@@ -153,7 +153,12 @@
     "empty": "Турниры не найдены"
   },
   "home": {
-    "categorySliders": "Категории турниров"
+    "categorySliders": "Категории турниров",
+    "layout": {
+      "label": "Лейаут главного экрана",
+      "grid": "Сетка",
+      "category-slider": "Категории"
+    }
   },
   "sort": {
     "label": "Сортировка",

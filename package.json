@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@onlyzoran/win-predict-ai-icons": "^0.14.0",
-    "@onlyzoran/win-predict-ai-ui": "0.5.0-pr.51.b7cea0d",
+    "@onlyzoran/win-predict-ai-ui": "0.5.0-pr.51.3672f0a",
     "@tabler/icons-vue": "^3.46.0",
     "@tailwindcss/vite": "^4.3.3",
     "@tanstack/vue-query": "^5.101.4",

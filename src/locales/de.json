@@ -153,7 +153,12 @@
     "empty": "Keine Turniere gefunden"
   },
   "home": {
-    "categorySliders": "Turnierkategorien"
+    "categorySliders": "Turnierkategorien",
+    "layout": {
+      "label": "Startbildschirm-Layout",
+      "grid": "Raster",
+      "category-slider": "Kategorien"
+    }
   },
   "sort": {
     "label": "Sortierung",

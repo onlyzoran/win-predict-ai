@@ -153,7 +153,12 @@
     "empty": "Aucun tournoi trouvé"
   },
   "home": {
-    "categorySliders": "Catégories de tournois"
+    "categorySliders": "Catégories de tournois",
+    "layout": {
+      "label": "Disposition de l'écran d'accueil",
+      "grid": "Grille",
+      "category-slider": "Catégories"
+    }
   },
   "sort": {
     "label": "Trier",

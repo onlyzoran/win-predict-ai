@@ -58,8 +58,11 @@ function asLeagueSlot(item: unknown): LeagueSlot {
     class="min-h-0 w-full"
     :aria-label="t('home.categorySliders')"
   >
-    <template #category-header="{ category }">
-      <h2 class="flex items-center gap-2 text-base font-semibold tracking-tight text-foreground">
+    <template #category-header="{ category, headingId }">
+      <h2
+        :id="headingId"
+        class="flex items-center gap-2 text-base font-semibold tracking-tight text-foreground"
+      >
         <component
           :is="iconForCategory(category.id)"
           v-if="iconForCategory(category.id)"

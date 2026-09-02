@@ -153,7 +153,12 @@
     "empty": "No tournaments found"
   },
   "home": {
-    "categorySliders": "Tournament categories"
+    "categorySliders": "Tournament categories",
+    "layout": {
+      "label": "Home screen layout",
+      "grid": "Grid",
+      "category-slider": "Categories"
+    }
   },
   "sort": {
     "label": "Sort",

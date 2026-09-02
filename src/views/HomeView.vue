@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useIntersectionObserver, useStorage } from '@vueuse/core'
-import SportFilter from '@/components/SportFilter.vue'
 import HomeCategorySliderLayout from '@/components/HomeCategorySliderLayout.vue'
+import HomeScreenLayoutSwitcher from '@/components/HomeScreenLayoutSwitcher.vue'
+import SportFilter from '@/components/SportFilter.vue'
 import TeamProbabilityList from '@/components/TeamProbabilityList.vue'
 import TeamProbabilityListSkeleton from '@/components/TeamProbabilityListSkeleton.vue'
 import TournamentDetails from '@/components/TournamentDetails.vue'
+import { useHomeScreenLayout } from '@/composables/useHomeScreenLayout'
 import { useLeaguePreview } from '@/composables/useLeaguePreview'
 import { useLeagues } from '@/composables/useLeagues'
 import { useHiddenTournaments } from '@/composables/useHiddenTournaments'
@@ -16,7 +18,7 @@ import type { Sport } from '@/types/sport'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { locale } from '@/i18n'
-import { homeScreenLayoutShowsFilters, resolveHomeScreenLayout } from '@/lib/homeScreenLayout'
+import { homeScreenLayoutShowsFilters } from '@/lib/homeScreenLayout'
 import {
   excludeHiddenSlots,
   filterSlots,
@@ -24,9 +26,9 @@ import {
   sortSlotsWithPinned,
 } from '@/lib/tournaments'
 
-const homeScreenLayout = resolveHomeScreenLayout()
-const showsFilters = homeScreenLayoutShowsFilters(homeScreenLayout)
-const isCategorySliderLayout = homeScreenLayout === 'category-slider'
+const { homeScreenLayout } = useHomeScreenLayout()
+const showsFilters = computed(() => homeScreenLayoutShowsFilters(homeScreenLayout.value))
+const isCategorySliderLayout = computed(() => homeScreenLayout.value === 'category-slider')
 
 const {
   slots,
@@ -56,7 +58,7 @@ const sportFilteredSlots = computed(() =>
 )
 
 const displaySlots = computed(() => {
-  const source = showsFilters ? sportFilteredSlots.value : slots.value
+  const source = showsFilters.value ? sportFilteredSlots.value : slots.value
   return excludeHiddenSlots(source, hiddenTournaments.value)
 })
 
@@ -64,7 +66,7 @@ const sortedSlots = computed(() =>
   sortSlotsWithPinned(displaySlots.value, pinnedTournaments.value, sortMode.value, locale.value),
 )
 
-const sliderSlots = computed(() => (isCategorySliderLayout ? sortedSlots.value : []))
+const sliderSlots = computed(() => (isCategorySliderLayout.value ? sortedSlots.value : []))
 
 const hiddenItems = computed(() =>
   hiddenTournaments.value
@@ -83,21 +85,21 @@ const hiddenItems = computed(() =>
 )
 
 const visibleSlots = computed(() =>
-  isCategorySliderLayout ? [] : sortedSlots.value.slice(0, visibleCount.value),
+  isCategorySliderLayout.value ? [] : sortedSlots.value.slice(0, visibleCount.value),
 )
 const hasPendingSlots = computed(() => {
-  const pending = isCategorySliderLayout ? sliderSlots.value : visibleSlots.value
+  const pending = isCategorySliderLayout.value ? sliderSlots.value : visibleSlots.value
   return pending.some((slot) => !slot.league)
 })
 const hasMore = computed(
-  () => !isCategorySliderLayout && sortedSlots.value.length > visibleCount.value,
+  () => !isCategorySliderLayout.value && sortedSlots.value.length > visibleCount.value,
 )
 const isHomeEmpty = computed(() =>
-  isCategorySliderLayout ? sliderSlots.value.length === 0 : visibleSlots.value.length === 0,
+  isCategorySliderLayout.value ? sliderSlots.value.length === 0 : visibleSlots.value.length === 0,
 )
 
 watch(
-  () => (isCategorySliderLayout ? sliderSlots.value : visibleSlots.value).map((slot) => slot.id),
+  () => (isCategorySliderLayout.value ? sliderSlots.value : visibleSlots.value).map((slot) => slot.id),
   async (ids) => {
     if (isManifestLoading.value || loadError.value || ids.length === 0) {
       return
@@ -109,13 +111,13 @@ watch(
 )
 
 watch([selectedSport, sortMode], () => {
-  if (!isCategorySliderLayout) {
+  if (!isCategorySliderLayout.value) {
     visibleCount.value = initialBatchSize
   }
 })
 
 watch(searchQuery, async (query) => {
-  if (isCategorySliderLayout) {
+  if (isCategorySliderLayout.value) {
     return
   }
 
@@ -149,19 +151,30 @@ useIntersectionObserver(
 
 <template>
   <div class="flex min-h-0 flex-1 flex-col">
-    <SportFilter
-      v-if="showsFilters"
-      v-model="selectedSport"
-      v-model:search="searchQuery"
-      v-model:sort="sortMode"
-      v-model:edit-mode="editMode"
-      :hidden-items="hiddenItems"
-      @restore="handleRestore"
-    />
+    <div
+      class="sticky top-14 z-40 mt-14 shrink-0 border-b bg-background/80 backdrop-blur-md"
+    >
+      <div
+        class="flex items-center gap-2 px-4 py-2"
+        :class="showsFilters ? 'border-b border-border/60' : undefined"
+      >
+        <HomeScreenLayoutSwitcher v-model="homeScreenLayout" />
+      </div>
+      <SportFilter
+        v-if="showsFilters"
+        embedded
+        v-model="selectedSport"
+        v-model:search="searchQuery"
+        v-model:sort="sortMode"
+        v-model:edit-mode="editMode"
+        :hidden-items="hiddenItems"
+        @restore="handleRestore"
+      />
+    </div>
     <div
       :class="
         isCategorySliderLayout
-          ? 'flex min-h-0 flex-1 flex-col overflow-y-auto'
+          ? 'flex min-h-0 flex-1 flex-col overflow-x-visible overflow-y-auto'
           : 'flex flex-1 flex-wrap items-start justify-start gap-4 px-4 py-4'
       "
     >
@@ -169,7 +182,7 @@ useIntersectionObserver(
         <span class="sr-only">{{ $t('data.loading') }}</span>
         <div
           v-if="isCategorySliderLayout"
-          class="flex gap-4 overflow-x-auto px-4 py-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          class="flex gap-4 overflow-x-auto px-6 py-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           <div v-for="n in 3" :key="n" class="w-72 shrink-0">
             <TeamProbabilityListSkeleton />
@@ -177,7 +190,7 @@ useIntersectionObserver(
         </div>
         <TeamProbabilityListSkeleton v-else v-for="n in 6" :key="n" />
       </template>
-      <p v-else-if="loadError" class="px-4 text-sm text-destructive">
+      <p v-else-if="loadError" class="px-6 text-sm text-destructive">
         {{ $t('data.error') }}: {{ loadError }}
       </p>
       <template v-else>
@@ -186,7 +199,7 @@ useIntersectionObserver(
           v-if="failedCount > 0"
           :class="
             isCategorySliderLayout
-              ? 'mx-4 mt-4 flex w-auto flex-wrap items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive'
+              ? 'mx-6 mt-4 flex w-auto flex-wrap items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive'
               : 'flex w-full flex-wrap items-center justify-between gap-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive'
           "
           role="alert"
@@ -206,7 +219,7 @@ useIntersectionObserver(
           v-if="isHomeEmpty"
           :class="
             isCategorySliderLayout
-              ? 'px-4 py-8 text-center text-sm text-muted-foreground'
+              ? 'px-6 py-8 text-center text-sm text-muted-foreground'
               : 'w-full py-8 text-center text-sm text-muted-foreground'
           "
         >
